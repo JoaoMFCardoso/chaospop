@@ -3,7 +3,11 @@ package utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
+
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 
 public class MongoUtilities {
 
@@ -111,6 +115,25 @@ public class MongoUtilities {
 
 			/* Adds the pair to the new hashmap */
 			returnList.add(newElement);
+		}
+
+		return returnList;
+	}
+
+	/**
+	 * This method converts a BasicDBList into an ObjectId ArrayList.
+	 * @param basicDBList The BasicDBList object
+	 * @param key The key for the BasicDBObject objects within the BasicDBList
+	 * @return An ObjectId ArrayList
+	 */
+	public static ArrayList<ObjectId> convertALFromBDBL(BasicDBList basicDBList, String key){
+		ArrayList<ObjectId> returnList = new ArrayList<ObjectId>();
+
+		/* Runs the BasicDBList and performs the necessary casts */
+		for(Object element : basicDBList){
+			BasicDBObject bdbo = (BasicDBObject) element;
+			ObjectId id = (ObjectId) bdbo.get(key);
+			returnList.add(id);
 		}
 
 		return returnList;

@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.MongoUtilities;
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -86,7 +88,6 @@ public class BatchImpl implements MongoService<Batch> {
 		return newBatchDBObj.get("_id").toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Batch get(ObjectId id) {
 		/* Gets the basic database object */
@@ -101,7 +102,7 @@ public class BatchImpl implements MongoService<Batch> {
 				batch.setID(id);
 				break;
 			case "dataFiles":
-				ArrayList<ObjectId> dataFilesDBArray = (ArrayList<ObjectId>) persistent.get(key);
+				ArrayList<ObjectId> dataFilesDBArray = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "dataFile");
 				batch.setDataFiles(dataFilesDBArray);
 				break;
 			default:

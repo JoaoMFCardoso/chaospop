@@ -146,7 +146,7 @@ public class MappingImpl implements MongoService<Mapping> {
 				mapping.setID(id);
 				break;
 			case "fileNames":
-				ArrayList<ObjectId> fileNamesDBArray = (ArrayList<ObjectId>) persistent.get(key);
+				ArrayList<ObjectId> fileNamesDBArray = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "fileName");
 				mapping.setFileNames(fileNamesDBArray);
 				break;
 			case "baseOntology":
@@ -158,7 +158,7 @@ public class MappingImpl implements MongoService<Mapping> {
 				mapping.setSpecificOntologiesIRI(specificOntologiesList);
 				break;
 			case "individualMappings":
-				ArrayList<ObjectId> individualMappingsIDs = (ArrayList<ObjectId>) persistent.get(key);
+				ArrayList<ObjectId> individualMappingsIDs = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "individualMappingID");
 				mapping.setIndividualMappings(individualMappingsIDs);
 				break;
 			default:

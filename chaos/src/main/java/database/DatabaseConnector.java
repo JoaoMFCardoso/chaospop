@@ -31,6 +31,7 @@ public class DatabaseConnector {
 	 */
 	public DatabaseConnector() {
 		PropertiesHandler.propertiesLoader();
+
 		String host = PropertiesHandler.configProperties.getProperty("host");
 		Integer port = Integer.valueOf(PropertiesHandler.configProperties.getProperty("port"));
 		String databaseName = PropertiesHandler.configProperties.getProperty("database.name");

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,12 +15,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import utils.FileOperationsUtils;
-
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
-
 import database.implementations.DataFileImpl;
 import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
@@ -27,6 +26,9 @@ import file.operations.FileOperations;
 
 @Path("fileManager")
 public class FileManager {
+
+	/** The connection to the database for DataFile objects */
+	private DataFileImpl dataFileImpl = new DataFileImpl();
 
 	/**
 	 * This method uploads a file from the client.
@@ -38,7 +40,9 @@ public class FileManager {
 	@POST
 	@Path("/addFile")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response addFile(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+	public Response addFile(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+
 		// save it
 		String uploadedFileName = fileDetail.getFileName();
 		File uploadedFile = FileOperationsUtils.writeToFile(uploadedInputStream, uploadedFileName);
@@ -69,65 +73,45 @@ public class FileManager {
 	 * This method returns all the DataFiles stored in the database
 	 * @return An ArrayList with all DataFiles
 	 */
-//	@GET
-//	@Path("/listDataFiles")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public ArrayList<DataFileTO> listDataFiles(){
-//		ArrayList<DataFileTO> dataFilesTO = new ArrayList<DataFileTO>();
-//
-//		/* Get all DataFile objects from the database */
-//		DataFileImpl dataFileImpl = new DataFileImpl();
-//		List<DataFile> dataFiles = dataFileImpl.getAll();
-//
-//		/* Runs the DataFile objects and fills the DataFileTO array  */
-//		for(DataFile dataFile : dataFiles){
-//			DataFileTO dataFileTO = dataFile.createTransferObject();
-//			dataFilesTO.add(dataFileTO);
-//		}
-//
-//		return dataFilesTO;
-//	}
+	@GET
+	@Path("/listDataFiles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<DataFileTO> listDataFiles(){
+		ArrayList<DataFileTO> dataFilesTO = new ArrayList<DataFileTO>();
+
+		/* Get all DataFile objects from the database */
+		List<DataFile> dataFiles = this.dataFileImpl.getAll();
+
+		/* Runs the DataFile objects and fills the DataFileTO array  */
+		for(DataFile dataFile : dataFiles){
+			DataFileTO dataFileTO = dataFile.createTransferObject();
+			dataFilesTO.add(dataFileTO);
+		}
+
+		return dataFilesTO;
+	}
 
 	/**
 	 * This method removes a DataFile from the database
 	 * @param dataFileId The DataFile id
 	 * @return 200 if everything went well, 500 if not.
 	 */
-//	@GET
-//	@Path("/removeFile")
-//	@Consumes("text/plain")
-//	public Response removeFile(String dataFileId){
-//		Response response;
-//		try{
-//			/* Removes the DataFile from the database */
-//			DataFileImpl dataFileImpl = new DataFileImpl();
-//			dataFileImpl.remove(new ObjectId(dataFileId));
-//
-//			/* Gets the Response */
-//			response = Response.status(200).build();
-//		}catch(Exception exception){
-//			/* Sends a response that is not ok */
-//			response = Response.status(500).build();
-//		}
-//
-//		return response;
-//	}
+	@POST
+	@Path("/removeFile")
+	public Response removeFile(@FormParam("id") String dataFileId){
+		Response response;
+		try{
+			/* Removes the DataFile from the database */
+			this.dataFileImpl.remove(new ObjectId(dataFileId));
 
-//	@GET
-//	@Produces(MediaType.TEXT_PLAIN)
-//	public String getIt() {
-//		return "Got it!";
-//	}
+			/* Gets the Response */
+			response = Response.status(200).build();
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
 
-//	public Response listTags(){
-//		Response response = null;
-//		//TODO this method is just a stub
-//		return response;
-//	}
-
-//	public Response displayTag(){
-//		Response response = null;
-//		//TODO this method is just a stub
-//		return response;
-//	}
+		return response;
+	}
 }

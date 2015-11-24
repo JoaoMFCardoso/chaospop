@@ -155,6 +155,15 @@ public class DataFileImpl implements MongoService<DataFile> {
 
 	@Override
 	public void remove(ObjectId id) {
+		/* Removes the associated Node object tree */
+		/* Gets the DataFile */
+		DataFile dataFile = get(id);
+
+		ObjectId rootNodeId = dataFile.getNodeID();
+		NodeImpl nodeImpl = new NodeImpl();
+		nodeImpl.remove(rootNodeId);
+
+		/* Removes the DataFile */
 		/* A query is created with the given tag */
 		BasicDBObject query = new BasicDBObject("_id", id);
 

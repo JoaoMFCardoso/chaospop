@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.MongoUtilities;
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -131,7 +133,7 @@ public class NodeImpl implements MongoService<Node> {
 				node.setAttributes(attributesDBMap);
 				break;
 			case "children":
-				ArrayList<ObjectId> children = (ArrayList<ObjectId>) persistent.get(key);
+				ArrayList<ObjectId> children = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "child");
 				node.setChildren(children);
 				break;
 			default:
@@ -195,6 +197,17 @@ public class NodeImpl implements MongoService<Node> {
 
 	@Override
 	public void remove(ObjectId id) {
+		/* Removes the child Node objects */
+		Node node = get(id);
+
+		if(null != node.getChildren() &&
+				!node.getChildren().isEmpty()){
+			/* Runs the children Node and removes them */
+			for(ObjectId childNode : node.getChildren()){
+				remove(childNode);
+			}
+		}
+
 		/* A query is created with the given tag */
 		BasicDBObject query = new BasicDBObject("_id", id);
 
