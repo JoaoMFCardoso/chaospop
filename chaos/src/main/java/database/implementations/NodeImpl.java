@@ -94,12 +94,12 @@ public class NodeImpl implements MongoService<Node> {
 	}
 
 	@Override
-	public String replace(ObjectId id, Node newNode){
+	public String replace(String id, Node newNode){
 		/* Build the database object */
 		BasicDBObject newNodeDBObj = buildDBObject(newNode);
 
 		/* Create the query */
-		BasicDBObject query = new BasicDBObject().append("_id", id);
+		BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(id));
 
 		this.collection.update(query, newNodeDBObj);
 		return newNodeDBObj.get("_id").toString();
@@ -107,9 +107,10 @@ public class NodeImpl implements MongoService<Node> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Node get(ObjectId id) {
+	public Node get(String id) {
 		/* Gets the basic database object */
-		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(id);
+		ObjectId dbID = new ObjectId(id);
+		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
 		Node node = new Node();
 		Set<String> keyset = persistent.keySet();
@@ -117,7 +118,7 @@ public class NodeImpl implements MongoService<Node> {
 			/* Creates the Node based on the keys */
 			switch (key) {
 			case "_id":
-				node.setID(id);
+				node.setID(dbID);
 				break;
 			case "parent":
 				node.setParent((ObjectId) persistent.get(key));
@@ -161,7 +162,7 @@ public class NodeImpl implements MongoService<Node> {
 			   /* Gets the object id and converts it to a Node
 				 * The Node is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				node = get((ObjectId) basicDBObject.get("_id"));
+				node = get(((ObjectId) basicDBObject.get("_id")).toString());
 				nodeList.add(node);
 		   }
 		} finally {
@@ -185,7 +186,7 @@ public class NodeImpl implements MongoService<Node> {
 			   /* Gets the object id and converts it to a Node
 				 * The Node is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				node = get((ObjectId) basicDBObject.get("_id"));
+				node = get(((ObjectId) basicDBObject.get("_id")).toString());
 				nodeList.add(node);
 		   }
 		} finally {
@@ -196,7 +197,7 @@ public class NodeImpl implements MongoService<Node> {
 	}
 
 	@Override
-	public void remove(ObjectId id) {
+	public void remove(String id) {
 		/* Removes the child Node objects */
 		Node node = get(id);
 
@@ -204,12 +205,12 @@ public class NodeImpl implements MongoService<Node> {
 				!node.getChildren().isEmpty()){
 			/* Runs the children Node and removes them */
 			for(ObjectId childNode : node.getChildren()){
-				remove(childNode);
+				remove(childNode.toString());
 			}
 		}
 
 		/* A query is created with the given tag */
-		BasicDBObject query = new BasicDBObject("_id", id);
+		BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));
 
 		/* Removes the object */
 		this.collection.remove(query);

@@ -1,6 +1,5 @@
 package properties;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,10 +36,11 @@ public class PropertiesHandler {
 
 		try {
 			//load a properties file
-			configProperties.load(new FileInputStream("./config.properties"));
+			configProperties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			System.exit(0);
 		}
 	}
 

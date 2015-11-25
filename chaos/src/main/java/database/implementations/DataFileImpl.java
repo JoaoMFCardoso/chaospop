@@ -64,21 +64,22 @@ public class DataFileImpl implements MongoService<DataFile> {
 	}
 
 	@Override
-	public String replace(ObjectId id, DataFile newDataFile){
+	public String replace(String id, DataFile newDataFile){
 		/* Creates the new database object */
 		BasicDBObject newDataFileDBObj = buildDBObject(newDataFile);
 
 		/* Create the query */
-		BasicDBObject query = new BasicDBObject().append("_id", id);
+		BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(id));
 
 		this.collection.update(query, newDataFileDBObj);
 		return newDataFileDBObj.get("_id").toString();
 	}
 
 	@Override
-	public DataFile get(ObjectId id) {
+	public DataFile get(String id) {
 		/* Gets the basic database object */
-		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(id);
+		ObjectId dbID = new ObjectId(id);
+		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
 		DataFile dataFile = new DataFile();
 		Set<String> keyset = persistent.keySet();
@@ -86,7 +87,7 @@ public class DataFileImpl implements MongoService<DataFile> {
 			/* Creates the DataFile based on the keys */
 			switch (key) {
 			case "_id":
-				dataFile.setID(id);
+				dataFile.setID(dbID);
 				break;
 			case "name":
 				dataFile.setName((String) persistent.get(key));
@@ -119,7 +120,7 @@ public class DataFileImpl implements MongoService<DataFile> {
 			   /* Gets the object id and converts it to a DataFile
 				 * The DataFile is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				dataFile = get((ObjectId) basicDBObject.get("_id"));
+				dataFile = get(((ObjectId) basicDBObject.get("_id")).toString());
 				dataFileList.add(dataFile);
 		   }
 		} finally {
@@ -143,7 +144,7 @@ public class DataFileImpl implements MongoService<DataFile> {
 			   /* Gets the object id and converts it to a DataFile
 				 * The DataFile is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				dataFile = get((ObjectId) basicDBObject.get("_id"));
+				dataFile = get(((ObjectId) basicDBObject.get("_id")).toString());
 				dataFileList.add(dataFile);
 		   }
 		} finally {
@@ -154,18 +155,18 @@ public class DataFileImpl implements MongoService<DataFile> {
 	}
 
 	@Override
-	public void remove(ObjectId id) {
+	public void remove(String id) {
 		/* Removes the associated Node object tree */
 		/* Gets the DataFile */
 		DataFile dataFile = get(id);
 
 		ObjectId rootNodeId = dataFile.getNodeID();
 		NodeImpl nodeImpl = new NodeImpl();
-		nodeImpl.remove(rootNodeId);
+		nodeImpl.remove(rootNodeId.toString());
 
 		/* Removes the DataFile */
 		/* A query is created with the given tag */
-		BasicDBObject query = new BasicDBObject("_id", id);
+		BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));
 
 		/* Removes the object */
 		this.collection.remove(query);

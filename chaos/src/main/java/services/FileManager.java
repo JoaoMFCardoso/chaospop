@@ -14,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.bson.types.ObjectId;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -24,6 +23,12 @@ import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
 import file.operations.FileOperations;
 
+/**
+ * This class implements a jax rs service layer
+ * It handles all services related to file management
+ * @author João Cardoso
+ *
+ */
 @Path("fileManager")
 public class FileManager {
 
@@ -92,17 +97,41 @@ public class FileManager {
 	}
 
 	/**
-	 * This method removes a DataFile from the database
+	 * This method gets a DataFile object when given its id
 	 * @param dataFileId The DataFile id
+	 * @return A DataFile transfer object
+	 */
+	@POST
+	@Path("/getFile")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DataFileTO getDataFile(@FormParam("id") String dataFileId){
+		/* Gets the DataFile object from the database and builds the transfer object */
+		DataFile dataFile = this.dataFileImpl.get(dataFileId);
+		DataFileTO dataFileTO = dataFile.createTransferObject();
+
+		return dataFileTO;
+	}
+
+	/**
+	 * This method removes a list of DataFile objects from the database
+	 * @param dataFileIds The DataFile id list. All ids are sepparated by ",".
 	 * @return 200 if everything went well, 500 if not.
 	 */
 	@POST
 	@Path("/removeFile")
-	public Response removeFile(@FormParam("id") String dataFileId){
+	public Response removeFile(@FormParam("ids") String dataFileIds){
 		Response response;
 		try{
-			/* Removes the DataFile from the database */
-			this.dataFileImpl.remove(new ObjectId(dataFileId));
+			/* Gets the DataFile id's from the dataFileIds string
+			 * The id's are sepparated by ","
+			 * e.g. 123,2344,455 */
+			String[] ids = dataFileIds.split(",");
+
+			/* Runs all ids and fetches the DataFile object  */
+			for(String dataFileId : ids){
+				/* Removes the DataFile from the database */
+				this.dataFileImpl.remove(dataFileId);
+			}
 
 			/* Gets the Response */
 			response = Response.status(200).build();

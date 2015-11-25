@@ -2,8 +2,6 @@ package database;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.mongodb.BasicDBObject;
 
 @SuppressWarnings("hiding")
@@ -29,14 +27,14 @@ public interface MongoService<Object> {
 	 * @param object The object to replace the object in the database
 	 * @return The id of the replaced object
 	 */
-	public String replace(ObjectId id, Object object);
+	public String replace(String id, Object object);
 
 	/**
 	 * Gets an existing object from the database given its key
 	 * @param id The object id
 	 * @return The existing object from the database
 	 */
-	public Object get(ObjectId id);
+	public Object get(String id);
 
 	/**
 	 * This method gets an list of objects through a query by field and value
@@ -56,7 +54,7 @@ public interface MongoService<Object> {
 	 * This method removes an object from the database when given its key
 	 * @param id The object id
 	 */
-	public void remove(ObjectId id);
+	public void remove(String id);
 
 	/**
 	 * Drops a collection from the database when given its name

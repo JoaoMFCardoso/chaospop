@@ -120,12 +120,12 @@ public class MappingImpl implements MongoService<Mapping> {
 	}
 
 	@Override
-	public String replace(ObjectId id, Mapping newMapping){
+	public String replace(String id, Mapping newMapping){
 		/* Creates the new database object */
 		BasicDBObject newMappingDBObj = buildDBObject(newMapping);
 
 		/* Create the query */
-		BasicDBObject query = new BasicDBObject().append("_id", id);
+		BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(id));
 
 		this.collection.update(query, newMappingDBObj);
 		return newMappingDBObj.get("_id").toString();
@@ -133,9 +133,10 @@ public class MappingImpl implements MongoService<Mapping> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Mapping get(ObjectId id) {
+	public Mapping get(String id) {
 		/* Gets the basic database object */
-		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(id);
+		ObjectId dbID = new ObjectId(id);
+		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
 		Mapping mapping = new Mapping();
 		Set<String> keyset = persistent.keySet();
@@ -143,7 +144,7 @@ public class MappingImpl implements MongoService<Mapping> {
 			/* Creates the individual mapping based on the keys */
 			switch (key) {
 			case "_id":
-				mapping.setID(id);
+				mapping.setID(dbID);
 				break;
 			case "fileNames":
 				ArrayList<ObjectId> fileNamesDBArray = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "fileName");
@@ -186,7 +187,7 @@ public class MappingImpl implements MongoService<Mapping> {
 			   /* Gets the object id and converts it to a mapping
 				 * The imapping is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				mapping = get((ObjectId) basicDBObject.get("_id"));
+				mapping = get(((ObjectId) basicDBObject.get("_id")).toString());
 				mappingsList.add(mapping);
 		   }
 		} finally {
@@ -208,7 +209,7 @@ public class MappingImpl implements MongoService<Mapping> {
 				/* Gets the object id and converts it to a mapping
 				 * The  mapping is then added to the list */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				Mapping mapping = get((ObjectId) basicDBObject.get("_id"));
+				Mapping mapping = get(((ObjectId) basicDBObject.get("_id")).toString());
 				mappingsList.add(mapping);
 			}
 		} finally {
@@ -219,9 +220,9 @@ public class MappingImpl implements MongoService<Mapping> {
 	}
 
 	@Override
-	public void remove(ObjectId id) {
+	public void remove(String id) {
 		/* A query is created with the given tag */
-		BasicDBObject query = new BasicDBObject("_id", id);
+		BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));
 
 		/* Removes the object */
 		this.collection.remove(query);

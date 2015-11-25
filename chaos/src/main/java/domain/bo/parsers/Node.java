@@ -71,12 +71,32 @@ public class Node{
 
 		/* Sets the NodeTO class attributes */
 		nodeTO.set_id(this._id.toString());
-		nodeTO.setChildren(TransferObjectUtils.convertALObjectIdToString(this.children));
-		nodeTO.setParent(this.parent.toString());
 		nodeTO.setTag(this.tag);
-		nodeTO.setValue(this.value);
 		nodeTO.setHasAttributes(this.hasAttributes);
-		nodeTO.setAttributes(this.attributes);
+
+		if(null == this.children){
+			nodeTO.setChildren(null);
+		}else{
+			nodeTO.setChildren(TransferObjectUtils.convertALObjectIdToString(this.children));
+		}
+
+		if(null == this.parent){
+			nodeTO.setParent(null);
+		}else{
+			nodeTO.setParent(this.parent.toString());
+		}
+
+		if(null == this.value){
+			nodeTO.setValue(null);
+		}else{
+			nodeTO.setValue(this.value);
+		}
+
+		if(null == this.attributes){
+			nodeTO.setAttributes(null);
+		}else{
+			nodeTO.setAttributes(this.attributes);
+		}
 
 		return nodeTO;
 	}

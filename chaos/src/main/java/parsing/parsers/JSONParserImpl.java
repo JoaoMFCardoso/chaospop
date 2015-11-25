@@ -51,7 +51,7 @@ public class JSONParserImpl implements ParserInterface {
 			jsonObjectHandler(root, rootNode);
 
 			/* replaces the rootNode */
-			this.nodeImpl.replace(rootNode.getID(), rootNode);
+			this.nodeImpl.replace(rootNode.getID().toString(), rootNode);
 
 			/* Stores the DataFile */
 			storeDataFile(jsonFile, rootNode);
@@ -108,7 +108,7 @@ public class JSONParserImpl implements ParserInterface {
 			jsonValueHandler(childNode, key, jsonObject.get((String) key));
 
 			/* replaces the childNode */
-			this.nodeImpl.replace(childNode.getID(), childNode);
+			this.nodeImpl.replace(childNode.getID().toString(), childNode);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class JSONParserImpl implements ParserInterface {
 			jsonValueHandler(arrayNode, jsonArray.get(i).getClass().getSimpleName(), jsonArray.get(i));
 
 			/* replaces the arrayNode */
-			this.nodeImpl.replace(arrayNode.getID(), arrayNode);
+			this.nodeImpl.replace(arrayNode.getID().toString(), arrayNode);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class JSONParserImpl implements ParserInterface {
 	 * @return A suitable tag
 	 */
 	private String setArrayNodeTag(Node node){
-		Node parentNode = this.nodeImpl.get(node.getParent());
+		Node parentNode = this.nodeImpl.get(node.getParent().toString());
 		String tag = parentNode.getTag();
 		int order = 0;
 
@@ -206,7 +206,7 @@ public class JSONParserImpl implements ParserInterface {
 				tag = "jsonArray_0";
 				return tag;
 			default: /* Just iterate to an upper level */
-				parentNode = this.nodeImpl.get(parentNode.getParent());
+				parentNode = this.nodeImpl.get(parentNode.getParent().toString());
 				tag = parentNode.getTag();
 				break;
 			}

@@ -6,6 +6,10 @@ import java.util.HashMap;
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
 
+import database.implementations.NodeImpl;
+import domain.bo.parsers.Node;
+import domain.to.NodeTO;
+
 /**
  * This class implements utilities methods that are to be used to handle Transfer Object vs Base Object conversions
  * @author João Cardoso
@@ -103,5 +107,34 @@ public class TransferObjectUtils {
 		}
 
 		return returnMap;
+	}
+
+	/**
+	 * This method creates an ArrayList of Node transfer objects
+	 * @param nodeId The id of the Node object
+	 * @return An ArrayList of NodeTO objects
+	 */
+	public static ArrayList<NodeTO> getAllNodesTOFromNode(String nodeId){
+		ArrayList<NodeTO> nodeTOList = new ArrayList<NodeTO>();
+
+		/* Gets the Node object */
+		NodeImpl nodeImpl = new NodeImpl();
+		Node node = nodeImpl.get(nodeId);
+
+		/* Creates the NodeTO object and adds it to the nodeTOList */
+		NodeTO nodeTO = node.createTransferObject();
+		nodeTOList.add(nodeTO);
+
+		/* If the node has children then it runs the child Node objects */
+		if(null != node.getChildren() &&
+				!node.getChildren().isEmpty()){
+
+			for(ObjectId childId : node.getChildren()){
+				ArrayList<NodeTO> childList = getAllNodesTOFromNode(childId.toString());
+				nodeTOList.addAll(childList);
+			}
+		}
+
+		return nodeTOList;
 	}
 }

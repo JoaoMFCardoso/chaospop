@@ -90,12 +90,12 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 	}
 
 	@Override
-	public String replace(ObjectId id, IndividualMapping newIndividualMapping){
+	public String replace(String id, IndividualMapping newIndividualMapping){
 		/* Creates the new database object */
 		BasicDBObject newIndividualMappingDBObj = buildDBObject(newIndividualMapping);
 
 		/* Create the query */
-		BasicDBObject query = new BasicDBObject().append("_id", id);
+		BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(id));
 
 		this.collection.update(query, newIndividualMappingDBObj);
 		return newIndividualMappingDBObj.get("_id").toString();
@@ -103,9 +103,10 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public IndividualMapping get(ObjectId id) {
+	public IndividualMapping get(String id) {
 		/* Gets the basic database object */
-		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(id);
+		ObjectId dbID = new ObjectId(id);
+		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
 		IndividualMapping individualMapping = new IndividualMapping();
 		Set<String> keyset = persistent.keySet();
@@ -113,7 +114,7 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 			/* Creates the individual mapping based on the keys */
 			switch (key) {
 			case "_id":
-				individualMapping.setID(id);
+				individualMapping.setID(dbID);
 				break;
 			case "tag":
 				individualMapping.setTag((String) persistent.get(key));
@@ -166,7 +167,7 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 			   /* Gets the object id and converts it to an individual mapping
 				 * The individual mapping is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				individualMapping = get((ObjectId) basicDBObject.get("_id"));
+				individualMapping = get((String) basicDBObject.get("_id"));
 				individualMappingsList.add(individualMapping);
 		   }
 		} finally {
@@ -188,7 +189,7 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 				/* Gets the object id and converts it to an individual mapping
 				 * The individual mapping is then added to the list */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				IndividualMapping individualMapping = get((ObjectId) basicDBObject.get("_id"));
+				IndividualMapping individualMapping = get((String) basicDBObject.get("_id"));
 				individualMappingsList.add(individualMapping);
 			}
 		} finally {
@@ -199,9 +200,9 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 	}
 
 	@Override
-	public void remove(ObjectId id){
+	public void remove(String id){
 		/* A query is created with the given tag */
-		BasicDBObject query = new BasicDBObject("_id", id);
+		BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));
 
 		/* Removes the object */
 		this.collection.remove(query);

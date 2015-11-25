@@ -77,21 +77,22 @@ public class BatchImpl implements MongoService<Batch> {
 	}
 
 	@Override
-	public String replace(ObjectId id, Batch newBatch) {
+	public String replace(String id, Batch newBatch) {
 		/* Creates the new database object */
 		BasicDBObject newBatchDBObj = buildDBObject(newBatch);
 
 		/* Create the query */
-		BasicDBObject query = new BasicDBObject().append("_id", id);
+		BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(id));
 
 		this.collection.update(query, newBatchDBObj);
 		return newBatchDBObj.get("_id").toString();
 	}
 
 	@Override
-	public Batch get(ObjectId id) {
+	public Batch get(String id) {
 		/* Gets the basic database object */
-		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(id);
+		ObjectId dbID = new ObjectId(id);
+		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
 		Batch batch = new Batch();
 		Set<String> keyset = persistent.keySet();
@@ -99,7 +100,7 @@ public class BatchImpl implements MongoService<Batch> {
 			/* Creates the Batch based on the keys */
 			switch (key) {
 			case "_id":
-				batch.setID(id);
+				batch.setID(dbID);
 				break;
 			case "dataFiles":
 				ArrayList<ObjectId> dataFilesDBArray = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "dataFile");
@@ -130,7 +131,7 @@ public class BatchImpl implements MongoService<Batch> {
 			   /* Gets the object id and converts it to a Batch
 				 * The batch is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				batch = get((ObjectId) basicDBObject.get("_id"));
+				batch = get(((ObjectId) basicDBObject.get("_id")).toString());
 				batchList.add(batch);
 		   }
 		} finally {
@@ -154,7 +155,7 @@ public class BatchImpl implements MongoService<Batch> {
 			   /* Gets the object id and converts it to a Batch
 				 * The batch is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				batch = get((ObjectId) basicDBObject.get("_id"));
+				batch = get(((ObjectId) basicDBObject.get("_id")).toString());
 				batchList.add(batch);
 		   }
 		} finally {
@@ -165,9 +166,9 @@ public class BatchImpl implements MongoService<Batch> {
 	}
 
 	@Override
-	public void remove(ObjectId id) {
+	public void remove(String id) {
 		/* A query is created with the given tag */
-		BasicDBObject query = new BasicDBObject("_id", id);
+		BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));
 
 		/* Removes the object */
 		this.collection.remove(query);
