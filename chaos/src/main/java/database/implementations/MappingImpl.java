@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
-import org.semanticweb.owlapi.model.IRI;
 
 import utils.MongoUtilities;
 
@@ -71,20 +70,18 @@ public class MappingImpl implements MongoService<Mapping> {
 		}
 
 		/* Appends the base ontology */
-		String baseOntologyIRI = MongoUtilities.convertIRItoDB(mapping.getBaseOntologyIRI());
-		mappingDBObj.append("baseOntology", baseOntologyIRI);
+		mappingDBObj.append("baseOntology", mapping.getBaseOntology());
 
 		/* Appends the specific ontologies */
-		if(null != mapping.getSpecificOntologiesIRI()){
+		if(null != mapping.getSpecificOntologies()){
 			List<Object> specificOntologiesDBList = new BasicDBList();
 
 			/* Runs all specific ontologies */
-			for(IRI ontology : mapping.getSpecificOntologiesIRI()){
+			for(ObjectId ontologyId : mapping.getSpecificOntologies()){
 				DBObject specificOntologyDBObject = new BasicDBObject();
 
 				/* stores the specific ontology iri */
-				String ontologyIRI = MongoUtilities.convertIRItoDB(ontology);
-				specificOntologyDBObject.put("specificOntologyIRI", ontologyIRI);
+				specificOntologyDBObject.put("specificOntologyId", ontologyId);
 				specificOntologiesDBList.add(specificOntologyDBObject);
 			}
 
@@ -131,7 +128,6 @@ public class MappingImpl implements MongoService<Mapping> {
 		return newMappingDBObj.get("_id").toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Mapping get(String id) {
 		/* Gets the basic database object */
@@ -147,19 +143,18 @@ public class MappingImpl implements MongoService<Mapping> {
 				mapping.setID(dbID);
 				break;
 			case "fileNames":
-				ArrayList<ObjectId> fileNamesDBArray = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "fileName");
+				ArrayList<ObjectId> fileNamesDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "fileName");
 				mapping.setFileNames(fileNamesDBArray);
 				break;
 			case "baseOntology":
-				IRI baseOntologyIRI = MongoUtilities.convertIRIfromDB((String) persistent.get(key));
-				mapping.setBaseOntologyIRI(baseOntologyIRI);
+				mapping.setBaseOntology((ObjectId) persistent.get(key));
 				break;
 			case "specificOntologies":
-				ArrayList<IRI> specificOntologiesList = MongoUtilities.convertArrayListIRIFromDB((ArrayList<String>) persistent.get(key));
-				mapping.setSpecificOntologiesIRI(specificOntologiesList);
+				ArrayList<ObjectId> specificOntologiesList = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "specificOntologyId");
+				mapping.setSpecificOntologies(specificOntologiesList);
 				break;
 			case "individualMappings":
-				ArrayList<ObjectId> individualMappingsIDs = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "individualMappingID");
+				ArrayList<ObjectId> individualMappingsIDs = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "individualMappingID");
 				mapping.setIndividualMappings(individualMappingsIDs);
 				break;
 			default:

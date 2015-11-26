@@ -134,7 +134,7 @@ public class NodeImpl implements MongoService<Node> {
 				node.setAttributes(attributesDBMap);
 				break;
 			case "children":
-				ArrayList<ObjectId> children = MongoUtilities.convertALFromBDBL((BasicDBList) persistent.get(key), "child");
+				ArrayList<ObjectId> children = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "child");
 				node.setChildren(children);
 				break;
 			default:

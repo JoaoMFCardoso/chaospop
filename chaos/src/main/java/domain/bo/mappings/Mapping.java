@@ -3,7 +3,6 @@ package domain.bo.mappings;
 import java.util.ArrayList;
 
 import org.bson.types.ObjectId;
-import org.semanticweb.owlapi.model.IRI;
 
 import utils.TransferObjectUtils;
 import domain.to.MappingTO;
@@ -21,10 +20,10 @@ public class Mapping{
 	private ArrayList<ObjectId> fileNames;
 
 	/** The specific ontology IRI. */
-	private ArrayList<IRI> specificOntologiesIRI;
+	private ArrayList<ObjectId> specificOntologies;
 
 	/** The base ontology IRI. */
-	private IRI baseOntologyIRI;
+	private ObjectId baseOntology;
 
 	/**  The individuals mappings. */
 	private ArrayList<ObjectId> individualMappings;
@@ -35,8 +34,8 @@ public class Mapping{
 	public Mapping() {
 		this._id = new ObjectId();
 		this.fileNames = null;
-		this.specificOntologiesIRI = null;
-		this.baseOntologyIRI = null;
+		this.specificOntologies = null;
+		this.baseOntology = null;
 		this.individualMappings = null;
 	}
 
@@ -46,9 +45,9 @@ public class Mapping{
 	 */
 	public Mapping(MappingTO mappingTO){
 		this._id = new ObjectId(mappingTO.get_id());
-		this.baseOntologyIRI = IRI.create(mappingTO.getBaseOntologyIRI());
+		this.baseOntology = new ObjectId(mappingTO.getBaseOntology());
 		this.fileNames = TransferObjectUtils.convertALStringToObjectId(mappingTO.getFileNames());
-		this.specificOntologiesIRI = TransferObjectUtils.convertALStringToIRI(mappingTO.getSpecificOntologiesIRI());
+		this.specificOntologies = TransferObjectUtils.convertALStringToObjectId(mappingTO.getSpecificOntologies());
 		this.individualMappings = TransferObjectUtils.convertALStringToObjectId(mappingTO.getIndividualMappings());
 	}
 
@@ -61,10 +60,25 @@ public class Mapping{
 
 		/* Sets the MappingTO attributes */
 		mto.set_id(this._id.toString());
-		mto.setFileNames(TransferObjectUtils.convertALObjectIdToString(this.fileNames));
-		mto.setSpecificOntologiesIRI(TransferObjectUtils.convertALIRIToString(this.specificOntologiesIRI));
-		mto.setBaseOntologyIRI(this.baseOntologyIRI.toString());
-		mto.setIndividualMappings(TransferObjectUtils.convertALObjectIdToString(this.individualMappings));
+		mto.setBaseOntology(this.baseOntology.toString());
+
+		if(null == this.specificOntologies){
+			mto.setSpecificOntologies(null);
+		}else{
+			mto.setSpecificOntologies(TransferObjectUtils.convertALObjectIdToString(this.specificOntologies));
+		}
+
+		if(null == this.individualMappings){
+			mto.setFileNames(null);
+		}else{
+			mto.setFileNames(TransferObjectUtils.convertALObjectIdToString(this.fileNames));
+		}
+
+		if(null == this.individualMappings){
+			mto.setIndividualMappings(null);
+		}else{
+			mto.setIndividualMappings(TransferObjectUtils.convertALObjectIdToString(this.individualMappings));
+		}
 
 		return mto;
 	}
@@ -104,37 +118,37 @@ public class Mapping{
 	}
 
 	/**
-	 * @return the specificOntologiesIRI
+	 * @return the specificOntologies
 	 */
-	public ArrayList<IRI> getSpecificOntologiesIRI() {
-		return specificOntologiesIRI;
+	public ArrayList<ObjectId> getSpecificOntologies() {
+		return specificOntologies;
 	}
 
 
 	/**
-	 * @param specificOntologiesIRI the specificOntologiesIRI to set
+	 * @param specificOntologies the specificOntologies to set
 	 */
-	public void setSpecificOntologiesIRI(ArrayList<IRI> specificOntologiesIRI) {
-		this.specificOntologiesIRI = specificOntologiesIRI;
+	public void setSpecificOntologies(ArrayList<ObjectId> specificOntologies) {
+		this.specificOntologies = specificOntologies;
 	}
 
 
 	/**
-	 * Gets the base ontology iri.
+	 * Gets the base ontology.
 	 *
-	 * @return the baseOntologyIRI
+	 * @return the baseOntology
 	 */
-	public IRI getBaseOntologyIRI() {
-		return baseOntologyIRI;
+	public ObjectId getBaseOntology() {
+		return baseOntology;
 	}
 
 	/**
-	 * Sets the base ontology iri.
+	 * Sets the base ontology.
 	 *
-	 * @param baseOntologyIRI the baseOntologyIRI to set
+	 * @param baseOntology the baseOntology to set
 	 */
-	public void setBaseOntologyIRI(IRI baseOntologyIRI) {
-		this.baseOntologyIRI = baseOntologyIRI;
+	public void setBaseOntology(ObjectId baseOntology) {
+		this.baseOntology = baseOntology;
 	}
 
 

@@ -126,7 +126,7 @@ public class MongoUtilities {
 	 * @param key The key for the BasicDBObject objects within the BasicDBList
 	 * @return An ObjectId ArrayList
 	 */
-	public static ArrayList<ObjectId> convertALFromBDBL(BasicDBList basicDBList, String key){
+	public static ArrayList<ObjectId> convertALOIdFromBDBL(BasicDBList basicDBList, String key){
 		ArrayList<ObjectId> returnList = new ArrayList<ObjectId>();
 
 		/* Runs the BasicDBList and performs the necessary casts */

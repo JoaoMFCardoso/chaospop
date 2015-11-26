@@ -189,7 +189,7 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 				/* Gets the object id and converts it to an individual mapping
 				 * The individual mapping is then added to the list */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				IndividualMapping individualMapping = get((String) basicDBObject.get("_id"));
+				IndividualMapping individualMapping = get(((ObjectId) basicDBObject.get("_id")).toString());
 				individualMappingsList.add(individualMapping);
 			}
 		} finally {

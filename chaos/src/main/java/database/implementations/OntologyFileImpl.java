@@ -5,24 +5,23 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.semanticweb.owlapi.model.IRI;
 
 import utils.MongoUtilities;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 
 import database.DatabaseConnector;
 import database.MongoService;
-import domain.bo.population.Batch;
+import domain.bo.ontologies.OntologyFile;
 
-public class BatchImpl implements MongoService<Batch> {
+public class OntologyFileImpl implements MongoService<OntologyFile> {
 
 	/** The collection name for this implementation of the mongo service */
-	public static final String collectionName = "Batches";
+	public static final String collectionName = "OntologyFiles";
 
 	/** The collection that is associated with this implementation */
 	protected DBCollection collection;
@@ -34,90 +33,81 @@ public class BatchImpl implements MongoService<Batch> {
 	 * The class constructor
 	 * Connects to the database
 	 */
-	public BatchImpl() {
+	public OntologyFileImpl() {
 		DatabaseConnector databaseConnector = new DatabaseConnector();
 		this.database = databaseConnector.getDatabase();
 		this.collection = database.getCollection(collectionName);
 	}
 
 	@Override
-	public BasicDBObject buildDBObject(Batch batch) {
+	public BasicDBObject buildDBObject(OntologyFile ontologyFile) {
 		/* Creates the database object */
-		BasicDBObject batchDBObj = new BasicDBObject();
+		BasicDBObject ontologyFileDBObj = new BasicDBObject();
 
 		/* Appends the various attributes to the database object */
-		batchDBObj.append("_id", batch.getID());
+		ontologyFileDBObj.append("_id", ontologyFile.getID());
 
-		if(null != batch.getDataFiles()){
-			List<Object> dataFilesDBList = new BasicDBList();
+		String namespaceIRI = MongoUtilities.convertIRItoDB(ontologyFile.getNamespace());
+		ontologyFileDBObj.append("namespace", namespaceIRI);
+		ontologyFileDBObj.append("path", ontologyFile.getPath());
 
-			/* Runs all DataFile objects id's */
-			for(ObjectId dataFileId : batch.getDataFiles()){
-				DBObject dataFileIdDBObject = new BasicDBObject();
-
-				/* stores the file name */
-				dataFileIdDBObject.put("dataFile", dataFileId);
-				dataFilesDBList.add(dataFileIdDBObject);
-			}
-
-			batchDBObj.append("dataFiles", dataFilesDBList);
-		}
-
-
-		return batchDBObj;
+		return ontologyFileDBObj;
 	}
 
 	@Override
-	public String save(Batch batch) {
+	public String save(OntologyFile ontologyFile) {
 		/* Creates the database object */
-		BasicDBObject batchDBObj = buildDBObject(batch);
+		BasicDBObject ontologyFileDBObj = buildDBObject(ontologyFile);
 
-		this.collection.insert(batchDBObj);
-		return batchDBObj.get("_id").toString();
+		this.collection.insert(ontologyFileDBObj);
+		return ontologyFileDBObj.get("_id").toString();
 	}
 
 	@Override
-	public String replace(String id, Batch newBatch) {
+	public String replace(String id, OntologyFile newOntologyFile) {
 		/* Creates the new database object */
-		BasicDBObject newBatchDBObj = buildDBObject(newBatch);
+		BasicDBObject newOntologyFileDBObj = buildDBObject(newOntologyFile);
 
 		/* Create the query */
 		BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(id));
 
-		this.collection.update(query, newBatchDBObj);
-		return newBatchDBObj.get("_id").toString();
+		this.collection.update(query, newOntologyFileDBObj);
+		return newOntologyFileDBObj.get("_id").toString();
 	}
 
 	@Override
-	public Batch get(String id) {
+	public OntologyFile get(String id) {
 		/* Gets the basic database object */
 		ObjectId dbID = new ObjectId(id);
 		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
-		Batch batch = new Batch();
+		OntologyFile ontologyFile = new OntologyFile();
 		Set<String> keyset = persistent.keySet();
 		for(String key: keyset){
-			/* Creates the Batch based on the keys */
+			/* Creates the OntologyFile based on the keys */
 			switch (key) {
 			case "_id":
-				batch.setID(dbID);
+				ontologyFile.setID(dbID);
 				break;
-			case "dataFiles":
-				ArrayList<ObjectId> dataFilesDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "dataFile");
-				batch.setDataFiles(dataFilesDBArray);
+			case "namespace":
+				IRI namespaceIRI = MongoUtilities.convertIRIfromDB((String) persistent.get(key));
+				ontologyFile.setNamespace(namespaceIRI);
+				break;
+			case "path":
+				ontologyFile.setPath((String) persistent.get(key));
 				break;
 			default:
 				break;
 			}
 		}
 
-		return batch;
+		return ontologyFile;
 	}
 
 	@Override
-	public List<Batch> getBy(String field, String value) {
-		/* Creates the Batch list */
-		List<Batch> batchList = new ArrayList<Batch>();
+	public List<OntologyFile> getBy(String field, String value) {
+		/* Creates the OntologyFile list */
+		List<OntologyFile> ontologyFileList = new ArrayList<OntologyFile>();
 
 		/* A query is created with the given field */
 		BasicDBObject query = new BasicDBObject(field, value);
@@ -125,44 +115,44 @@ public class BatchImpl implements MongoService<Batch> {
 		/* Creates the cursor and gets all basic db objects in the collection that match the query*/
 		DBCursor cursor = this.collection.find(query);
 
-		Batch batch = null;
+		OntologyFile ontologyFile = null;
 		try {
 		   while(cursor.hasNext()) {
-			   /* Gets the object id and converts it to a Batch
-				 * The batch is then returned */
+			   /* Gets the object id and converts it to a OntologyFile
+				 * The OntologyFile is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				batch = get(((ObjectId) basicDBObject.get("_id")).toString());
-				batchList.add(batch);
+				ontologyFile = get(((ObjectId) basicDBObject.get("_id")).toString());
+				ontologyFileList.add(ontologyFile);
 		   }
 		} finally {
 		   cursor.close();
 		}
 
-		return batchList;
+		return ontologyFileList;
 	}
 
 	@Override
-	public List<Batch> getAll() {
-		/* Creates the Batch list */
-		List<Batch> batchList = new ArrayList<Batch>();
+	public List<OntologyFile> getAll() {
+		/* Creates the OntologyFile list */
+		List<OntologyFile> ontologyFileList = new ArrayList<OntologyFile>();
 
 		/* Creates the cursor and gets all basic db objects in the collection */
 		DBCursor cursor = this.collection.find();
 
-		Batch batch = null;
+		OntologyFile ontologyFile = null;
 		try {
 		   while(cursor.hasNext()) {
-			   /* Gets the object id and converts it to a Batch
-				 * The batch is then returned */
+			   /* Gets the object id and converts it to a OntologyFile
+				 * The OntologyFile is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
-				batch = get(((ObjectId) basicDBObject.get("_id")).toString());
-				batchList.add(batch);
+				ontologyFile = get(((ObjectId) basicDBObject.get("_id")).toString());
+				ontologyFileList.add(ontologyFile);
 		   }
 		} finally {
 		   cursor.close();
 		}
 
-		return batchList;
+		return ontologyFileList;
 	}
 
 	@Override

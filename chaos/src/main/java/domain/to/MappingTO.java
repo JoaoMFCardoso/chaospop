@@ -10,11 +10,11 @@ public class MappingTO {
 	/** The file name. */
 	private ArrayList<String> fileNames;
 
-	/** The specific ontology IRI. */
-	private ArrayList<String> specificOntologiesIRI;
+	/** The specific ontology. */
+	private ArrayList<String> specificOntologies;
 
-	/** The base ontology IRI. */
-	private String baseOntologyIRI;
+	/** The base ontology. */
+	private String baseOntology;
 
 	/**  The individuals mappings. */
 	private ArrayList<String> individualMappings;
@@ -22,8 +22,8 @@ public class MappingTO {
 	public MappingTO() {
 		this._id = null;
 		this.fileNames = null;
-		this.specificOntologiesIRI = null;
-		this.baseOntologyIRI = null;
+		this.specificOntologies = null;
+		this.baseOntology = null;
 		this.individualMappings = null;
 	}
 
@@ -56,31 +56,31 @@ public class MappingTO {
 	}
 
 	/**
-	 * @return the specificOntologiesIRI
+	 * @return the specificOntologies
 	 */
-	public ArrayList<String> getSpecificOntologiesIRI() {
-		return specificOntologiesIRI;
+	public ArrayList<String> getSpecificOntologies() {
+		return specificOntologies;
 	}
 
 	/**
-	 * @param specificOntologiesIRI the specificOntologiesIRI to set
+	 * @param specificOntologies the specificOntologies to set
 	 */
-	public void setSpecificOntologiesIRI(ArrayList<String> specificOntologiesIRI) {
-		this.specificOntologiesIRI = specificOntologiesIRI;
+	public void setSpecificOntologies(ArrayList<String> specificOntologies) {
+		this.specificOntologies = specificOntologies;
 	}
 
 	/**
-	 * @return the baseOntologyIRI
+	 * @return the baseOntology
 	 */
-	public String getBaseOntologyIRI() {
-		return baseOntologyIRI;
+	public String getBaseOntology() {
+		return baseOntology;
 	}
 
 	/**
-	 * @param baseOntologyIRI the baseOntologyIRI to set
+	 * @param baseOntology the baseOntology to set
 	 */
-	public void setBaseOntologyIRI(String baseOntologyIRI) {
-		this.baseOntologyIRI = baseOntologyIRI;
+	public void setBaseOntology(String baseOntology) {
+		this.baseOntology = baseOntology;
 	}
 
 	/**
