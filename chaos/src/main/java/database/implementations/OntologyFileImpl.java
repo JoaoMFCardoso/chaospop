@@ -1,6 +1,7 @@
 package database.implementations;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +52,16 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 		ontologyFileDBObj.append("namespace", namespaceIRI);
 		ontologyFileDBObj.append("path", ontologyFile.getPath());
 
+		if(null != ontologyFile.getClasses()){
+			ArrayList<String> classes = MongoUtilities.convertALIRIToDB(ontologyFile.getClasses());
+			ontologyFileDBObj.append("classes", classes);
+		}
+
+		if(null != ontologyFile.getIndividuals()){
+			HashMap<String, String> individuals = MongoUtilities.convertPropertyMapToDB(ontologyFile.getIndividuals());
+			ontologyFileDBObj.append("individuals", individuals);
+		}
+
 		return ontologyFileDBObj;
 	}
 
@@ -75,6 +86,7 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 		return newOntologyFileDBObj.get("_id").toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public OntologyFile get(String id) {
 		/* Gets the basic database object */
@@ -96,6 +108,13 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 			case "path":
 				ontologyFile.setPath((String) persistent.get(key));
 				break;
+			case "classes":
+				ArrayList<IRI> classes = MongoUtilities.convertArrayListIRIFromDB((ArrayList<String>) persistent.get(key));
+				ontologyFile.setClasses(classes);
+			case "individuals":
+				HashMap<String, String> individualsDBMap = (HashMap<String, String>) persistent.get(key);
+				HashMap<IRI, String> individuals = MongoUtilities.convertPropertyMapFromDB(individualsDBMap);
+				ontologyFile.setIndividuals(individuals);
 			default:
 				break;
 			}
@@ -117,15 +136,15 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 
 		OntologyFile ontologyFile = null;
 		try {
-		   while(cursor.hasNext()) {
-			   /* Gets the object id and converts it to a OntologyFile
+			while(cursor.hasNext()) {
+				/* Gets the object id and converts it to a OntologyFile
 				 * The OntologyFile is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
 				ontologyFile = get(((ObjectId) basicDBObject.get("_id")).toString());
 				ontologyFileList.add(ontologyFile);
-		   }
+			}
 		} finally {
-		   cursor.close();
+			cursor.close();
 		}
 
 		return ontologyFileList;
@@ -141,15 +160,15 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 
 		OntologyFile ontologyFile = null;
 		try {
-		   while(cursor.hasNext()) {
-			   /* Gets the object id and converts it to a OntologyFile
+			while(cursor.hasNext()) {
+				/* Gets the object id and converts it to a OntologyFile
 				 * The OntologyFile is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
 				ontologyFile = get(((ObjectId) basicDBObject.get("_id")).toString());
 				ontologyFileList.add(ontologyFile);
-		   }
+			}
 		} finally {
-		   cursor.close();
+			cursor.close();
 		}
 
 		return ontologyFileList;

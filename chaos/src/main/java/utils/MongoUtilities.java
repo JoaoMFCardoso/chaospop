@@ -83,6 +83,25 @@ public class MongoUtilities {
 	}
 
 	/**
+	 * This method converts an IRI array into a String array
+	 * @param list the string array
+	 * @return an IRI array
+	 */
+	public static ArrayList<String> convertALIRIToDB(ArrayList<IRI> list){
+		ArrayList<String> returnList = new ArrayList<String>();
+
+		for(IRI element : list){
+			/* Cleans the keys that have been tweeked in the creation process */
+			String newElement = convertIRItoDB(element);
+
+			/* Adds the pair to the new hashmap */
+			returnList.add(newElement);
+		}
+
+		return returnList;
+	}
+
+	/**
 	 * This method converts a string array into an IRI array
 	 * @param list the string array
 	 * @return an IRI array
@@ -133,6 +152,25 @@ public class MongoUtilities {
 		for(Object element : basicDBList){
 			BasicDBObject bdbo = (BasicDBObject) element;
 			ObjectId id = (ObjectId) bdbo.get(key);
+			returnList.add(id);
+		}
+
+		return returnList;
+	}
+
+	/**
+	 * This method converts a BasicDBList into a String ArrayList.
+	 * @param basicDBList The BasicDBList object
+	 * @param key The key for the BasicDBObject objects within the BasicDBList
+	 * @return An ObjectId ArrayList
+	 */
+	public static ArrayList<String> convertALStringFromBDBL(BasicDBList basicDBList, String key){
+		ArrayList<String> returnList = new ArrayList<String>();
+
+		/* Runs the BasicDBList and performs the necessary casts */
+		for(Object element : basicDBList){
+			BasicDBObject bdbo = (BasicDBObject) element;
+			String id = (String) bdbo.get(key);
 			returnList.add(id);
 		}
 

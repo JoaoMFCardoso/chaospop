@@ -56,8 +56,15 @@ public class FileOperationsUtils {
 		/* Gets the file extension */
 		String extension = FilenameUtils.getExtension(fileName);
 
-		/* Creates the sub directory according to the extension, if needed */
-		File directory = new File(PropertiesHandler.configProperties.getProperty("uploaded.files.path") + File.separator + extension);
+		/* If the file is an ontology then it should be placed in the local ontologies directory */
+		File directory;
+		if(extension.equals("owl")){
+			directory = new File(PropertiesHandler.configProperties.getProperty("local.ontologies.path"));
+		}else{
+			/* Creates the sub directory according to the extension, if needed */
+			directory = new File(PropertiesHandler.configProperties.getProperty("uploaded.files.path") + File.separator + extension);
+		}
+
 		if(!directory.exists()){
 			directory.mkdir();
 		}
@@ -75,7 +82,12 @@ public class FileOperationsUtils {
 		PropertiesHandler.propertiesLoader();
 
 		/* Sets the reference path, i.e., the directory specified in the properties file that points to the resource directory */
-		String referencePath = PropertiesHandler.configProperties.getProperty("uploaded.files.path");
+		String referencePath;
+		if(FilenameUtils.getExtension(file.getName()).equals("owl")){
+			referencePath = PropertiesHandler.configProperties.getProperty("local.ontologies.path");
+		}else{
+			referencePath = PropertiesHandler.configProperties.getProperty("uploaded.files.path");
+		}
 
 		/* Gets the parent file to the given file */
 		File current = file.getParentFile();

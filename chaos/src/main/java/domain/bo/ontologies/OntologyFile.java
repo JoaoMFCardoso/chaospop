@@ -1,8 +1,13 @@
 package domain.bo.ontologies;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
 
+import utils.TransferObjectUtils;
+import domain.bo.parsers.ParsedFile;
 import domain.to.OntologyFileTO;
 
 /**
@@ -11,10 +16,7 @@ import domain.to.OntologyFileTO;
  * @author João Cardoso
  *
  */
-public class OntologyFile {
-
-	/** The database id */
-	private ObjectId _id;
+public class OntologyFile extends ParsedFile{
 
 	/** The ontology's IRI namespace */
 	private IRI namespace;
@@ -22,10 +24,18 @@ public class OntologyFile {
 	/** The ontology's file path */
 	private String path;
 
+	/** The ontology's classes */
+	private ArrayList<IRI> classes;
+
+	/** The ontology's individuals and labels */
+	private HashMap<IRI, String> individuals;
+
 	public OntologyFile() {
-		this._id = new ObjectId();
+		super();
 		this.namespace = null;
 		this.path = null;
+		this.classes = null;
+		this.individuals = null;
 	}
 
 	/**
@@ -33,9 +43,16 @@ public class OntologyFile {
 	 * @param ontologyFileTO The OntologyFile transfer object
 	 */
 	public OntologyFile(OntologyFileTO ontologyFileTO){
-		this._id = new ObjectId(ontologyFileTO.get_id());
+		/* This if clause is here in case this is an update to an existing object */
+		if(null == ontologyFileTO.get_id()){
+			this._id = new ObjectId();
+		}else{
+			this._id = new ObjectId(ontologyFileTO.get_id());
+		}
 		this.namespace = IRI.create(ontologyFileTO.getNamespace());
 		this.path = ontologyFileTO.getPath();
+		this.classes = TransferObjectUtils.convertALStringToIRI(ontologyFileTO.getClasses());
+		this.individuals = TransferObjectUtils.convertHMSSToIRIS(ontologyFileTO.getIndividuals());
 	}
 
 	/**
@@ -54,21 +71,10 @@ public class OntologyFile {
 			ofto.setPath(this.path);
 		}
 
+		ofto.setClasses(TransferObjectUtils.convertALIRIToString(this.classes));
+		ofto.setIndividuals(TransferObjectUtils.convertHMIRISToSS(this.individuals));
+
 		return ofto;
-	}
-
-	/**
-	 * @return the _id
-	 */
-	public ObjectId getID() {
-		return _id;
-	}
-
-	/**
-	 * @param _id the _id to set
-	 */
-	public void setID(ObjectId _id) {
-		this._id = _id;
 	}
 
 	/**
@@ -97,5 +103,33 @@ public class OntologyFile {
 	 */
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	/**
+	 * @return the classes
+	 */
+	public ArrayList<IRI> getClasses() {
+		return classes;
+	}
+
+	/**
+	 * @param classes the classes to set
+	 */
+	public void setClasses(ArrayList<IRI> classes) {
+		this.classes = classes;
+	}
+
+	/**
+	 * @return the individuals
+	 */
+	public HashMap<IRI, String> getIndividuals() {
+		return individuals;
+	}
+
+	/**
+	 * @param individuals the individuals to set
+	 */
+	public void setIndividuals(HashMap<IRI, String> individuals) {
+		this.individuals = individuals;
 	}
 }

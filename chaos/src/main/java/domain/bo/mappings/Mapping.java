@@ -44,7 +44,12 @@ public class Mapping{
 	 * @param mappingTO The Mapping transfer object
 	 */
 	public Mapping(MappingTO mappingTO){
-		this._id = new ObjectId(mappingTO.get_id());
+		/* This if clause is here in case this is an update to an existing object */
+		if(null == mappingTO.get_id()){
+			this._id = new ObjectId();
+		}else{
+			this._id = new ObjectId(mappingTO.get_id());
+		}
 		this.baseOntology = new ObjectId(mappingTO.getBaseOntology());
 		this.fileNames = TransferObjectUtils.convertALStringToObjectId(mappingTO.getFileNames());
 		this.specificOntologies = TransferObjectUtils.convertALStringToObjectId(mappingTO.getSpecificOntologies());

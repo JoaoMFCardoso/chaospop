@@ -26,7 +26,12 @@ public class Batch {
 	 * @param batchTO
 	 */
 	public Batch(BatchTO batchTO){
-		this._id = new ObjectId(batchTO.get_id());
+		/* This if clause is here in case this is an update to an existing object */
+		if(null == batchTO.get_id()){
+			this._id = new ObjectId();
+		}else{
+			this._id = new ObjectId(batchTO.get_id());
+		}
 		this.dataFiles = TransferObjectUtils.convertALStringToObjectId(batchTO.getDataFiles());
 	}
 

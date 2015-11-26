@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import parsing.ParserInterface;
 import parsing.parsers.JSONParserImpl;
+import parsing.parsers.OWLParserImpl;
 import parsing.parsers.XMLParserImpl;
 import utils.FileOperationsUtils;
 
@@ -88,6 +89,10 @@ public class FileOperations {
 				extractedFile = fileProcessor(extractedFile);
 				extractedFile.delete();
 			}
+			break;
+		case "owl": /* It's an Ontology file */
+			parserInterface = new OWLParserImpl();
+			parserInterface.parseFile(file);
 			break;
 		default:
 			break;

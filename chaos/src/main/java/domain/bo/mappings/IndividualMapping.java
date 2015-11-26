@@ -82,14 +82,30 @@ public class IndividualMapping {
 	 * Instantiates a new XML individual mapping through an IndividualMapping transfer object
 	 */
 	public IndividualMapping(IndividualMappingTO individualMappingTO) {
-		this._id = new ObjectId(individualMappingTO.get_id());
+		/* This if clause is here in case this is an update to an existing object */
+		if(null == individualMappingTO.get_id()){
+			this._id = new ObjectId();
+		}else{
+			this._id = new ObjectId(individualMappingTO.get_id());
+		}
+
 		this.tag = individualMappingTO.getTag();
 		this.individualName = individualMappingTO.getIndividualName();
 		this.individualLabel = individualMappingTO.getIndividualLabel();
 		this.owlClassIRI = IRI.create(individualMappingTO.getOwlClassIRI());
 		this.specification = individualMappingTO.getSpecification();
-		this.objectProperties = TransferObjectUtils.convertHMSSToIRIS(individualMappingTO.getObjectProperties());
+
+		if(null == individualMappingTO.getObjectProperties()){
+			this.objectProperties = null;
+		}else{
+			this.objectProperties = TransferObjectUtils.convertHMSSToIRIS(individualMappingTO.getObjectProperties());
+		}
+
+		if(null == individualMappingTO.getDataProperties()){
+			this.dataProperties = null;
+		}else{
 		this.dataProperties = TransferObjectUtils.convertHMSSToIRIS(individualMappingTO.getDataProperties());
+		}
 	}
 
 	/**

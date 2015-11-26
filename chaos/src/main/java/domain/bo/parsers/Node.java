@@ -53,7 +53,12 @@ public class Node{
 	 * @param nodeTO The Node transfer object
 	 */
 	public Node(NodeTO nodeTO){
-		this._id = new ObjectId(nodeTO.get_id());
+		/* This if clause is here in case this is an update to an existing object */
+		if(null == nodeTO.get_id()){
+			this._id = new ObjectId();
+		}else{
+			this._id = new ObjectId(nodeTO.get_id());
+		}
 		this.children = TransferObjectUtils.convertALStringToObjectId(nodeTO.getChildren());
 		this.parent = new ObjectId(nodeTO.getParent());
 		this.tag = nodeTO.getTag();

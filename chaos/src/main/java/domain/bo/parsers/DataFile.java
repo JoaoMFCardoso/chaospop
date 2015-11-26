@@ -10,30 +10,17 @@ import domain.to.DataFileTO;
  * @author João Cardoso
  *
  */
-public class DataFile {
+public class DataFile extends ParsedFile{
 
-	/**
-	 * The database id
-	 */
-	private ObjectId _id;
-
-	/**
-	 * The file's name
-	 */
+	/** The file's name */
 	private String name;
-
-	/**
-	 * The file's structured data
-	 */
-	private ObjectId nodeID;
 
 	/**
 	 * The class constructor
 	 */
 	public DataFile() {
-		this._id = new ObjectId();
+		super();
 		this.name = null;
-		this.nodeID = null;
 	}
 
 	/**
@@ -41,7 +28,12 @@ public class DataFile {
 	 * @param dataFileTO the DataFile transfer object
 	 */
 	public DataFile(DataFileTO dataFileTO){
-		this._id = new ObjectId(dataFileTO.get_id());
+		/* This if clause is here in case this is an update to an existing object */
+		if(null == dataFileTO.get_id()){
+			this._id = new ObjectId();
+		}else{
+			this._id = new ObjectId(dataFileTO.get_id());
+		}
 		this.name = dataFileTO.getName();
 		this.nodeID = new ObjectId(dataFileTO.getNodeId());
 	}
@@ -62,20 +54,6 @@ public class DataFile {
 	}
 
 	/**
-	 * @return the _id
-	 */
-	public ObjectId getID() {
-		return _id;
-	}
-
-	/**
-	 * @param _id the _id to set
-	 */
-	public void setID(ObjectId _id) {
-		this._id = _id;
-	}
-
-	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -87,19 +65,5 @@ public class DataFile {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the node ID
-	 */
-	public ObjectId getNodeID() {
-		return nodeID;
-	}
-
-	/**
-	 * @param node the node to set
-	 */
-	public void setNodeID(ObjectId nodeID) {
-		this.nodeID = nodeID;
 	}
 }
