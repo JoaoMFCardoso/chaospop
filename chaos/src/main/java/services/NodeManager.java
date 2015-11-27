@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -10,9 +11,12 @@ import javax.ws.rs.core.MediaType;
 
 import utils.TransferObjectUtils;
 import database.implementations.DataFileImpl;
+import database.implementations.IndividualMappingsImpl;
 import database.implementations.NodeImpl;
+import domain.bo.mappings.IndividualMapping;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import domain.to.IndividualMappingTO;
 import domain.to.NodeTO;
 
 /**
@@ -29,6 +33,8 @@ public class NodeManager {
 
 	/** The connection to the database for Node objects */
 	private NodeImpl nodeImpl = new NodeImpl();
+
+	private IndividualMappingsImpl individualMappingsImpl = new IndividualMappingsImpl();
 
 	/**
 	 * This method gets all the Nodes in a DataFile Node tree and returns a transfer object array to the client
@@ -63,5 +69,27 @@ public class NodeManager {
 		NodeTO nodeTO = node.createTransferObject();
 
 		return nodeTO;
+	}
+
+	@POST
+	@Path("/getSuggestedIndividualMappings")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<IndividualMappingTO> getSuggestedIndividualMappings(@FormParam("nodeId") String nodeId){
+		ArrayList<IndividualMappingTO> individualMappingTOList = new ArrayList<IndividualMappingTO>();
+
+		/* Gets the Node and its tag */
+		Node node = this.nodeImpl.get(nodeId);
+		String tag = node.getTag();
+
+		/* Gets all IndividualMapping objects that match the Node's tag */
+		List<IndividualMapping> matchingIndividualMappings = this.individualMappingsImpl.getBy("tag", tag);
+
+		/* Builds the IndividualMappingTO List */
+		for(IndividualMapping individualMapping : matchingIndividualMappings){
+			IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
+			individualMappingTOList.add(individualMappingTO);
+		}
+
+		return individualMappingTOList;
 	}
 }

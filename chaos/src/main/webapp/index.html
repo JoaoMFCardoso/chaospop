@@ -29,8 +29,14 @@
 
 	<p>Get Node</p>
 	<form action="wsapi/nodeManager/getNode" method="post">
-		<p>File ID : <input type="text" name="id" /></p>
+		<p>Node ID : <input type="text" name="id" /></p>
 		<input type="submit" value="Get Node" />
+	</form>
+
+	<p>Get Suggested Individual Mappings</p>
+	<form action="wsapi/nodeManager/getSuggestedIndividualMappings" method="post">
+		<p>Node ID : <input type="text" name="nodeId" /></p>
+		<input type="submit" value="Get Suggested Individual Mappings" />
 	</form>
 
 	<p><a href="wsapi/mappingManager/getAllMappings">Get All Mappings</a></p>
