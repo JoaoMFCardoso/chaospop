@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -21,7 +20,7 @@ import domain.bo.parsers.Node;
 public class XMLParserImpl implements ParserInterface {
 
 	/** The log4j log. */
-	private static final Logger parserLog = Logger.getLogger(XMLParserImpl.class);
+//	private static final Logger parserLog = Logger.getLogger(XMLParserImpl.class);
 
 	/** The database functions to store DataFile objects */
 	private DataFileImpl dataFileImpl;

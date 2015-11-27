@@ -34,6 +34,7 @@ public class NodeManager {
 	/** The connection to the database for Node objects */
 	private NodeImpl nodeImpl = new NodeImpl();
 
+	/** The connection to the database for IndividualMapping objects */
 	private IndividualMappingsImpl individualMappingsImpl = new IndividualMappingsImpl();
 
 	/**
@@ -71,6 +72,11 @@ public class NodeManager {
 		return nodeTO;
 	}
 
+	/**
+	 * This method gets all Individual Mappings that match the tag of the Node whose id is given
+	 * @param nodeId The id of an existing Node
+	 * @return An Array with all the IndividualMappingTO tranfer objects that match the tag
+	 */
 	@POST
 	@Path("/getSuggestedIndividualMappings")
 	@Produces(MediaType.APPLICATION_JSON)

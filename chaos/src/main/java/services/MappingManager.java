@@ -14,8 +14,11 @@ import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
 
+import database.implementations.DataFileImpl;
 import database.implementations.MappingImpl;
 import domain.bo.mappings.Mapping;
+import domain.bo.parsers.DataFile;
+import domain.to.DataFileTO;
 import domain.to.MappingTO;
 
 /**
@@ -29,6 +32,9 @@ public class MappingManager {
 
 	/** The connection to the database for Mapping objects */
 	private MappingImpl mappingImpl = new MappingImpl();
+
+	/** The connection to the database for DataFile objects */
+	private DataFileImpl dataFileImpl = new DataFileImpl();
 
 	/**
 	 * This method returns all the Mappings stored in the database
@@ -111,6 +117,31 @@ public class MappingManager {
 		}
 
 		return response;
+	}
+
+	/**
+	 * Gets all the DataFileTO transfer objects from a given Mapping
+	 * @param mappingId The Mapping id
+	 * @return An Array with all DataFileTO transfer objects that represent the DataFile objects assigned to the Mapping
+	 */
+	@POST
+	@Path("/getAllDataFilesFromMapping")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<DataFileTO> getAllDataFilesFromMapping(@FormParam("mappingId") String mappingId){
+		ArrayList<DataFileTO> dataFileTOList = new ArrayList<DataFileTO>();
+
+		/* Gets the Mapping and its DataFile List */
+		Mapping mapping = this.mappingImpl.get(mappingId);
+		ArrayList<ObjectId> fileList = mapping.getFileList();
+
+		/* Runs the DataFile list and creates DataFileTO objects */
+		for(ObjectId dataFileId : fileList){
+			DataFile dataFile = this.dataFileImpl.get(dataFileId.toString());
+			DataFileTO dataFileTO = dataFile.createTransferObject();
+			dataFileTOList.add(dataFileTO);
+		}
+
+		return dataFileTOList;
 	}
 
 	/**

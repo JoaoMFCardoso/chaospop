@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -18,7 +17,7 @@ import domain.bo.parsers.Node;
 public class JSONParserImpl implements ParserInterface {
 
 	/** The log4j log. */
-	private static final Logger parserLog = Logger.getLogger(XMLParserImpl.class);
+//	private static final Logger parserLog = Logger.getLogger(XMLParserImpl.class);
 
 	/** The database functions to store DataFile objects */
 	private DataFileImpl dataFileImpl;
