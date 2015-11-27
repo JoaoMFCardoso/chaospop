@@ -1,17 +1,68 @@
 <html>
 <body>
     <h2>Chaos Pop test page</h2>
-    <p><a href="wsapi/fileManager/listDataFiles">list files</a>
 
 	<form action="wsapi/fileManager/addFile" method="post" enctype="multipart/form-data">
 	   <p>Select a file : <input type="file" name="file" size="45" /></p>
 	   <input type="submit" value="Add File" />
 	</form>
 
+	<p><a href="wsapi/fileManager/listDataFiles">list files</a></p>
+
+	<p>Get File</p>
+	<form action="wsapi/fileManager/getFile" method="post">
+		<p>File ID : <input type="text" name="id" /></p>
+		<input type="submit" value="Get File" />
+	</form>
+
 	<p>Remove File</p>
 	<form action="wsapi/fileManager/removeFile" method="post">
-		<p>File ID : <input type="text" name="id" /></p>
+		<p>File ID(s) : <input type="text" name="ids" /></p>
 		<input type="submit" value="Remove File" />
+	</form>
+
+	<p>Get All Nodes</p>
+	<form action="wsapi/nodeManager/getAllNodesFromDataFile" method="post">
+		<p>File ID : <input type="text" name="id" /></p>
+		<input type="submit" value="Get All Nodes" />
+	</form>
+
+	<p>Get Node</p>
+	<form action="wsapi/nodeManager/getNode" method="post">
+		<p>File ID : <input type="text" name="id" /></p>
+		<input type="submit" value="Get Node" />
+	</form>
+
+	<p><a href="wsapi/mappingManager/getAllMappings">Get All Mappings</a></p>
+
+	<p>Remove Mapping</p>
+	<form action="wsapi/mappingManager/removeMapping" method="post">
+		<p>Mapping ID(s) : <input type="text" name="ids" /></p>
+		<input type="submit" value="Remove Mapping" />
+	</form>
+
+	<p>Add File to Mapping</p>
+	<form action="wsapi/mappingManager/addDataFileToMapping" method="post">
+		<p>Mapping ID(s) :
+		<input type="text" name="mappingId" />
+		<input type="text" name="dataFileId" />
+		</p>
+		<input type="submit" value="Add File to Mapping" />
+	</form>
+
+	<p>Remove File from Mapping</p>
+	<form action="wsapi/mappingManager/removeDataFileFromMapping" method="post">
+		<p>Mapping ID(s) :
+		<input type="text" name="mappingId" />
+		<input type="text" name="dataFileId" />
+		</p>
+		<input type="submit" value="Remove File from Mapping" />
+	</form>
+
+	<p>Add Remote Ontology</p>
+	<form action="wsapi/ontologyManager/addOntologyNamespace" method="post">
+		<p>Ontology Namespace : <input type="text" name="namespace" /></p>
+		<input type="submit" value="Add Ontology" />
 	</form>
 </body>
 </html>
