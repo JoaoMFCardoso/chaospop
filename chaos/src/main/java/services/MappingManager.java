@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.bson.types.ObjectId;
+
 import database.implementations.MappingImpl;
 import domain.bo.mappings.Mapping;
 import domain.to.MappingTO;
@@ -98,6 +100,86 @@ public class MappingManager {
 			for(String mappingId : ids){
 				/* Removes the Mapping from the database */
 				this.mappingImpl.remove(mappingId);
+			}
+
+			/* Gets the Response */
+			response = Response.status(200).build();
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
+	 * This method adds a DataFile to an existing Mapping
+	 * @param mappingId The Mapping id
+	 * @param dataFileId The DataFile id
+	 * @return 200 if everything went well, 500 if not.
+	 */
+	@POST
+	@Path("/addDataFileToMapping")
+	public Response addDataFileToMapping(@FormParam("mappingId") String mappingId, @FormParam("dataFileId") String dataFileId){
+		Response response;
+		try{
+			/* Gets the Mapping from the given id */
+			Mapping mapping = this.mappingImpl.get(mappingId);
+
+			/* Gets the Mapping's file list and adds a new id to the list if it doesn't exist already */
+			ArrayList<ObjectId> fileList = mapping.getFileList();
+			ObjectId newFileId = new ObjectId(dataFileId);
+
+			if(fileList.contains(newFileId)){
+				throw new Exception("DataFile has already been added to the Mapping");
+			}else{
+				/* The Mapping is updated with the new fileList.
+				 * And the Database object is updated with the new Mapping*/
+				fileList.add(newFileId);
+				mapping.setFileList(fileList);
+
+				this.mappingImpl.replace(mappingId, mapping);
+			}
+
+			/* Gets the Response */
+			response = Response.status(200).build();
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
+	 * This method removes a DataFile to an existing Mapping
+	 * @param mappingId The Mapping id
+	 * @param dataFileId The DataFile id
+	 * @return 200 if everything went well, 500 if not.
+	 */
+	@POST
+	@Path("/removeDataFileFromMapping")
+	public Response removeDataFileToMapping(@FormParam("mappingId") String mappingId, @FormParam("dataFileId") String dataFileId){
+		Response response;
+		try{
+			/* Gets the Mapping from the given id */
+			Mapping mapping = this.mappingImpl.get(mappingId);
+
+			/* Gets the Mapping's file list and removes the Datafile from the list if it exists*/
+			ArrayList<ObjectId> fileList = mapping.getFileList();
+			ObjectId newFileId = new ObjectId(dataFileId);
+
+			if(fileList.contains(newFileId)){
+				/* The Mapping is updated with the new fileList.
+				 * And the Database object is updated with the new Mapping*/
+				fileList.remove(newFileId);
+				mapping.setFileList(fileList);
+
+				this.mappingImpl.replace(mappingId, mapping);
+			}else{
+				throw new Exception("DataFile does not exist in the Mapping");
 			}
 
 			/* Gets the Response */

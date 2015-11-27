@@ -17,7 +17,7 @@ public class Mapping{
 	private ObjectId _id;
 
 	/** The file name. */
-	private ArrayList<ObjectId> fileNames;
+	private ArrayList<ObjectId> fileList;
 
 	/** The specific ontology IRI. */
 	private ArrayList<ObjectId> specificOntologies;
@@ -33,7 +33,7 @@ public class Mapping{
 	 */
 	public Mapping() {
 		this._id = new ObjectId();
-		this.fileNames = null;
+		this.fileList = null;
 		this.specificOntologies = null;
 		this.baseOntology = null;
 		this.individualMappings = null;
@@ -51,7 +51,7 @@ public class Mapping{
 			this._id = new ObjectId(mappingTO.get_id());
 		}
 		this.baseOntology = new ObjectId(mappingTO.getBaseOntology());
-		this.fileNames = TransferObjectUtils.convertALStringToObjectId(mappingTO.getFileNames());
+		this.fileList = TransferObjectUtils.convertALStringToObjectId(mappingTO.getFileNames());
 		this.specificOntologies = TransferObjectUtils.convertALStringToObjectId(mappingTO.getSpecificOntologies());
 		this.individualMappings = TransferObjectUtils.convertALStringToObjectId(mappingTO.getIndividualMappings());
 	}
@@ -76,7 +76,7 @@ public class Mapping{
 		if(null == this.individualMappings){
 			mto.setFileNames(null);
 		}else{
-			mto.setFileNames(TransferObjectUtils.convertALObjectIdToString(this.fileNames));
+			mto.setFileNames(TransferObjectUtils.convertALObjectIdToString(this.fileList));
 		}
 
 		if(null == this.individualMappings){
@@ -105,21 +105,21 @@ public class Mapping{
 
 
 	/**
-	 * Gets the file name.
+	 * Gets the file list.
 	 *
-	 * @return the fileName
+	 * @return the fileList
 	 */
-	public ArrayList<ObjectId> getFileNames() {
-		return fileNames;
+	public ArrayList<ObjectId> getFileList() {
+		return fileList;
 	}
 
 	/**
-	 * Sets the file name array.
+	 * Sets the file array.
 	 *
-	 * @param fileName the fileName to set
+	 * @param fileList the fileList to set
 	 */
-	public void setFileNames(ArrayList<ObjectId> fileNames) {
-		this.fileNames = fileNames;
+	public void setFileList(ArrayList<ObjectId> fileList) {
+		this.fileList = fileList;
 	}
 
 	/**

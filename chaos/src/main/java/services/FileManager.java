@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -65,9 +66,12 @@ public class FileManager {
 			response = Response.status(500).build();
 		}finally{
 
-			/* Deletes the temporary file */
-			processedFile.delete();
-			FileOperationsUtils.deleteDirectoryStructure(processedFile);
+			/* Deletes the temporary file but only if it is a data file.
+			 * If the temporary file is an ontology it must be kept for use in future populations*/
+			if(!FilenameUtils.getExtension(processedFile.getName()).equals("owl")){
+				processedFile.delete();
+				FileOperationsUtils.deleteDirectoryStructure(processedFile);
+			}
 		}
 
 		return response;

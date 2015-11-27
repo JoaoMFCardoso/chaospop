@@ -54,19 +54,19 @@ public class MappingImpl implements MongoService<Mapping> {
 		mappingDBObj.append("_id", mapping.getID());
 
 		/* Appends the file names */
-		if(null != mapping.getFileNames()){
+		if(null != mapping.getFileList()){
 			List<Object> fileNamesDBList = new BasicDBList();
 
 			/* Runs all file names */
-			for(ObjectId fileNameId : mapping.getFileNames()){
+			for(ObjectId fileNameId : mapping.getFileList()){
 				DBObject fileNamesDBObject = new BasicDBObject();
 
 				/* stores the file name */
-				fileNamesDBObject.put("fileName", fileNameId);
+				fileNamesDBObject.put("fileId", fileNameId);
 				fileNamesDBList.add(fileNamesDBObject);
 			}
 
-			mappingDBObj.append("fileNames", fileNamesDBList);
+			mappingDBObj.append("fileList", fileNamesDBList);
 		}
 
 		/* Appends the base ontology */
@@ -142,9 +142,9 @@ public class MappingImpl implements MongoService<Mapping> {
 			case "_id":
 				mapping.setID(dbID);
 				break;
-			case "fileNames":
-				ArrayList<ObjectId> fileNamesDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "fileName");
-				mapping.setFileNames(fileNamesDBArray);
+			case "fileList":
+				ArrayList<ObjectId> filelistDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "fileId");
+				mapping.setFileList(filelistDBArray);
 				break;
 			case "baseOntology":
 				mapping.setBaseOntology((ObjectId) persistent.get(key));
