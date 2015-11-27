@@ -1,5 +1,6 @@
 package database.implementations;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,6 +122,23 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 		}
 
 		return ontologyFile;
+	}
+
+	/**
+	 * Gets the local ontology file from a previously stored OntologyFile
+	 * @param ontologyFileId The OntologyFile id
+	 * @return A File representing the previously stored OntologyFile
+	 */
+	public File getLocalOntologyFile(String ontologyFileId){
+		/* Gets the ontology File Path from the database */
+		OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
+		OntologyFile ontologyFile = ontologyFileImpl.get(ontologyFileId);
+		String filePath = ontologyFile.getPath();
+
+		/* Creates the Ontology File */
+		File file = new File(filePath);
+
+		return file;
 	}
 
 	@Override
