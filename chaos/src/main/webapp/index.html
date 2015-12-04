@@ -76,5 +76,22 @@
 		<p>Ontology Namespace : <input type="text" name="namespace" /></p>
 		<input type="submit" value="Add Ontology" />
 	</form>
+
+	<p>Get Ontology Classes</p>
+	<form action="wsapi/ontologyManager/getOWLClasses" method="post">
+		<p>Ontology ID :
+		<input type="text" name="ontologyId" />
+		</p>
+		<input type="submit" value="Get ontology classes" />
+	</form>
+
+	<p>Get Object Properties From Class</p>
+	<form action="wsapi/ontologyManager/getObjectPropertiesForClass" method="post">
+		<p>Ontology ID and OWL Class :
+		<input type="text" name="ontologyId" />
+		<input type="text" name="owlClass" />
+		</p>
+		<input type="submit" value="Get object Properties" />
+	</form>
 </body>
 </html>

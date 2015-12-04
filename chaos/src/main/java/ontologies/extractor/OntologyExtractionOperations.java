@@ -11,15 +11,21 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
+import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
 
 /**
@@ -38,26 +44,63 @@ public class OntologyExtractionOperations {
 	/** The OWL Ontology */
 	private OWLOntology ontology;
 
+	/** The OWL Reasoner Factory */
+	private OWLReasonerFactory reasonerFactory;
+
+	/** The OWL Reasoner */
+	private OWLReasoner reasoner;
+
 	/**
-	 * This constructor initializes the manager, data factory and ontology based on a file
+	 * This constructor initializes the manager, data factory, reasoner factory, reasoner and ontology based on a file
 	 * @param file The owl file
 	 * @throws OWLOntologyCreationException
 	 */
 	public OntologyExtractionOperations(File file) throws OWLOntologyCreationException{
+		this.reasonerFactory = new StructuralReasonerFactory();
 		this.manager = OWLManager.createOWLOntologyManager();
 		this.factory = this.manager.getOWLDataFactory();
 		this.ontology = this.manager.loadOntologyFromOntologyDocument(file);
+		this.reasoner = reasonerFactory.createNonBufferingReasoner(this.ontology);
 	}
 
 	/**
-	 * This constructor initializes the manager, data factory and ontology based on a IRI namespace that is published online
+	 * This constructor initializes the manager, data factory, reasoner factory, reasoner and ontology based on a IRI namespace that is published online
 	 * @param ontologyNamespace A IRI that is published online
 	 * @throws OWLOntologyCreationException
 	 */
 	public OntologyExtractionOperations(IRI ontologyNamespace) throws OWLOntologyCreationException{
+		this.reasonerFactory = new StructuralReasonerFactory();
 		this.manager = OWLManager.createOWLOntologyManager();
 		this.factory = this.manager.getOWLDataFactory();
 		this.ontology = this.manager.loadOntology(ontologyNamespace);
+		this.reasoner = reasonerFactory.createNonBufferingReasoner(this.ontology);
+	}
+
+	/**
+	 * This constructor initializes the manager, data factory, reasoner factory, reasoner and ontology based on an object stored in the database
+	 * @param ontologyFileId The ontology id in the database
+	 * @throws OWLOntologyCreationException
+	 */
+	public OntologyExtractionOperations(String ontologyFileId) throws OWLOntologyCreationException{
+		/* Gets the OntologyFile from the database */
+		OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
+		OntologyFile ontologyFile = ontologyFileImpl.get(ontologyFileId);
+
+		/* Initializes the reasoner factory, the manager and the data factory */
+		this.reasonerFactory = new StructuralReasonerFactory();
+		this.manager = OWLManager.createOWLOntologyManager();
+		this.factory = this.manager.getOWLDataFactory();
+
+		/* Calls the correct constructor */
+		if(null == ontologyFile.getPath()){
+			this.ontology = this.manager.loadOntology(ontologyFile.getNamespace());
+		}else{
+			File file = new File(ontologyFile.getPath());
+			this.ontology = this.manager.loadOntologyFromOntologyDocument(file);
+		}
+
+		/* Initializes the reasoner */
+		this.reasoner = reasonerFactory.createNonBufferingReasoner(this.ontology);
 	}
 
 	/**
@@ -90,6 +133,16 @@ public class OntologyExtractionOperations {
 	 */
 	public IRI getNamespace(){
 		return this.ontology.getOntologyID().getOntologyIRI().get();
+	}
+
+	/**
+	 * Returns the OWLClass object given its IRI in String form
+	 * @param owlClassIRI Then OWLClass IRI in String form
+	 * @return OWLClass object
+	 */
+	public OWLClass getOWLClass(String owlClassIRI){
+		OWLClass owlClass = this.factory.getOWLClass(IRI.create(owlClassIRI));
+		return owlClass;
 	}
 
 	/**
@@ -135,6 +188,29 @@ public class OntologyExtractionOperations {
 		}
 
 		return classArray;
+	}
+
+	/**
+	 * Gets all the object properties that instances of a given owl class must have
+	 * @param owlClass The owl class
+	 * @return An ArrayList containing the IRIs of all the necessary object properties for the given class
+	 */
+	public ArrayList<IRI> getObjectPropertiesFromClass(OWLClass owlClass){
+		ArrayList<IRI> objectPropertiesArray = new ArrayList<IRI>();
+
+		/* Runs all Object Properties in the signature */
+		for(OWLObjectPropertyExpression objectPropertyExpression : this.ontology.getObjectPropertiesInSignature()){
+			/* Get the class restrictions for this object property expression */
+			OWLClassExpression restriction = this.factory.getOWLObjectSomeValuesFrom(objectPropertyExpression, this.factory.getOWLThing());
+			OWLClassExpression intersection = this.factory.getOWLObjectIntersectionOf(owlClass, this.factory.getOWLObjectComplementOf(restriction));
+
+			/* If this object property is needed in this owl class then it is added to the array */
+			if(!this.reasoner.isSatisfiable(intersection)){
+				objectPropertiesArray.add(objectPropertyExpression.asOWLObjectProperty().getIRI());
+			}
+		}
+
+		return objectPropertiesArray;
 	}
 
 	/**
