@@ -14,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -211,6 +212,25 @@ public class OntologyExtractionOperations {
 		}
 
 		return objectPropertiesArray;
+	}
+
+	/**
+	 * Gets all the data properties that instances of a given owl class must have
+	 * @param owlClass The owl class
+	 * @return An ArrayList containing the IRIs of all the necessary data properties for the given class
+	 */
+	public ArrayList<IRI> getDataPropertiesFromClass(OWLClass owlClass){
+		ArrayList<IRI> dataPropertiesArray = new ArrayList<IRI>();
+
+		/* Runs all Data Properties in the signature */
+		for(OWLDataPropertyExpression dataPropertyExpression : this.ontology.getDataPropertiesInSignature()){
+			/* If a data property has the given owl class in its signature then it is added to the array */
+			if(dataPropertyExpression.getClassesInSignature().contains(owlClass)){
+				dataPropertiesArray.add(dataPropertyExpression.asOWLDataProperty().getIRI());
+			}
+		}
+
+		return dataPropertiesArray;
 	}
 
 	/**

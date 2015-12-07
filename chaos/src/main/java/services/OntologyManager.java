@@ -62,6 +62,70 @@ public class OntologyManager {
 	}
 
 	/**
+	 * Gets all the OWL Classes for a given Ontology
+	 * @param ontologyFileId The ontology database id
+	 * @return An array containing all the OWLClass IRIs
+	 */
+	@POST
+	@Path("/getOWLClasses")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getOWLClasses(@FormParam("ontologyId") String ontologyFileId){
+		Response response;
+		try{
+			/* Get the owl classes for the given ontology */
+			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			ArrayList<IRI> owlClassesIRIArray = ontologyExtractionOperations.getClasses();
+
+			/* Converts the OWLClasses IRI Array into a String Array */
+			ArrayList<String> owlClassesStringArray = TransferObjectUtils.convertALIRIToString(owlClassesIRIArray);
+
+			/* Converts the String Classes Array to a JSON String */
+			Gson gson = new Gson();
+			String jsonResponse = gson.toJson(owlClassesStringArray);
+
+			/* Gets the Response */
+			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+		}catch(Exception exception){
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
+	 * Gets the Ontology's Object Properties
+	 * @param ontologyFileId The id of the Ontology
+	 * @return An array with all the Object properties in the Ontology's signature
+	 */
+	@POST
+	@Path("/getObjectProperties")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getObjectProperties(@FormParam("ontologyId") String ontologyFileId){
+		Response response;
+		try{
+			/* Get the Object properties */
+			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			ArrayList<IRI> objectPropertiesIRIArray = ontologyExtractionOperations.getObjectProperties();
+
+			/* Converts the Object Properties IRI Array into a String Array */
+			ArrayList<String> objectPropertiesStringArray = TransferObjectUtils.convertALIRIToString(objectPropertiesIRIArray);
+
+			/* Converts the String Classes Array to a JSON String */
+			Gson gson = new Gson();
+			String jsonResponse = gson.toJson(objectPropertiesStringArray);
+
+			/* Gets the Response */
+			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+		}catch(Exception exception){
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
 	 * Gets the object properties necessary to a given owl class
 	 * @param ontologyFileId the ontology id in the database
 	 * @param owlClass The owl class IRI in String form
@@ -96,26 +160,60 @@ public class OntologyManager {
 	}
 
 	/**
-	 * Gets all the OWL Classes for a given Ontology
-	 * @param ontologyFileId The ontology database id
-	 * @return An array containing all the OWLClass IRIs
+	 * Gets the Ontology's Data Properties
+	 * @param ontologyFileId The id of the Ontology
+	 * @return An array with all the Data properties in the Ontology's signature
 	 */
 	@POST
-	@Path("/getOWLClasses")
+	@Path("/getDataProperties")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOWLClasses(@FormParam("ontologyId") String ontologyFileId){
+	public Response getDataProperties(@FormParam("ontologyId") String ontologyFileId){
 		Response response;
 		try{
-			/* Get the owl classes for the given ontology */
+			/* Get the Data properties */
 			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
-			ArrayList<IRI> owlClassesIRIArray = ontologyExtractionOperations.getClasses();
+			ArrayList<IRI> dataPropertiesIRIArray = ontologyExtractionOperations.getDataProperties();
 
-			/* Converts the OWLClasses IRI Array into a String Array */
-			ArrayList<String> owlClassesStringArray = TransferObjectUtils.convertALIRIToString(owlClassesIRIArray);
+			/* Converts the Data Properties IRI Array into a String Array */
+			ArrayList<String> dataPropertiesStringArray = TransferObjectUtils.convertALIRIToString(dataPropertiesIRIArray);
 
 			/* Converts the String Classes Array to a JSON String */
 			Gson gson = new Gson();
-			String jsonResponse = gson.toJson(owlClassesStringArray);
+			String jsonResponse = gson.toJson(dataPropertiesStringArray);
+
+			/* Gets the Response */
+			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+		}catch(Exception exception){
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
+	 * Gets the data properties necessary to a given owl class
+	 * @param ontologyFileId the ontology id in the database
+	 * @param owlClass The owl class IRI in String form
+	 * @return An array containing the all the Data Properties IRI
+	 */
+	@POST
+	@Path("/getDataPropertiesForClass")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDataPropertiesForClass(@FormParam("ontologyId") String ontologyFileId, @FormParam("owlClass") String owlClass){
+		Response response;
+		try{
+			/* Get the Data properties for the given class */
+			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			OWLClass owlClassObject = ontologyExtractionOperations.getOWLClass(owlClass);
+			ArrayList<IRI> dataPropertiesIRIArray = ontologyExtractionOperations.getDataPropertiesFromClass(owlClassObject);
+
+			/* Converts the Data Properties IRI Array into a String Array */
+			ArrayList<String> dataPropertiesStringArray = TransferObjectUtils.convertALIRIToString(dataPropertiesIRIArray);
+
+			/* Converts the String Classes Array to a JSON String */
+			Gson gson = new Gson();
+			String jsonResponse = gson.toJson(dataPropertiesStringArray);
 
 			/* Gets the Response */
 			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();

@@ -85,6 +85,22 @@
 		<input type="submit" value="Get ontology classes" />
 	</form>
 
+	<p>Get Object Properties</p>
+	<form action="wsapi/ontologyManager/getObjectProperties" method="post">
+		<p>Ontology ID :
+		<input type="text" name="ontologyId" />
+		</p>
+		<input type="submit" value="Get object properties" />
+	</form>
+
+	<p>Get Data Properties</p>
+	<form action="wsapi/ontologyManager/getDataProperties" method="post">
+		<p>Ontology ID :
+		<input type="text" name="ontologyId" />
+		</p>
+		<input type="submit" value="Get data properties" />
+	</form>
+
 	<p>Get Object Properties From Class</p>
 	<form action="wsapi/ontologyManager/getObjectPropertiesForClass" method="post">
 		<p>Ontology ID and OWL Class :
@@ -92,6 +108,15 @@
 		<input type="text" name="owlClass" />
 		</p>
 		<input type="submit" value="Get object Properties" />
+	</form>
+
+	<p>Get Data Properties From Class</p>
+	<form action="wsapi/ontologyManager/getDataPropertiesForClass" method="post">
+		<p>Ontology ID and OWL Class :
+		<input type="text" name="ontologyId" />
+		<input type="text" name="owlClass" />
+		</p>
+		<input type="submit" value="Get data Properties" />
 	</form>
 </body>
 </html>
