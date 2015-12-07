@@ -49,7 +49,7 @@ public class MappingManager {
 		/* Get all Mapping objects from the database */
 		List<Mapping> mappings = this.mappingImpl.getAll();
 
-		/* Runs the DataFile objects and fills the DataFileTO array  */
+		/* Runs the Mapping objects and fills the MappingTO array  */
 		for(Mapping mapping : mappings){
 			MappingTO mappingTO = mapping.createTransferObject();
 			mappingTOs.add(mappingTO);
