@@ -100,4 +100,8 @@ public class FileOperations {
 
 		return file;
 	}
+
+	public static void createRemoteOutputFile(File outputFile){
+		//TODO this needs to be defined
+	}
 }
