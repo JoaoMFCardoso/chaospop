@@ -57,6 +57,34 @@ public class IndividualMappingManager {
 	}
 
 	/**
+	 * Replaces as existing IndividualMapping in the Database
+	 * @param individualMappingTO The individual Mapping transfer object
+	 * @return 200 if everything went well 500 if not
+	 */
+	@POST
+	@Path("/replaceIndividualMapping")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response replaceIndividualMapping(IndividualMappingTO individualMappingTO){
+		Response response;
+		try{
+			/* Creates the individual mapping from the individual mapping transfer object */
+			IndividualMapping individualMapping = new IndividualMapping(individualMappingTO);
+
+			/* Stores the new individual mapping in the database */
+			this.individualMappingsImpl.replace(individualMappingTO.get_id(), individualMapping);
+
+			/* Creates the Response */
+			response = Response.status(200).build();
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
 	 * This method removes a list of IndividualMapping objects from the database
 	 * @param individualMappingIds The IndividualMapping id list. All ids are sepparated by ",".
 	 * @return 200 if everything went well, 500 if not.
