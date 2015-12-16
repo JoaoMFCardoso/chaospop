@@ -48,19 +48,19 @@ public class BatchImpl implements MongoService<Batch> {
 		/* Appends the various attributes to the database object */
 		batchDBObj.append("_id", batch.getID());
 
-		if(null != batch.getDataFiles()){
+		if(null != batch.getMappings()){
 			List<Object> dataFilesDBList = new BasicDBList();
 
 			/* Runs all DataFile objects id's */
-			for(ObjectId dataFileId : batch.getDataFiles()){
+			for(ObjectId dataFileId : batch.getMappings()){
 				DBObject dataFileIdDBObject = new BasicDBObject();
 
 				/* stores the file name */
-				dataFileIdDBObject.put("dataFile", dataFileId);
+				dataFileIdDBObject.put("mapping", dataFileId);
 				dataFilesDBList.add(dataFileIdDBObject);
 			}
 
-			batchDBObj.append("dataFiles", dataFilesDBList);
+			batchDBObj.append("mappings", dataFilesDBList);
 		}
 
 
@@ -102,9 +102,9 @@ public class BatchImpl implements MongoService<Batch> {
 			case "_id":
 				batch.setID(dbID);
 				break;
-			case "dataFiles":
-				ArrayList<ObjectId> dataFilesDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "dataFile");
-				batch.setDataFiles(dataFilesDBArray);
+			case "mappings":
+				ArrayList<ObjectId> mappingsDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "dataFile");
+				batch.setMappings(mappingsDBArray);
 				break;
 			default:
 				break;

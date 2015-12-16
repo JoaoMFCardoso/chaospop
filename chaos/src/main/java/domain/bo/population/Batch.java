@@ -12,13 +12,13 @@ public class Batch {
 	/** The Batch database id*/
 	private ObjectId _id;
 
-	/** The DataFile objects that are associated with this Batch object */
-	private ArrayList<ObjectId> dataFiles;
+	/** The Mapping objects that are associated with this Batch object */
+	private ArrayList<ObjectId> mappings;
 
 	/** Builds a new Batch object with a unique ObjecId */
 	public Batch() {
 		this._id = new ObjectId();
-		this.dataFiles = null;
+		this.mappings = null;
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class Batch {
 		}else{
 			this._id = new ObjectId(batchTO.get_id());
 		}
-		this.dataFiles = TransferObjectUtils.convertALStringToObjectId(batchTO.getDataFiles());
+		this.mappings = TransferObjectUtils.convertALStringToObjectId(batchTO.getDataFiles());
 	}
 
 	public BatchTO createTransferObject(){
@@ -40,7 +40,7 @@ public class Batch {
 
 		/* Set the BatchTO attributes */
 		bto.set_id(this._id.toString());
-		bto.setDataFiles(TransferObjectUtils.convertALObjectIdToString(this.dataFiles));
+		bto.setDataFiles(TransferObjectUtils.convertALObjectIdToString(this.mappings));
 
 		return bto;
 	}
@@ -60,16 +60,16 @@ public class Batch {
 	}
 
 	/**
-	 * @return the dataFiles
+	 * @return the mappings
 	 */
-	public ArrayList<ObjectId> getDataFiles() {
-		return dataFiles;
+	public ArrayList<ObjectId> getMappings() {
+		return mappings;
 	}
 
 	/**
-	 * @param dataFiles the dataFiles to set
+	 * @param mappings the mappings to set
 	 */
-	public void setDataFiles(ArrayList<ObjectId> dataFiles) {
-		this.dataFiles = dataFiles;
+	public void setMappings(ArrayList<ObjectId> dataFiles) {
+		this.mappings = dataFiles;
 	}
 }
