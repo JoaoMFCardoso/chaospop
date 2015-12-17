@@ -19,8 +19,11 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import properties.PropertiesHandler;
 import utils.PopulationUtils;
+import database.implementations.IndividualMappingsImpl;
 import database.implementations.MappingImpl;
+import database.implementations.NodeImpl;
 import database.implementations.OntologyFileImpl;
+import domain.bo.mappings.IndividualMapping;
 import domain.bo.mappings.Mapping;
 import domain.bo.ontologies.OntologyFile;
 import domain.bo.population.Batch;
@@ -29,6 +32,9 @@ public class PopulationOperations {
 
 	/** The Mapping Database implementation */
 	private MappingImpl mappingImpl;
+
+	/** The IndividualMapping Database Implementation */
+	private IndividualMappingsImpl individualMappingsImpl;
 
 	/** The Batch to be Processed */
 	private Batch batch;
@@ -50,7 +56,10 @@ public class PopulationOperations {
 
 	public PopulationOperations(Batch batch) {
 		this.batch = batch;
+
 		this.mappingImpl = new MappingImpl();
+		this.individualMappingsImpl = new IndividualMappingsImpl();
+
 		this.reasonerFactory = new StructuralReasonerFactory();
 		this.manager = OWLManager.createOWLOntologyManager();
 		this.factory = this.manager.getOWLDataFactory();
@@ -78,9 +87,14 @@ public class PopulationOperations {
 			createOntology(mapping);
 
 			/* Populates the ontology */
+
 		}
 	}
 
+	/**
+	 * Creates an Ontology simply and imports the base ontology and specific ontologies into the created ontology
+	 * @param mapping The Mapping that generates the creation of this ontology
+	 */
 	private void createOntology(Mapping mapping){
 		/* Loads the properties */
 		PropertiesHandler.propertiesLoader();
@@ -132,6 +146,16 @@ public class PopulationOperations {
 			this.manager.saveOntology(ontology, fileOutputStream);
 		} catch (OWLOntologyCreationException | OWLOntologyStorageException | FileNotFoundException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void populateOntology(Mapping mapping){
+		/* Runs the individual Mappings */
+		for(ObjectId individualMappingId : mapping.getIndividualMappings()){
+			/* Gets the IndividualMapping from the database */
+			IndividualMapping individualMapping = this.individualMappingsImpl.get(individualMappingId.toString());
+
+
 		}
 	}
 }

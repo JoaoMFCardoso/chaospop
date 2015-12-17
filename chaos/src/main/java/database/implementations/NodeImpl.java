@@ -176,6 +176,33 @@ public class NodeImpl implements MongoService<Node> {
 		return nodeList;
 	}
 
+	public List<Node> getMatchingTagsInDataFile(String dataFileId, String tag){
+		/* Creates the Node list */
+		List<Node> nodeList = new ArrayList<Node>();
+
+		/* A query is created with the given field */
+		ObjectId dfId = new ObjectId(dataFileId);
+		BasicDBObject query = new BasicDBObject("dataFileId", dfId).append("tag", tag);
+
+		/* Creates the cursor and gets all basic db objects in the collection that match the query*/
+		DBCursor cursor = this.collection.find(query);
+
+		Node node = null;
+		try {
+		   while(cursor.hasNext()) {
+			   /* Gets the object id and converts it to a Node
+				 * The Node is then returned */
+				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
+				node = get(((ObjectId) basicDBObject.get("_id")).toString());
+				nodeList.add(node);
+		   }
+		} finally {
+		   cursor.close();
+		}
+
+		return nodeList;
+	}
+
 	@Override
 	public List<Node> getAll() {
 		/* Creates the Node list */

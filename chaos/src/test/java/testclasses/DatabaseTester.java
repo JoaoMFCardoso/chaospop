@@ -77,22 +77,6 @@ public class DatabaseTester {
 
 		List<IndividualMapping> testIndMapList = indMapImpl.getAll();
 
-		/* NODE */
-
-		Node n1 = new Node();
-
-		n1.setTag("testTag");
-		n1.setValue("value");
-
-		Node n2 = new Node();
-
-		n2.setTag("testTag2");
-		n2.setValue("value2");
-
-		NodeImpl nImpl = new NodeImpl();
-		nImpl.save(n1);
-		nImpl.save(n2);
-
 		/* DATA FILES */
 
 		String f1 = "testf1.xml";
@@ -104,6 +88,30 @@ public class DatabaseTester {
 		df1.setName(f1);
 		df2.setName(f2);
 
+//		df1.setName("testf3.xml");
+//		dfimpl.replace(df1.getID().toString(), df1);
+
+		/* NODE */
+
+		Node n1 = new Node();
+
+		n1.setDataFileId(df1.getID());
+		n1.setTag("testTag");
+		n1.setValue("value");
+
+		Node n2 = new Node();
+
+		n2.setDataFileId(df2.getID());
+		n2.setTag("testTag2");
+		n2.setValue("value2");
+
+		NodeImpl nImpl = new NodeImpl();
+		nImpl.save(n1);
+		nImpl.save(n2);
+
+
+		/* DATAFILE CONT. */
+
 		df1.setNodeID(n1.getID());
 		df2.setNodeID(n2.getID());
 
@@ -111,8 +119,9 @@ public class DatabaseTester {
 		dfimpl.save(df1);
 		dfimpl.save(df2);
 
-//		df1.setName("testf3.xml");
-//		dfimpl.replace(df1.getID().toString(), df1);
+		NodeImpl nodeImpl = new NodeImpl();
+		List<Node> matchingNode = nodeImpl.getMatchingTagsInDataFile(df1.getID().toString(), n1.getTag());
+		System.out.println(matchingNode);
 
 		/* ONTOLOGY FILE */
 
@@ -195,6 +204,8 @@ public class DatabaseTester {
 	public static void main(String[] args) {
 		populate();
 //		dropCollections();
+
+
 	}
 
 }
