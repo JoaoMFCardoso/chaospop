@@ -30,7 +30,7 @@ public class OWLParserImpl implements ParserInterface {
 		OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(file);
 
 		/* Sets  */
-		ontologyFile = ontologyExtractionOperations.setsGeneralOntologyFileAttributes(ontologyFile);
+		ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 		/* Saves the OntologyFile */
 		this.ontologyFileImpl.save(ontologyFile);

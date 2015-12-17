@@ -7,12 +7,12 @@ public class BatchTO {
 	/** The Batch database id*/
 	private String _id;
 
-	/** The DataFile objects that are associated with this Batch object */
-	private ArrayList<String> dataFiles;
+	/** The Mapping objects that are associated with this Batch object */
+	private ArrayList<String> mappingIds;
 
 	public BatchTO() {
 		this._id = null;
-		this.dataFiles = null;
+		this.mappingIds = null;
 	}
 
 	/**
@@ -30,16 +30,16 @@ public class BatchTO {
 	}
 
 	/**
-	 * @return the dataFiles
+	 * @return the mappingIds
 	 */
-	public ArrayList<String> getDataFiles() {
-		return dataFiles;
+	public ArrayList<String> getMappingIds() {
+		return mappingIds;
 	}
 
 	/**
-	 * @param dataFiles the dataFiles to set
+	 * @param mappingIds the mappingIds to set
 	 */
-	public void setDataFiles(ArrayList<String> dataFiles) {
-		this.dataFiles = dataFiles;
+	public void setMappingIds(ArrayList<String> mappingIds) {
+		this.mappingIds = mappingIds;
 	}
 }

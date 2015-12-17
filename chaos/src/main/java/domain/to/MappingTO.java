@@ -7,6 +7,12 @@ public class MappingTO {
 	/** The mapping identifier */
 	private String _id;
 
+	/** The output Ontology file name */
+	private String outputOntologyFileName;
+
+	/**  The output Ontology Namespace */
+	private String outputOntologyNamespace;
+
 	/** The file name. */
 	private ArrayList<String> fileNames;
 
@@ -21,6 +27,8 @@ public class MappingTO {
 
 	public MappingTO() {
 		this._id = null;
+		this.outputOntologyFileName = null;
+		this.outputOntologyNamespace = null;
 		this.fileNames = null;
 		this.specificOntologies = null;
 		this.baseOntology = null;
@@ -39,6 +47,34 @@ public class MappingTO {
 	 */
 	public void set_id(String _id) {
 		this._id = _id;
+	}
+
+	/**
+	 * @return the outputOntologyFileName
+	 */
+	public String getOutputOntologyFileName() {
+		return outputOntologyFileName;
+	}
+
+	/**
+	 * @param outputOntologyFileName the outputOntologyFileName to set
+	 */
+	public void setOutputOntologyFileName(String outputOntologyFileName) {
+		this.outputOntologyFileName = outputOntologyFileName;
+	}
+
+	/**
+	 * @return the outputOntologyNamespace
+	 */
+	public String getOutputOntologyNamespace() {
+		return outputOntologyNamespace;
+	}
+
+	/**
+	 * @param outputOntologyNamespace the outputOntologyNamespace to set
+	 */
+	public void setOutputOntologyNamespace(String outputOntologyNamespace) {
+		this.outputOntologyNamespace = outputOntologyNamespace;
 	}
 
 	/**

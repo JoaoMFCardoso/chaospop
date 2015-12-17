@@ -3,6 +3,7 @@ package domain.bo.mappings;
 import java.util.ArrayList;
 
 import org.bson.types.ObjectId;
+import org.semanticweb.owlapi.model.IRI;
 
 import utils.TransferObjectUtils;
 import domain.to.MappingTO;
@@ -16,7 +17,13 @@ public class Mapping{
 	/** The mapping identifier */
 	private ObjectId _id;
 
-	/** The file name. */
+	/** The output Ontology file name */
+	private String outputOntologyFileName;
+
+	/**  The output Ontology Namespace */
+	private IRI outputOntologyNamespace;
+
+	/** The file list. */
 	private ArrayList<ObjectId> fileList;
 
 	/** The specific ontology IRI. */
@@ -33,6 +40,8 @@ public class Mapping{
 	 */
 	public Mapping() {
 		this._id = new ObjectId();
+		this.outputOntologyFileName = null;
+		this.outputOntologyNamespace = null;
 		this.fileList = null;
 		this.specificOntologies = null;
 		this.baseOntology = null;
@@ -50,6 +59,8 @@ public class Mapping{
 		}else{
 			this._id = new ObjectId(mappingTO.get_id());
 		}
+		this.outputOntologyFileName = mappingTO.getOutputOntologyFileName();
+		this.outputOntologyNamespace = IRI.create(mappingTO.getOutputOntologyNamespace());
 		this.baseOntology = new ObjectId(mappingTO.getBaseOntology());
 		this.fileList = TransferObjectUtils.convertALStringToObjectId(mappingTO.getFileNames());
 		this.specificOntologies = TransferObjectUtils.convertALStringToObjectId(mappingTO.getSpecificOntologies());
@@ -66,6 +77,8 @@ public class Mapping{
 		/* Sets the MappingTO attributes */
 		mto.set_id(this._id.toString());
 		mto.setBaseOntology(this.baseOntology.toString());
+		mto.setOutputOntologyFileName(this.outputOntologyFileName);
+		mto.setOutputOntologyNamespace(this.outputOntologyNamespace.toString());
 
 		if(null == this.specificOntologies){
 			mto.setSpecificOntologies(null);
@@ -111,6 +124,34 @@ public class Mapping{
 	 */
 	public ArrayList<ObjectId> getFileList() {
 		return fileList;
+	}
+
+	/**
+	 * @return the outputOntologyFileName
+	 */
+	public String getOutputOntologyFileName() {
+		return outputOntologyFileName;
+	}
+
+	/**
+	 * @param outputOntologyFileName the outputOntologyFileName to set
+	 */
+	public void setOutputOntologyFileName(String outputOntologyFileName) {
+		this.outputOntologyFileName = outputOntologyFileName;
+	}
+
+	/**
+	 * @return the outputOntologyNamespace
+	 */
+	public IRI getOutputOntologyNamespace() {
+		return outputOntologyNamespace;
+	}
+
+	/**
+	 * @param outputOntologyNamespace the outputOntologyNamespace to set
+	 */
+	public void setOutputOntologyNamespace(IRI outputOntologyNamespace) {
+		this.outputOntologyNamespace = outputOntologyNamespace;
 	}
 
 	/**

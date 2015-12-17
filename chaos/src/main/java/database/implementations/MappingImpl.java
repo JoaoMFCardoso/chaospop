@@ -52,6 +52,8 @@ public class MappingImpl implements MongoService<Mapping> {
 		BasicDBObject mappingDBObj = new BasicDBObject();
 
 		mappingDBObj.append("_id", mapping.getID());
+		mappingDBObj.append("outputOntologyFileName", mapping.getOutputOntologyFileName());
+		mappingDBObj.append("outputOntologyNamespace", MongoUtilities.convertIRItoDB(mapping.getOutputOntologyNamespace()));
 
 		/* Appends the file names */
 		if(null != mapping.getFileList()){
@@ -141,6 +143,12 @@ public class MappingImpl implements MongoService<Mapping> {
 			switch (key) {
 			case "_id":
 				mapping.setID(dbID);
+				break;
+			case "outputOntologyFileName":
+				mapping.setOutputOntologyFileName((String) persistent.get(key));
+				break;
+			case "outputOntologyNamespace":
+				mapping.setOutputOntologyNamespace(MongoUtilities.convertIRIfromDB((String) persistent.get(key)));
 				break;
 			case "fileList":
 				ArrayList<ObjectId> filelistDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "fileId");

@@ -3,6 +3,8 @@ package domain.bo.ontologies;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ontologies.extractor.OntologyExtractionOperations;
+
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -75,6 +77,28 @@ public class OntologyFile extends ParsedFile{
 		ofto.setIndividuals(TransferObjectUtils.convertHMIRISToSS(this.individuals));
 
 		return ofto;
+	}
+
+	/**
+	 * This method sets the general OntologyFile attributes, i.e.,
+	 * the namespace, the classes and individuals and labels.
+	 * @param ontologyExtractionOperations The OntologyExtractionsOperations object
+	 */
+	public void setsGeneralOntologyFileAttributes(OntologyExtractionOperations ontologyExtractionOperations) throws Exception{
+
+		/* Sets the namespace */
+		IRI namespace = ontologyExtractionOperations.getNamespace();
+		this.setNamespace(namespace);
+
+		/* Gets all the classes */
+		ArrayList<IRI> classes = ontologyExtractionOperations.getClasses();
+		this.setClasses(classes);
+
+		/* Gets all the individuals and labels */
+		HashMap<IRI, String> individualsAndLabelsMap = ontologyExtractionOperations.getIndividualsAndLabels();
+		this.setIndividuals(individualsAndLabelsMap);
+
+		return;
 	}
 
 	/**

@@ -44,8 +44,7 @@ public class OntologyManager {
 			/* Sets all OntologyFile attributes that are necessary for this type of ontology file creation */
 			IRI namespaceIRI = IRI.create(namespace);
 			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(namespaceIRI);
-
-			ontologyFile = ontologyExtractionOperations.setsGeneralOntologyFileAttributes(ontologyFile);
+			ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 			/* Saves the OntologyFile */
 			this.ontologyFileImpl.save(ontologyFile);

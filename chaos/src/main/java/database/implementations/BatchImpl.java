@@ -103,7 +103,7 @@ public class BatchImpl implements MongoService<Batch> {
 				batch.setID(dbID);
 				break;
 			case "mappings":
-				ArrayList<ObjectId> mappingsDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "dataFile");
+				ArrayList<ObjectId> mappingsDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "mapping");
 				batch.setMappings(mappingsDBArray);
 				break;
 			default:

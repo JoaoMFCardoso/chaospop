@@ -32,9 +32,9 @@ public class DatabaseConnector {
 	public DatabaseConnector() {
 		PropertiesHandler.propertiesLoader();
 
-		String host = PropertiesHandler.configProperties.getProperty("host");
-		Integer port = Integer.valueOf(PropertiesHandler.configProperties.getProperty("port"));
-		String databaseName = PropertiesHandler.configProperties.getProperty("database.name");
+		String host = PropertiesHandler.configProperties.getProperty("db.host");
+		Integer port = Integer.valueOf(PropertiesHandler.configProperties.getProperty("db.port"));
+		String databaseName = PropertiesHandler.configProperties.getProperty("db.name");
 
 		try {
 			this.mongoClient = new MongoClient(host, port);

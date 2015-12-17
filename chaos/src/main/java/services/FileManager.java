@@ -23,6 +23,7 @@ import database.implementations.DataFileImpl;
 import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
 import file.operations.FileOperations;
+import file.sftp.SFTPServerConnectionManager;
 
 /**
  * This class implements a jax rs service layer
@@ -77,6 +78,41 @@ public class FileManager {
 		return response;
 	}
 
+	/**
+	 * Downloads a file from the SFTP server
+	 * @param fileName
+	 * @return
+	 */
+	@GET
+	@Path("/downloadFile")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response downloadFile(@FormParam("fileName") String fileName) {
+		File file = null;
+		Response response;
+		try{
+
+		/* Gets the file from the SFTP server */
+		SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
+		String localPath = sftpManager.downloadSFTPFile(fileName);
+		file = new File(localPath);
+		sftpManager.disconnect();
+
+		/* Gets the Response */
+		response = Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
+        .build();
+	}catch(Exception exception){
+		exception.printStackTrace();
+		/* Sends a response that is not ok */
+		response = Response.status(500).build();
+	}finally{
+		/* Deletes the temporarily created file */
+		file.delete();
+		FileOperationsUtils.deleteDirectoryStructure(file);
+	}
+
+	return response;
+	}
 
 	/**
 	 * This method returns all the DataFiles stored in the database

@@ -32,7 +32,7 @@ public class Batch {
 		}else{
 			this._id = new ObjectId(batchTO.get_id());
 		}
-		this.mappings = TransferObjectUtils.convertALStringToObjectId(batchTO.getDataFiles());
+		this.mappings = TransferObjectUtils.convertALStringToObjectId(batchTO.getMappingIds());
 	}
 
 	public BatchTO createTransferObject(){
@@ -40,7 +40,7 @@ public class Batch {
 
 		/* Set the BatchTO attributes */
 		bto.set_id(this._id.toString());
-		bto.setDataFiles(TransferObjectUtils.convertALObjectIdToString(this.mappings));
+		bto.setMappingIds(TransferObjectUtils.convertALObjectIdToString(this.mappings));
 
 		return bto;
 	}
@@ -69,7 +69,7 @@ public class Batch {
 	/**
 	 * @param mappings the mappings to set
 	 */
-	public void setMappings(ArrayList<ObjectId> dataFiles) {
-		this.mappings = dataFiles;
+	public void setMappings(ArrayList<ObjectId> mappings) {
+		this.mappings = mappings;
 	}
 }

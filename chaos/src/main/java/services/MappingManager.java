@@ -125,7 +125,7 @@ public class MappingManager {
 	 * @return An Array with all DataFileTO transfer objects that represent the DataFile objects assigned to the Mapping
 	 */
 	@POST
-	@Path("/getAllDataFilesFromMapping")
+	@Path("/getAllMappingsFromMapping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<DataFileTO> getAllDataFilesFromMapping(@FormParam("mappingId") String mappingId){
 		ArrayList<DataFileTO> dataFileTOList = new ArrayList<DataFileTO>();
