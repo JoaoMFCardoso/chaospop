@@ -1,8 +1,16 @@
 package utils;
 
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import java.util.ArrayList;
 
 import ontologies.extractor.OntologyExtractionOperations;
+
+import org.bson.types.ObjectId;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+
+import database.implementations.NodeImpl;
+import domain.bo.mappings.IndividualMapping;
+import domain.bo.mappings.Mapping;
+import domain.bo.parsers.Node;
 
 public class PopulationUtils {
 
@@ -21,5 +29,30 @@ public class PopulationUtils {
 		ontologyExtractionOperations.importOntologies(baseOntologyExtractionOperations.getImportedOntologiesList());
 
 		return;
+	}
+
+	/**
+	 * Gets the Node in the database which matches the tag of a given IndividualMapping, within the range set by a Mapping's DataFile list
+	 * @param mapping The Mapping who sets the range to search
+	 * @param individualMapping The IndividualMapping whose tag is going to be the query attribute
+	 * @return A Node if there are any results, null otherwise
+	 */
+	public static Node getIndividualMappingMatchingNode(Mapping mapping, IndividualMapping individualMapping){
+		NodeImpl nodeImpl = new NodeImpl();
+		String individualMappingTag = individualMapping.getTag();
+
+		/* Runs the Mapping file list  */
+		Node node = null;
+		for(ObjectId dataFileId : mapping.getFileList()){
+			ArrayList<Node> queryResults =  (ArrayList<Node>) nodeImpl.getMatchingTagsInDataFile(dataFileId.toString(), individualMappingTag);
+
+		/* Checks if there are any results for the query. If there are it returns the Node */
+			if(!queryResults.isEmpty()){
+				node = queryResults.get(0);
+				break;
+			}
+		}
+
+		return node;
 	}
 }

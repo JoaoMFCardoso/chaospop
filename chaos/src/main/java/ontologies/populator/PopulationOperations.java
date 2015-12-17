@@ -21,11 +21,11 @@ import properties.PropertiesHandler;
 import utils.PopulationUtils;
 import database.implementations.IndividualMappingsImpl;
 import database.implementations.MappingImpl;
-import database.implementations.NodeImpl;
 import database.implementations.OntologyFileImpl;
 import domain.bo.mappings.IndividualMapping;
 import domain.bo.mappings.Mapping;
 import domain.bo.ontologies.OntologyFile;
+import domain.bo.parsers.Node;
 import domain.bo.population.Batch;
 
 public class PopulationOperations {
@@ -155,7 +155,7 @@ public class PopulationOperations {
 			/* Gets the IndividualMapping from the database */
 			IndividualMapping individualMapping = this.individualMappingsImpl.get(individualMappingId.toString());
 
-
+			Node node = PopulationUtils.getIndividualMappingMatchingNode(mapping, individualMapping);
 		}
 	}
 }
