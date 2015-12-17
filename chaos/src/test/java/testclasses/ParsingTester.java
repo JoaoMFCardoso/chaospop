@@ -2,10 +2,8 @@ package testclasses;
 
 import java.io.File;
 
-import file.operations.FileOperations;
-import parsing.parsers.XMLParserImpl;
 import properties.PropertiesHandler;
-import services.FileManager;
+import file.operations.FileOperations;
 
 public class ParsingTester {
 

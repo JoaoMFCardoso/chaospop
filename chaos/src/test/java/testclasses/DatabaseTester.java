@@ -18,6 +18,7 @@ import domain.bo.mappings.Mapping;
 import domain.bo.ontologies.OntologyFile;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import domain.bo.population.Batch;
 
 public class DatabaseTester {
 
@@ -119,9 +120,9 @@ public class DatabaseTester {
 		OntologyFile of2 = new OntologyFile();
 		OntologyFile of3 = new OntologyFile();
 
-		IRI o1 = IRI.create("http://timbus.teco.edu/public/ontologies/DSOs/DLLDSO.owl#");
-		IRI o2 = IRI.create("http://timbus.teco.edu/public/ontologies/DSOs/DASAJ.owl#");
-		IRI o3 = IRI.create("http://timbus.teco.edu/ontologies/Scenarios/wp8_CAD_CAM.owl#");
+		IRI o1 = IRI.create("http://sysresearch.org/ontologies/UO.owl");
+		IRI o2 = IRI.create("http://sysresearch.org/ontologies/scenarios/lnec_dll.owl");
+		IRI o3 = IRI.create("http://sysresearch.org/ontologies/scenarios/lnec.owl#");
 
 		of1.setNamespace(o1);
 		of2.setNamespace(o2);
@@ -142,6 +143,9 @@ public class DatabaseTester {
 		files.add(df2.getID());
 		m.setFileList(files);
 
+		m.setOutputOntologyFileName("testPopulation");
+		m.setOutputOntologyNamespace(IRI.create("http://timbus.teco.edu/public/ontologies/DSOs/testPopulation.owl#"));
+
 		m.setBaseOntology(of3.getID());
 
 		ArrayList<ObjectId> ios = new ArrayList<ObjectId>();
@@ -158,6 +162,14 @@ public class DatabaseTester {
 
 		MappingImpl mimpl = new MappingImpl();
 		mimpl.save(m);
+
+		Batch b = new Batch();
+		ArrayList<ObjectId> mapId = new ArrayList<ObjectId>();
+		mapId.add(m.getID());
+		b.setMappings(mapId);
+
+		BatchImpl bimpl = new BatchImpl();
+		bimpl.save(b);
 	}
 
 	public static void dropCollections(){
