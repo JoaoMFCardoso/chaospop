@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -35,6 +36,9 @@ public class JSONParserImpl implements ParserInterface {
 
 	@Override
 	public void parseFile(File jsonFile) throws Exception {
+		DataFile dataFile = new DataFile();
+		ObjectId dataFileId = dataFile.getID();
+
 		try{
 			JSONTokener jsonTokener = new JSONTokener(new FileReader(jsonFile));
 			JSONObject root = new JSONObject(jsonTokener);
@@ -42,18 +46,19 @@ public class JSONParserImpl implements ParserInterface {
 			/* Creates the root node */
 			Node rootNode = new Node();
 			rootNode.setTag("root");
+			rootNode.setDataFileId(dataFileId);
 
 			/* Stores the rootNode */
 			this.nodeImpl.save(rootNode);
 
 			/* Handles the json object */
-			jsonObjectHandler(root, rootNode);
+			jsonObjectHandler(dataFileId, root, rootNode);
 
 			/* replaces the rootNode */
 			this.nodeImpl.replace(rootNode.getID().toString(), rootNode);
 
 			/* Stores the DataFile */
-			storeDataFile(jsonFile, rootNode);
+			storeDataFile(dataFile, jsonFile, rootNode);
 
 		}catch(Exception exception){
 			exception.printStackTrace();
@@ -62,12 +67,12 @@ public class JSONParserImpl implements ParserInterface {
 	}
 
 	/**
-	 * This method creates a DataFile object and stores it in the database
+	 * This method gets a DataFile object and stores it in the database
+	 * @param dataFile The DataFile Object
 	 * @param file The file
 	 * @param node The node
 	 */
-	private void storeDataFile(File file, Node node){
-		DataFile dataFile = new DataFile();
+	private void storeDataFile(DataFile dataFile, File file, Node node){
 
 		/* Sets the DataFile object attributes */
 		dataFile.setName(file.getName());
@@ -84,11 +89,14 @@ public class JSONParserImpl implements ParserInterface {
 	 * @param parent the parent
 	 */
 	@SuppressWarnings("unchecked")
-	private void jsonObjectHandler(JSONObject jsonObject, Node parent){
+	private void jsonObjectHandler(ObjectId dataFileId, JSONObject jsonObject, Node parent){
 
 		Iterator<String> iterator = jsonObject.keys();
 		while(iterator.hasNext()){
 			Node childNode = new Node();
+
+			/* Set the DataFile id */
+			childNode.setDataFileId(dataFileId);
 
 			/* Set parent child relations */
 			parent.initializeChildren();
@@ -104,7 +112,7 @@ public class JSONParserImpl implements ParserInterface {
 			/* Saves the childNode */
 			this.nodeImpl.save(childNode);
 
-			jsonValueHandler(childNode, key, jsonObject.get((String) key));
+			jsonValueHandler(dataFileId, childNode, key, jsonObject.get((String) key));
 
 			/* replaces the childNode */
 			this.nodeImpl.replace(childNode.getID().toString(), childNode);
@@ -117,11 +125,14 @@ public class JSONParserImpl implements ParserInterface {
 	 * @param jsonArray the json array
 	 * @param parent the parent
 	 */
-	private void jsonArrayHandler(JSONArray jsonArray, Node parent){
+	private void jsonArrayHandler(ObjectId dataFileId, JSONArray jsonArray, Node parent){
 		/* Runs the array and looks for the key object */
 		for (int i = 0; i < jsonArray.length(); i++) {
 
 			Node arrayNode = new Node();
+
+			/* Set the DataFile id */
+			arrayNode.setDataFileId(dataFileId);
 
 			/* Set parent child relations */
 			parent.initializeChildren();
@@ -134,7 +145,7 @@ public class JSONParserImpl implements ParserInterface {
 			/* saves the arrayNode */
 			this.nodeImpl.save(arrayNode);
 
-			jsonValueHandler(arrayNode, jsonArray.get(i).getClass().getSimpleName(), jsonArray.get(i));
+			jsonValueHandler(dataFileId, arrayNode, jsonArray.get(i).getClass().getSimpleName(), jsonArray.get(i));
 
 			/* replaces the arrayNode */
 			this.nodeImpl.replace(arrayNode.getID().toString(), arrayNode);
@@ -148,7 +159,7 @@ public class JSONParserImpl implements ParserInterface {
 	 * @param key the key
 	 * @param value the value
 	 */
-	private void jsonValueHandler(Node node, String key, Object value){
+	private void jsonValueHandler(ObjectId dataFileId, Node node, String key, Object value){
 
 		/* Checks the value type */
 		switch (value.getClass().getSimpleName()) {
@@ -156,10 +167,10 @@ public class JSONParserImpl implements ParserInterface {
 			node.setValue((String) value);
 			break;
 		case "JSONObject":
-			jsonObjectHandler((JSONObject) value, node);
+			jsonObjectHandler(dataFileId, (JSONObject) value, node);
 			break;
 		case "JSONArray": /* Checks each array element and calls the json Object handler */
-			jsonArrayHandler((JSONArray) value, node);
+			jsonArrayHandler(dataFileId, (JSONArray) value, node);
 			break;
 		case "Integer":
 			node.setValue(Integer.toString((Integer) value));

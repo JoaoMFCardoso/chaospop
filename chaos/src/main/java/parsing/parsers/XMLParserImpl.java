@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -40,6 +41,8 @@ public class XMLParserImpl implements ParserInterface {
 	@Override
 	public void parseFile(File file) throws Exception{
 		SAXBuilder builder = new SAXBuilder();
+		DataFile dataFile = new DataFile();
+		ObjectId dataFileId = dataFile.getID();
 
 		try {
 			Document document = (Document) builder.build(file);
@@ -49,6 +52,9 @@ public class XMLParserImpl implements ParserInterface {
 			Element xmlRoot = document.getRootElement();
 
 			Node node = new Node();
+
+			/* Set the DataFile id */
+			node.setDataFileId(dataFileId);
 
 			node.setTag(xmlRoot.getName());
 
@@ -78,11 +84,11 @@ public class XMLParserImpl implements ParserInterface {
 				node.initializeChildren();
 
 				/* Recursively handles the rest of the elements */
-				XMLNodeFiller(xmlRoot, node);
+				XMLNodeFiller(dataFileId, xmlRoot, node);
 			}
 
 			/* Stores the DataFile in the database */
-			storeDataFile(file, node);
+			storeDataFile(dataFile, file, node);
 
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
@@ -95,12 +101,12 @@ public class XMLParserImpl implements ParserInterface {
 
 	/**
 	 * XML node filler.
-	 *
+	 * @param dataFileId The id of the DataFile
 	 * @param xmlParent the xml parent
 	 * @param parentNode the parent node
 	 */
 	@SuppressWarnings("unchecked")
-	private void XMLNodeFiller(Element xmlParent, Node parentNode){
+	private void XMLNodeFiller(ObjectId dataFileId, Element xmlParent, Node parentNode){
 		/* Gets the parent's children */
 		List<Element> childList = xmlParent.getChildren();
 
@@ -108,6 +114,9 @@ public class XMLParserImpl implements ParserInterface {
 		for(Element child : childList){
 			/* Creates the Node and fills it */
 			Node node = new Node();
+
+			/* Set the DataFile id */
+			node.setDataFileId(dataFileId);
 
 			/* Sets the Node's parent Node */
 			node.setParent(parentNode.getID());
@@ -148,7 +157,7 @@ public class XMLParserImpl implements ParserInterface {
 				node.initializeChildren();
 
 				/* If the child has children recursively call the XMLNodeFiller */
-				XMLNodeFiller(child, node);
+				XMLNodeFiller(dataFileId, child, node);
 			}
 		}
 
@@ -157,12 +166,12 @@ public class XMLParserImpl implements ParserInterface {
 	}
 
 	/**
-	 * This method creates a DataFile object and stores it in the database
+	 * This method gets a DataFile object and stores it in the database
+	 * @param dataFile The DataFile Object
 	 * @param file The file
 	 * @param node The node
 	 */
-	private void storeDataFile(File file, Node node){
-		DataFile dataFile = new DataFile();
+	private void storeDataFile(DataFile dataFile, File file, Node node){
 
 		/* Sets the DataFile object attributes */
 		dataFile.setName(file.getName());

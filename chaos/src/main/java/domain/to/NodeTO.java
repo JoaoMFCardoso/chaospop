@@ -19,6 +19,9 @@ public class NodeTO {
 	/** The node id */
 	private String _id;
 
+	/** The dataFile id */
+	private String dataFileId;
+
 	/** The children. */
 	@XmlElementWrapper(name = "childrenIDs")
 	@XmlElement(name = "childID")
@@ -44,6 +47,7 @@ public class NodeTO {
 	/** The constructor. */
 	public NodeTO() {
 		this._id = null;
+		this.dataFileId = null;
 		this.children = null;
 		this.parent = null;
 		this.tag = null;
@@ -64,6 +68,20 @@ public class NodeTO {
 	 */
 	public void set_id(String _id) {
 		this._id = _id;
+	}
+
+	/**
+	 * @return the dataFileId
+	 */
+	public String getDataFileId() {
+		return dataFileId;
+	}
+
+	/**
+	 * @param dataFileId the dataFileId to set
+	 */
+	public void setDataFileId(String dataFileId) {
+		this.dataFileId = dataFileId;
 	}
 
 	/**

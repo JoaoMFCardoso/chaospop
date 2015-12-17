@@ -53,6 +53,7 @@ public class NodeImpl implements MongoService<Node> {
 
 		/* Appends the various attributes to the database object */
 		nodeDBObj.append("_id", node.getID());
+		nodeDBObj.append("dataFileId", node.getDataFileId());
 		nodeDBObj.append("parent", node.getParent());
 		nodeDBObj.append("tag", node.getTag());
 		nodeDBObj.append("value", node.getValue());
@@ -118,6 +119,9 @@ public class NodeImpl implements MongoService<Node> {
 			/* Creates the Node based on the keys */
 			switch (key) {
 			case "_id":
+				node.setID(dbID);
+				break;
+			case "dataFileId":
 				node.setID(dbID);
 				break;
 			case "parent":

@@ -17,6 +17,9 @@ public class Node{
 	/** The node id */
 	private ObjectId _id;
 
+	/** The DataFile id */
+	private ObjectId dataFileId;
+
 	/** The children. */
 	private ArrayList<ObjectId> children;
 
@@ -40,6 +43,7 @@ public class Node{
 	 */
 	public Node(){
 		this._id = new ObjectId();
+		this.dataFileId = null;
 		this.children = null;
 		this.parent = null;
 		this.tag = null;
@@ -59,6 +63,7 @@ public class Node{
 		}else{
 			this._id = new ObjectId(nodeTO.get_id());
 		}
+		this.dataFileId = new ObjectId(nodeTO.getDataFileId());
 		this.children = TransferObjectUtils.convertALStringToObjectId(nodeTO.getChildren());
 		this.parent = new ObjectId(nodeTO.getParent());
 		this.tag = nodeTO.getTag();
@@ -76,6 +81,7 @@ public class Node{
 
 		/* Sets the NodeTO class attributes */
 		nodeTO.set_id(this._id.toString());
+		nodeTO.setDataFileId(this.dataFileId.toString());
 		nodeTO.setTag(this.tag);
 		nodeTO.setHasAttributes(this.hasAttributes);
 
@@ -118,6 +124,20 @@ public class Node{
 	 */
 	public void setID(ObjectId id) {
 		this._id = id;
+	}
+
+	/**
+	 * @return the dataFileId
+	 */
+	public ObjectId getDataFileId() {
+		return dataFileId;
+	}
+
+	/**
+	 * @param dataFileId the dataFileId to set
+	 */
+	public void setDataFileId(ObjectId dataFileId) {
+		this.dataFileId = dataFileId;
 	}
 
 	/**
