@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -15,6 +16,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -50,6 +52,10 @@ public class OntologyExtractionOperations {
 
 	/** The OWL Reasoner */
 	private OWLReasoner reasoner;
+
+	/******************************************************************************************************************************
+	 * CONSTRUCTORS
+	 ******************************************************************************************************************************/
 
 	/**
 	 * This constructor initializes the manager, data factory, reasoner factory, reasoner and ontology based on a file
@@ -105,28 +111,29 @@ public class OntologyExtractionOperations {
 	}
 
 	/**
-	 * This method sets the general OntologyFile attributes, i.e.,
-	 * the namespace, the classes and individuals and labels.
-	 * @param ontologyFile The OntologyFile object to be filled
-	 * @return The filled OntologyFile object
+	 * This constructor is used for the PopulationOperations class so as to reuse all the Objects that have been used to create the new ontology
+	 * @param manager The OWL Ontologies Manager
+	 * @param factory The OWL Data Factory
+	 * @param reasonerFactory The OWL Reasoner Factory
+	 * @param ontology The OWL Ontology
+	 * @param reasoner The OWL Reasoner
 	 */
-	public OntologyFile setsGeneralOntologyFileAttributes(OntologyFile ontologyFile){
-		OntologyFile of = ontologyFile;
+	public OntologyExtractionOperations(OWLOntologyManager manager,
+			OWLDataFactory factory,
+			OWLReasonerFactory reasonerFactory,
+			OWLOntology ontology,
+			OWLReasoner reasoner){
 
-		/* Sets the namespace */
-		IRI namespace = getNamespace();
-		of.setNamespace(namespace);
-
-		/* Gets all the classes */
-		ArrayList<IRI> classes = getClasses();
-		of.setClasses(classes);
-
-		/* Gets all the individuals and labels */
-		HashMap<IRI, String> individualsAndLabelsMap = getIndividualsAndLabels();
-		of.setIndividuals(individualsAndLabelsMap);
-
-		return of;
+		this.reasonerFactory = reasonerFactory;
+		this.manager = manager;
+		this.factory = factory;
+		this.ontology = ontology;
+		this.reasoner = reasoner;
 	}
+
+	/******************************************************************************************************************************
+	 * ONTOLOGY CREATION METHODS
+	 ******************************************************************************************************************************/
 
 	/**
 	 * This method returns the namespace of an Ontology
@@ -134,6 +141,68 @@ public class OntologyExtractionOperations {
 	 */
 	public IRI getNamespace(){
 		return this.ontology.getOntologyID().getOntologyIRI().get();
+	}
+
+	/**
+	 * Imports an ontology into the existing ontology
+	 * @param baseOntologyNamespace
+	 */
+	public void importOntology(IRI ontologyNamespace){
+		/* Imports the ontology into the loaded ontology */
+		OWLImportsDeclaration candidateOntology = this.factory.getOWLImportsDeclaration(ontologyNamespace);
+		manager.applyChange(new AddImport(this.ontology, candidateOntology));
+	}
+
+	/**
+	 * Imports a list of candidate ontologies
+	 * @param ontologyList A list of candidate ontologies IRI's
+	 */
+	public void importOntologies(Set<OWLOntology> ontologyList){
+
+		/* Runs the candidate ontologies and imports them as necessary */
+		for(OWLOntology candidateOntology : ontologyList){
+
+			/* Checks if the candidate ontology has been previously imported */
+			if(isImported(candidateOntology)){
+				continue;
+			}else{
+				/* Imports the candidate ontology */
+				importOntology(IRI.create(candidateOntology.getOntologyID().getOntologyIRI().toString() + "#"));
+			}
+		}
+
+		return;
+	}
+
+	/**
+	 * Checks if a given ontology IRI exists in the loaded Ontology's imports
+	 * @param ontology The candidate ontology
+	 * @return true if it exists, false otherwise.
+	 */
+	private Boolean isImported(OWLOntology ontology){
+		boolean imported = false;
+
+		/* Gets the imported Ontologies for the loaded Ontology */
+		Set<OWLOntology> importedOntologies = manager.getImports(this.ontology);
+
+		/* Checks if the candidate Ontology has been previously imported */
+		for(OWLOntology importedOntology : importedOntologies){
+			if(ontology.getOntologyID().getOntologyIRI().equals(importedOntology.getOntologyID().getOntologyIRI())){
+				imported = true;
+				continue;
+			}
+		}
+
+		return imported;
+	}
+
+	/******************************************************************************************************************************
+	 * ONTOLOGY EXTRACTION METHODS
+	 ******************************************************************************************************************************/
+
+	public Set<OWLOntology> getImportedOntologiesList(){
+		/* Gets the imported Ontologies for the loaded Ontology */
+		return manager.getImports(this.ontology);
 	}
 
 	/**
