@@ -7,6 +7,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
 
+import utils.PopulationUtils;
 import database.implementations.BatchImpl;
 import database.implementations.DataFileImpl;
 import database.implementations.IndividualMappingsImpl;
@@ -119,18 +120,14 @@ public class DatabaseTester {
 		dfimpl.save(df1);
 		dfimpl.save(df2);
 
-		NodeImpl nodeImpl = new NodeImpl();
-		List<Node> matchingNode = nodeImpl.getMatchingTagsInDataFile(df1.getID().toString(), n1.getTag());
-		System.out.println(matchingNode);
-
 		/* ONTOLOGY FILE */
 
 		OntologyFile of1 = new OntologyFile();
 		OntologyFile of2 = new OntologyFile();
 		OntologyFile of3 = new OntologyFile();
 
-		IRI o1 = IRI.create("http://sysresearch.org/ontologies/UO.owl");
-		IRI o2 = IRI.create("http://sysresearch.org/ontologies/scenarios/lnec_dll.owl");
+		IRI o1 = IRI.create("http://sysresearch.org/ontologies/UO.owl#");
+		IRI o2 = IRI.create("http://sysresearch.org/ontologies/scenarios/lnec_dll.owl#");
 		IRI o3 = IRI.create("http://sysresearch.org/ontologies/scenarios/lnec.owl#");
 
 		of1.setNamespace(o1);

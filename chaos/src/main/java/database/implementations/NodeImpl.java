@@ -176,6 +176,12 @@ public class NodeImpl implements MongoService<Node> {
 		return nodeList;
 	}
 
+	/**
+	 * Gets the Nodes from a specific DataFile that match a certain tag
+	 * @param dataFileId The DataFile object Id
+	 * @param tag The string to be matched
+	 * @return A list of all matching Nodes.
+	 */
 	public List<Node> getMatchingTagsInDataFile(String dataFileId, String tag){
 		/* Creates the Node list */
 		List<Node> nodeList = new ArrayList<Node>();

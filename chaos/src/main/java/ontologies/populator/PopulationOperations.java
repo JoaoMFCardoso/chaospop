@@ -3,6 +3,7 @@ package ontologies.populator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 import ontologies.extractor.OntologyExtractionOperations;
 
@@ -49,10 +50,10 @@ public class PopulationOperations {
 	private OWLReasonerFactory reasonerFactory;
 
 	/** The OWL Ontology */
-	//private OWLOntology ontology;
+	private OWLOntology ontology;
 
 	/** The OWL Reasoner */
-	//private OWLReasoner reasoner;
+	private OWLReasoner reasoner;
 
 	public PopulationOperations(Batch batch) {
 		this.batch = batch;
@@ -87,9 +88,13 @@ public class PopulationOperations {
 			createOntology(mapping);
 
 			/* Populates the ontology */
-
+			populateOntology(mapping);
 		}
 	}
+
+	/*******************************************************************************************************************
+	 * General Ontology Creation Processor Methods
+	 *******************************************************************************************************************/
 
 	/**
 	 * Creates an Ontology simply and imports the base ontology and specific ontologies into the created ontology
@@ -124,8 +129,10 @@ public class PopulationOperations {
 			/* Creates the ontology for this mapping */
 			ontology = manager.createOntology(mapping.getOutputOntologyNamespace());
 
-			/* Initializes an OntologyExtractionOperations Object in order to use its methods to import the base ontology and specific ontologies */
+			/* Initializes an OntologyExtractionOperations Object in order to use its methods to
+			 * import the base ontology and specific ontologies */
 			OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
+			this.reasoner = reasoner;
 			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(this.manager,
 					this.factory,
 					this.reasonerFactory,
@@ -144,18 +151,52 @@ public class PopulationOperations {
 
 			/* Saves the new ontology */
 			this.manager.saveOntology(ontology, fileOutputStream);
+			this.ontology = ontology;
 		} catch (OWLOntologyCreationException | OWLOntologyStorageException | FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Populates an Ontology given a mapping
+	 * @param mapping The Mapping object that holds all necessary mapping data to populate an ontology based on DataFiles
+	 */
 	private void populateOntology(Mapping mapping){
 		/* Runs the individual Mappings */
 		for(ObjectId individualMappingId : mapping.getIndividualMappings()){
 			/* Gets the IndividualMapping from the database */
 			IndividualMapping individualMapping = this.individualMappingsImpl.get(individualMappingId.toString());
 
-			Node node = PopulationUtils.getIndividualMappingMatchingNode(mapping, individualMapping);
+			/* Gets the list of Nodes that match the IndividualMapping tag */
+			ArrayList<Node> nodeList = PopulationUtils.getIndividualMappingMatchingNode(mapping, individualMapping);
+
+			/* Populates all the matching Nodes */
+			processNodes(nodeList, individualMapping);
 		}
+	}
+
+	/**
+	 * Runs the Node list and creates an individual for each Node instance, according to the rules
+	 * specified in the IndividualMapping object.
+	 * @param nodeList An ArrayList of Nodes that will be processed to create OWLIndividuals
+	 * @param individualMapping The IndividualMapping object that specifies the rules of the population
+	 */
+	private void processNodes(ArrayList<Node> nodeList, IndividualMapping individualMapping){
+		/* Runs the Node List */
+		for(Node node : nodeList){
+			createIndividual(node, individualMapping);
+		}
+	}
+
+	/*********************************************************************************************************************
+	 * Individual Creation Methods
+	 *********************************************************************************************************************/
+
+	private void createIndividual(Node node, IndividualMapping individualMapping){
+
+		/* Creates the Individual Name and Label */
+		String individualName = PopulationUtils.createIndividualName(node, individualMapping);
+		String individuallabel = PopulationUtils.createIndividualLabel(node, individualMapping);
+		System.out.println("\n\nName: " + individualName + "\nLabel: " +individuallabel);
 	}
 }
