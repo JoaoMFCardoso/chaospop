@@ -83,7 +83,7 @@ public class FileManager {
 	 * @param fileName
 	 * @return
 	 */
-	@GET
+	@POST
 	@Path("/downloadFile")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response downloadFile(@FormParam("fileName") String fileName) {
