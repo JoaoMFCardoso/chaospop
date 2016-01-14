@@ -8,10 +8,13 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -24,10 +27,12 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
+import utils.PopulationUtils;
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
 
@@ -36,7 +41,7 @@ import domain.bo.ontologies.OntologyFile;
  * @author João Cardoso
  *
  */
-public class OntologyExtractionOperations {
+public class OntologyOperations {
 
 	/** The OWL Ontologies Manager */
 	private OWLOntologyManager manager;
@@ -62,7 +67,7 @@ public class OntologyExtractionOperations {
 	 * @param file The owl file
 	 * @throws OWLOntologyCreationException
 	 */
-	public OntologyExtractionOperations(File file) throws OWLOntologyCreationException{
+	public OntologyOperations(File file) throws OWLOntologyCreationException{
 		this.reasonerFactory = new StructuralReasonerFactory();
 		this.manager = OWLManager.createOWLOntologyManager();
 		this.factory = this.manager.getOWLDataFactory();
@@ -75,7 +80,7 @@ public class OntologyExtractionOperations {
 	 * @param ontologyNamespace A IRI that is published online
 	 * @throws OWLOntologyCreationException
 	 */
-	public OntologyExtractionOperations(IRI ontologyNamespace) throws OWLOntologyCreationException{
+	public OntologyOperations(IRI ontologyNamespace) throws OWLOntologyCreationException{
 		this.reasonerFactory = new StructuralReasonerFactory();
 		this.manager = OWLManager.createOWLOntologyManager();
 		this.factory = this.manager.getOWLDataFactory();
@@ -88,7 +93,7 @@ public class OntologyExtractionOperations {
 	 * @param ontologyFileId The ontology id in the database
 	 * @throws OWLOntologyCreationException
 	 */
-	public OntologyExtractionOperations(String ontologyFileId) throws OWLOntologyCreationException{
+	public OntologyOperations(String ontologyFileId) throws OWLOntologyCreationException{
 		/* Gets the OntologyFile from the database */
 		OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
 		OntologyFile ontologyFile = ontologyFileImpl.get(ontologyFileId);
@@ -118,7 +123,7 @@ public class OntologyExtractionOperations {
 	 * @param ontology The OWL Ontology
 	 * @param reasoner The OWL Reasoner
 	 */
-	public OntologyExtractionOperations(OWLOntologyManager manager,
+	public OntologyOperations(OWLOntologyManager manager,
 			OWLDataFactory factory,
 			OWLReasonerFactory reasonerFactory,
 			OWLOntology ontology,
@@ -134,30 +139,33 @@ public class OntologyExtractionOperations {
 	/******************************************************************************************************************************
 	 * ONTOLOGY CREATION METHODS
 	 ******************************************************************************************************************************/
-
 	/**
-	 * This method returns the namespace of an Ontology
-	 * @return The IRI namespace of the given ontology
+	 * Gets a set of Ontologies that imported into the original Ontology
+	 * @return A Set<OWLOntology> with the imported ontologies
 	 */
-	public IRI getNamespace(){
-		return this.ontology.getOntologyID().getOntologyIRI().get();
+	public Set<OWLOntology> getImportedOntologiesList(){
+		/* Gets the imported Ontologies for the loaded Ontology */
+		Set<OWLOntology> importedOntologies = this.manager.getImports(this.ontology);
+		return importedOntologies;
 	}
 
 	/**
 	 * Imports an ontology into the existing ontology
 	 * @param baseOntologyNamespace
+	 * @throws OWLOntologyCreationException
 	 */
-	public void importOntology(IRI ontologyNamespace){
+	private void importOntology(IRI ontologyNamespace){
 		/* Imports the ontology into the loaded ontology */
 		OWLImportsDeclaration candidateOntology = this.factory.getOWLImportsDeclaration(ontologyNamespace);
-		manager.applyChange(new AddImport(this.ontology, candidateOntology));
+		this.manager.applyChange(new AddImport(this.ontology, candidateOntology));
 	}
 
 	/**
 	 * Imports a list of candidate ontologies
 	 * @param ontologyList A list of candidate ontologies IRI's
+	 * @throws OWLOntologyCreationException
 	 */
-	public void importOntologies(Set<OWLOntology> ontologyList){
+	public void importOntologies(Set<OWLOntology> ontologyList) throws OWLOntologyCreationException{
 
 		/* Runs the candidate ontologies and imports them as necessary */
 		for(OWLOntology candidateOntology : ontologyList){
@@ -167,7 +175,9 @@ public class OntologyExtractionOperations {
 				continue;
 			}else{
 				/* Imports the candidate ontology */
-				importOntology(IRI.create(candidateOntology.getOntologyID().getOntologyIRI().toString() + "#"));
+				IRI candidateOntologyIRI = IRI.create(candidateOntology.getOntologyID().getOntologyIRI().get().toString() + "#");
+				this.manager.loadOntology(candidateOntologyIRI);
+				importOntology(candidateOntologyIRI);
 			}
 		}
 
@@ -196,13 +206,38 @@ public class OntologyExtractionOperations {
 		return imported;
 	}
 
+	/**
+	 * This method creates an annotation assertion axiom, associating an owl class with a named individual
+	 * @param owlClassIRI The owl class IRI
+	 * @param owlNamedIndividual The owl named individual
+	 */
+	private void createOwlClass(IRI owlClassIRI, OWLNamedIndividual owlNamedIndividual){
+		OWLClass owlClass = this.factory.getOWLClass(owlClassIRI);
+
+		OWLClassAssertionAxiom classAssertion = this.factory.getOWLClassAssertionAxiom(owlClass, owlNamedIndividual);
+
+		// Add the class assertion
+		this.manager.applyChange(new AddAxiom(this.ontology, classAssertion));
+	}
+
 	/******************************************************************************************************************************
 	 * ONTOLOGY EXTRACTION METHODS
 	 ******************************************************************************************************************************/
 
-	public Set<OWLOntology> getImportedOntologiesList(){
-		/* Gets the imported Ontologies for the loaded Ontology */
-		return manager.getImports(this.ontology);
+	/**
+	 * Gets the Object's ontology
+	 * @return The OWLOntology object
+	 */
+	public OWLOntology getOntology(){
+		return this.ontology;
+	}
+
+	/**
+	 * This method returns the namespace of an Ontology
+	 * @return The IRI namespace of the given ontology
+	 */
+	public IRI getNamespace(){
+		return this.ontology.getOntologyID().getOntologyIRI().get();
 	}
 
 	/**
@@ -216,34 +251,7 @@ public class OntologyExtractionOperations {
 	}
 
 	/**
-	 * This method extracts all the individuals in signature from an Ontology as well as their labels
-	 * @return A HashMap containing the individuals IRI as key and their labels as value
-	 */
-	public HashMap<IRI, String> getIndividualsAndLabels(){
-		HashMap<IRI, String> indlabMap = new HashMap<IRI, String>();
-
-		/* Gets all the individuals */
-		Set<OWLNamedIndividual> individuals = this.ontology.getIndividualsInSignature();
-
-		/* Runs the individuals and gets their labels */
-		for(OWLNamedIndividual individual : individuals){
-			/* Gets all the Annotation Properties that match the RDFSLabel */
-			for(OWLAnnotation annotation : annotationObjects(this.ontology.getAnnotationAssertionAxioms(individual.getIRI()), this.factory.getRDFSLabel())){
-				 if (annotation.getValue() instanceof OWLLiteral) {
-	                    OWLLiteral value = (OWLLiteral) annotation.getValue();
-	                    String label = value.toString();
-
-	                    /* Adds a new entry to the HashMap */
-	                    indlabMap.put(individual.getIRI(), label);
-				 }
-			}
-		}
-
-		return indlabMap;
-	}
-
-	/**
-	 * This method gets all the classes from an ontology and its imported ontologies
+	 * This method gets all the classes from an ontology
 	 * @return An IRI array with all the OWLClass IRI's
 	 */
 	public ArrayList<IRI> getClasses(){
@@ -261,6 +269,114 @@ public class OntologyExtractionOperations {
 	}
 
 	/**
+	 * This method extracts all the individuals in signature from an Ontology as well as their label and class
+	 * @return A HashMap containing the OWLNamedIndividuals as key and their labels and class in a string array
+	 */
+	public HashMap<IRI, String []> getIndividualsInSignatureData(){
+		HashMap<IRI, String []> indlabMap = new HashMap<IRI, String []>();
+
+		/* Gets all the individuals from this and its imported ontologies */
+		Set<OWLNamedIndividual> individuals = this.ontology.getIndividualsInSignature(Imports.INCLUDED);
+
+		/* Runs the individuals and gets their labels and classes */
+		for(OWLNamedIndividual individual : individuals){
+			String[] labelAndClass = new String[2];
+
+			/* Gets all the Annotation Properties that match the RDFSLabel */
+			for(OWLAnnotation annotation : annotationObjects(this.ontology.getAnnotationAssertionAxioms(individual.getIRI()),
+					this.factory.getRDFSLabel())){
+
+				if (annotation.getValue() instanceof OWLLiteral) {
+					OWLLiteral value = (OWLLiteral) annotation.getValue();
+					String label = value.getLiteral();
+
+					/* Adds the label to the labelAndClass array */
+					labelAndClass[0] = label;
+				}
+			}
+
+			/* Gets all the Annotation Properties that match the RDFType */
+			Set<OWLClassAssertionAxiom> ca = this.ontology.getClassAssertionAxioms(individual);
+			for(OWLClassAssertionAxiom a : ca){
+				String indOwlClass = a.getClassExpression().asOWLClass().getIRI().toString();
+
+				/* Adds the OWL Class to the labelAndClass array */
+				labelAndClass[1] = indOwlClass;
+			}
+
+			/* Adds a new entry to the HashMap */
+			indlabMap.put(individual.getIRI(), labelAndClass);
+		}
+
+		return indlabMap;
+	}
+
+	/**
+	 *
+	 * @param individualFragment
+	 * @param individualLabel
+	 * @param individualIRI
+	 * @param individualClassIRI
+	 * @return
+	 */
+	public OWLNamedIndividual getOWLNamedIndividual(String individualFragment, String individualLabel, IRI individualIRI,
+			IRI individualClassIRI){
+
+		OWLNamedIndividual owlNamedIndividual = null;
+
+		/*****************************************************************************************************************
+		 * Existing Individual Handling Procedures
+		 *****************************************************************************************************************/
+
+		/* Checks any existing individuals in the current ontology for matches with the data of the new individual */
+		for(OWLNamedIndividual candidateIndividual : this.ontology.getIndividualsInSignature(Imports.INCLUDED)){
+			String candidateIndividualName = PopulationUtils.getCandidateIndividualName(candidateIndividual);
+
+			/* If there is a match, then the individual already exists, and it's either being requested
+			 * or needs to be updated */
+			if(candidateIndividualName.equals(individualFragment)){
+				/* The owlNamedIndividual that is to be returned is the candidateIndividual */
+				owlNamedIndividual = candidateIndividual;
+
+				/* Now there is the need to check that this individual isn't a proto individual with no class
+				 * i.e., it was created as the second individual in an object property. This would mean that it
+				 * has no class and no label, just its name.
+				 *
+				 * This verification is made through the individual's axioms. */
+				//TODO handle this situation
+
+			}
+		}
+
+		/*****************************************************************************************************************
+		 * New Individual Handling Procedures
+		 *****************************************************************************************************************/
+		/* If no matches were found with any existing individuals, a new individual must be created with the input data */
+
+		/* A new OWLNamedIndividual Object must be associated with the DataFactory */
+		owlNamedIndividual = this.factory.getOWLNamedIndividual(individualIRI);
+
+		/* Assigns the individual with a label. If the individualLabel provided in this methods input is an empty string, then the
+		 * individualFragment should be adopted as label */
+
+		/* Uses the individualFragment if the individualLabelindividualLabel is empty */
+		if(individualLabel.isEmpty()){
+			individualLabel = individualFragment;
+		}
+
+		OWLAnnotation annotation = this.factory.getOWLAnnotation(this.factory.getRDFSLabel(), this.factory.getOWLLiteral(individualLabel));
+		OWLAnnotationAssertionAxiom annotationAssertionAxiom = this.factory.getOWLAnnotationAssertionAxiom(individualIRI, annotation);
+		manager.applyChange(new AddAxiom(this.ontology, annotationAssertionAxiom));
+
+		/* Assings the individual with a class. */
+		if(null != individualClassIRI){
+			createOwlClass(individualClassIRI, owlNamedIndividual);
+		}
+
+		return owlNamedIndividual;
+	}
+
+	/**
 	 * Gets all the object properties that instances of a given owl class must have
 	 * @param owlClass The owl class
 	 * @return An ArrayList containing the IRIs of all the necessary object properties for the given class
@@ -269,10 +385,13 @@ public class OntologyExtractionOperations {
 		ArrayList<IRI> objectPropertiesArray = new ArrayList<IRI>();
 
 		/* Runs all Object Properties in the signature */
-		for(OWLObjectPropertyExpression objectPropertyExpression : this.ontology.getObjectPropertiesInSignature()){
+		for(OWLObjectPropertyExpression objectPropertyExpression : this.ontology.getObjectPropertiesInSignature(Imports.INCLUDED)){
 			/* Get the class restrictions for this object property expression */
-			OWLClassExpression restriction = this.factory.getOWLObjectSomeValuesFrom(objectPropertyExpression, this.factory.getOWLThing());
-			OWLClassExpression intersection = this.factory.getOWLObjectIntersectionOf(owlClass, this.factory.getOWLObjectComplementOf(restriction));
+			OWLClassExpression restriction = this.factory.getOWLObjectSomeValuesFrom(objectPropertyExpression,
+					this.factory.getOWLThing());
+			OWLClassExpression intersection = this.factory.getOWLObjectIntersectionOf(owlClass,
+					this.factory.getOWLObjectComplementOf(
+							restriction));
 
 			/* If this object property is needed in this owl class then it is added to the array */
 			if(!this.reasoner.isSatisfiable(intersection)){
@@ -292,7 +411,7 @@ public class OntologyExtractionOperations {
 		ArrayList<IRI> dataPropertiesArray = new ArrayList<IRI>();
 
 		/* Runs all Data Properties in the signature */
-		for(OWLDataPropertyExpression dataPropertyExpression : this.ontology.getDataPropertiesInSignature()){
+		for(OWLDataPropertyExpression dataPropertyExpression : this.ontology.getDataPropertiesInSignature(Imports.INCLUDED)){
 			/* If a data property has the given owl class in its signature then it is added to the array */
 			if(dataPropertyExpression.getClassesInSignature().contains(owlClass)){
 				dataPropertiesArray.add(dataPropertyExpression.asOWLDataProperty().getIRI());
@@ -310,7 +429,7 @@ public class OntologyExtractionOperations {
 		ArrayList<IRI> objectPropertiesArray = new ArrayList<IRI>();
 
 		/* Gets all the object properties in signature */
-		Set<OWLObjectProperty> owlObjectProperties = this.ontology.getObjectPropertiesInSignature();
+		Set<OWLObjectProperty> owlObjectProperties = this.ontology.getObjectPropertiesInSignature(Imports.INCLUDED);
 
 		/* Fills the object properties array */
 		for(OWLObjectProperty owlObjectProperty : owlObjectProperties){
@@ -328,7 +447,7 @@ public class OntologyExtractionOperations {
 		ArrayList<IRI> dataPropertiesArray = new ArrayList<IRI>();
 
 		/* Gets all the object properties in signature */
-		Set<OWLDataProperty> owlDataProperties = this.ontology.getDataPropertiesInSignature();
+		Set<OWLDataProperty> owlDataProperties = this.ontology.getDataPropertiesInSignature(Imports.INCLUDED);
 
 		/* Fills the object properties array */
 		for(OWLDataProperty owlDataProperty : owlDataProperties){

@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-import ontologies.extractor.OntologyExtractionOperations;
+import ontologies.extractor.OntologyOperations;
 
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -52,8 +54,14 @@ public class PopulationOperations {
 	/** The OWL Ontology */
 	private OWLOntology ontology;
 
+	/** The Ontology Namespace */
+	private IRI ontologyNamespace;
+
 	/** The OWL Reasoner */
 	private OWLReasoner reasoner;
+
+	/** The Ontology Operations Class with the loaded ontology */
+	private OntologyOperations ontologyOperations;
 
 	public PopulationOperations(Batch batch) {
 		this.batch = batch;
@@ -89,22 +97,20 @@ public class PopulationOperations {
 
 			/* Populates the ontology */
 			populateOntology(mapping);
+
+			/* Saves the ontology */
+			saveOntology(mapping);
 		}
 	}
 
 	/*******************************************************************************************************************
 	 * General Ontology Creation Processor Methods
 	 *******************************************************************************************************************/
-
 	/**
-	 * Creates an Ontology simply and imports the base ontology and specific ontologies into the created ontology
+	 * This method saves a created ontology both into a file and in the database
 	 * @param mapping The Mapping that generates the creation of this ontology
 	 */
-	private void createOntology(Mapping mapping){
-		/* Loads the properties */
-		PropertiesHandler.propertiesLoader();
-
-		OWLOntology ontology;
+	private void saveOntology(Mapping mapping){
 		try{
 			/* Creates the Ontology File */
 			String localOntologiesDir = PropertiesHandler.configProperties.getProperty("local.ontologies.path");
@@ -126,33 +132,46 @@ public class PopulationOperations {
 				ontologyFile.delete();
 			}
 
+			/* Saves the new ontology */
+			this.manager.saveOntology(this.ontology, fileOutputStream);
+		} catch (OWLOntologyStorageException | FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Creates an Ontology simply and imports the base ontology and specific ontologies into the created ontology
+	 * @param mapping The Mapping that generates the creation of this ontology
+	 */
+	private void createOntology(Mapping mapping){
+		/* Loads the properties */
+		PropertiesHandler.propertiesLoader();
+
+		try{
 			/* Creates the ontology for this mapping */
-			ontology = manager.createOntology(mapping.getOutputOntologyNamespace());
+			this.ontologyNamespace = mapping.getOutputOntologyNamespace();
+			this.ontology = this.manager.createOntology(this.ontologyNamespace);
 
 			/* Initializes an OntologyExtractionOperations Object in order to use its methods to
 			 * import the base ontology and specific ontologies */
-			OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-			this.reasoner = reasoner;
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(this.manager,
+			this.reasoner = this.reasonerFactory.createNonBufferingReasoner(ontology);
+			this.ontologyOperations = new OntologyOperations(this.manager,
 					this.factory,
 					this.reasonerFactory,
-					ontology,
-					reasoner);
+					this.ontology,
+					this.reasoner);
 
 			/* Gets the base ontology and extracts its imported ontologies list */
-			PopulationUtils.importOntologies(mapping.getBaseOntology().toString(), ontologyExtractionOperations);
+			PopulationUtils.importOntologies(mapping.getBaseOntology().toString(), this.ontologyOperations);
 
 			/* Imports any existing specific ontologies */
 			if(null != mapping.getSpecificOntologies()){
 				for(ObjectId ontologyId : mapping.getSpecificOntologies()){
-					PopulationUtils.importOntologies(ontologyId.toString(), ontologyExtractionOperations);
+					PopulationUtils.importOntologies(ontologyId.toString(), this.ontologyOperations);
 				}
 			}
 
-			/* Saves the new ontology */
-			this.manager.saveOntology(ontology, fileOutputStream);
-			this.ontology = ontology;
-		} catch (OWLOntologyCreationException | OWLOntologyStorageException | FileNotFoundException e) {
+		} catch (OWLOntologyCreationException e) {
 			e.printStackTrace();
 		}
 	}
@@ -194,9 +213,18 @@ public class PopulationOperations {
 
 	private void createIndividual(Node node, IndividualMapping individualMapping){
 
-		/* Creates the Individual Name and Label */
+		/* Creates the Individual Name, Label, IRI and OWLClass IRI */
 		String individualName = PopulationUtils.createIndividualName(node, individualMapping);
-		String individuallabel = PopulationUtils.createIndividualLabel(node, individualMapping);
-		System.out.println("\n\nName: " + individualName + "\nLabel: " +individuallabel);
+		String individualLabel = PopulationUtils.createIndividualLabel(node, individualMapping);
+		IRI individualIRI = IRI.create(this.ontologyNamespace.toString() ,individualName);
+		IRI individualClassIRI = individualMapping.getOwlClassIRI();
+
+		/* Gets an existing OWLNamedIndividual object or creates a new one */
+		OWLNamedIndividual individual = this.ontologyOperations.getOWLNamedIndividual(individualName,
+																								individualLabel,
+																								individualIRI,
+																								individualClassIRI);
 	}
+
+
 }

@@ -1,12 +1,21 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
-import ontologies.extractor.OntologyExtractionOperations;
+import ontologies.extractor.OntologyOperations;
 
 import org.bson.types.ObjectId;
+import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import database.implementations.NodeImpl;
 import domain.bo.mappings.IndividualMapping;
@@ -16,20 +25,43 @@ import domain.bo.parsers.Node;
 public class PopulationUtils {
 
 	/**
-	 * Imports an Ontology and all it's signature imports into a destination ontology already loaded into the OntologyExtractionOperations object
+	 * Imports an Ontology and all it's signature imports into a destination ontology already loaded into the OntologyOperations object
 	 * and avoids duplicates.
 	 * @param ontologyId The ontology id of the ontology to be imported
-	 * @param ontologyExtractionOperations The OntologyExtractionOperations loaded with the destination ontology
+	 * @param ontologyOperations The OntologyOperations loaded with the destination ontology
 	 * @throws OWLOntologyCreationException
 	 */
-	public static void importOntologies(String ontologyId, OntologyExtractionOperations ontologyExtractionOperations) throws OWLOntologyCreationException{
+	public static void importOntologies(String ontologyId, OntologyOperations ontologyOperations) throws OWLOntologyCreationException{
 		/* Creates the ontology to be imported and gets all its inner imports. Then it runs the destination ontology imports to see if any match
 		 * If they do then the inner import is skipped.
 		 * The end result is the aggregation of the imports of both ontologies but without any duplicates */
-		OntologyExtractionOperations baseOntologyExtractionOperations = new OntologyExtractionOperations(ontologyId);
-		ontologyExtractionOperations.importOntologies(baseOntologyExtractionOperations.getImportedOntologiesList());
+		OntologyOperations baseOntologyOperations = new OntologyOperations(ontologyId);
+
+		Set<OWLOntology> importedOntologies = baseOntologyOperations.getImportedOntologiesList();
+		importedOntologies.add(baseOntologyOperations.getOntology());
+
+		ontologyOperations.importOntologies(importedOntologies);
 
 		return;
+	}
+
+	/**
+	 * Gets the name in form of String of a given OWLNamedIndividual. If the OWLNamedIndividual has no name, it returns an empty String
+	 * @param candidateIndividual The OWLNamedIndividual
+	 * @return The OWLNamedIndividual name or an empty String if it doesn't have one
+	 */
+	public static String getCandidateIndividualName(OWLNamedIndividual candidateIndividual){
+		String candidateIndividualName;
+
+		/* Gets the candidate individual name, and returns an empty name if the individual had no name, and thus
+		 * triggered an IllegalStateException when trying to perform the get() method */
+		try{
+			candidateIndividualName = candidateIndividual.getIRI().getRemainder().get();
+		}catch(IllegalStateException illegalStateException){
+			candidateIndividualName = "";
+		}
+
+		return candidateIndividualName;
 	}
 
 	/**
@@ -79,7 +111,7 @@ public class PopulationUtils {
 	 * @return An individual label
 	 */
 	public static String createIndividualLabel(Node node, IndividualMapping individualMapping){
-		/* Gets the Individual Label Mapping from the IndividualMapping*/
+		/* Gets the Individual Label Mapping from the IndividualMapping */
 		String individualLabelMapping = individualMapping.getIndividualLabel();
 
 		/* Gets the Individual's Label from the Node */

@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
@@ -19,7 +20,7 @@ public class MongoUtilities {
 	public static String convertIRItoDB(IRI iri){
 		String dbIRI;
 		if(iri.toString().contains(".")){
-			dbIRI = iri.toString().replace(".", "_");
+			dbIRI = iri.toString().replace(".", "«");
 		}else{
 			dbIRI = iri.toString();
 		}
@@ -34,13 +35,63 @@ public class MongoUtilities {
 	 */
 	public static IRI convertIRIfromDB(String dbIri){
 		IRI iri;
-		if(dbIri.contains("_")){
-			iri = IRI.create(dbIri.replace("_", "."));
+		if(dbIri.contains("«")){
+			iri = IRI.create(dbIri.replace("«", "."));
 		}else{
 			iri = IRI.create(dbIri);
 		}
 
 		return iri;
+	}
+
+	/**
+	 *This method converts an individuals map into a suitable map to be stored in mongodb
+	 *It converts from a HashMap with IRI as key and a String Array as value, to a String as Key and BasicDBObject as value
+	 * @param individualsMap The individuals Map
+	 * @return The appropriated individuals Map after processing
+	 */
+	public static HashMap<String, Object> convertHM_IRISA_SBDBOToDB(HashMap<IRI, String[]> individualsMap){
+		HashMap<String, Object> returnMap = new HashMap<String, Object>();
+
+		for(IRI key : individualsMap.keySet()){
+			BasicDBObject labelAndClass = new BasicDBObject();
+			labelAndClass.append("label", individualsMap.get(key)[0]);
+			labelAndClass.append("class", individualsMap.get(key)[1]);
+
+			String newKey = convertIRItoDB(key);
+
+			returnMap.put(newKey, labelAndClass);
+		}
+
+		return returnMap;
+	}
+
+	public static HashMap<IRI, String[]> convertHM_SBDBO_IRISAFromDB(HashMap<String, Object> individualsDBMap){
+		HashMap<IRI, String[]> returnMap = new HashMap<IRI, String[]>();
+
+		for(String key : individualsDBMap.keySet()){
+			IRI newKey = convertIRIfromDB(key);
+
+			BasicDBObject persistent = (BasicDBObject) individualsDBMap.get(key);
+			Set<String> keyset = persistent.keySet();
+			String[] labelAndClass = new String[2];
+			for(String value : keyset){
+				/* Creates the Label And Class based on the values */
+				switch (value) {
+				case "label":
+					labelAndClass[0] = (String) persistent.get(value);
+					break;
+				case "class":
+					labelAndClass[1] = (String) persistent.get(value);
+					break;
+				default:
+					break;
+				}
+			}
+
+			returnMap.put(newKey, labelAndClass);
+		}
+		return returnMap;
 	}
 
 	/**
@@ -130,7 +181,7 @@ public class MongoUtilities {
 
 		for(String element : list){
 			/* Cleans the keys that have been tweeked in the creation process */
-			String newElement = element.replace("_", ".");
+			String newElement = element.replace("«", ".");
 
 			/* Adds the pair to the new hashmap */
 			returnList.add(newElement);
