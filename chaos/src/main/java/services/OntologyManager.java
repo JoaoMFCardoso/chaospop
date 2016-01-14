@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ontologies.extractor.OntologyExtractionOperations;
+import ontologies.extractor.OntologyOperations;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -43,7 +43,7 @@ public class OntologyManager {
 
 			/* Sets all OntologyFile attributes that are necessary for this type of ontology file creation */
 			IRI namespaceIRI = IRI.create(namespace);
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(namespaceIRI);
+			OntologyOperations ontologyExtractionOperations = new OntologyOperations(namespaceIRI);
 			ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 			/* Saves the OntologyFile */
@@ -72,7 +72,7 @@ public class OntologyManager {
 		Response response;
 		try{
 			/* Get the owl classes for the given ontology */
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
 			ArrayList<IRI> owlClassesIRIArray = ontologyExtractionOperations.getClasses();
 
 			/* Converts the OWLClasses IRI Array into a String Array */
@@ -104,7 +104,7 @@ public class OntologyManager {
 		Response response;
 		try{
 			/* Get the Object properties */
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
 			ArrayList<IRI> objectPropertiesIRIArray = ontologyExtractionOperations.getObjectProperties();
 
 			/* Converts the Object Properties IRI Array into a String Array */
@@ -137,7 +137,7 @@ public class OntologyManager {
 		Response response;
 		try{
 			/* Get the Object properties for the given class */
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
 			OWLClass owlClassObject = ontologyExtractionOperations.getOWLClass(owlClass);
 			ArrayList<IRI> objectPropertiesIRIArray = ontologyExtractionOperations.getObjectPropertiesFromClass(owlClassObject);
 
@@ -170,7 +170,7 @@ public class OntologyManager {
 		Response response;
 		try{
 			/* Get the Data properties */
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
 			ArrayList<IRI> dataPropertiesIRIArray = ontologyExtractionOperations.getDataProperties();
 
 			/* Converts the Data Properties IRI Array into a String Array */
@@ -203,7 +203,7 @@ public class OntologyManager {
 		Response response;
 		try{
 			/* Get the Data properties for the given class */
-			OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(ontologyFileId);
+			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
 			OWLClass owlClassObject = ontologyExtractionOperations.getOWLClass(owlClass);
 			ArrayList<IRI> dataPropertiesIRIArray = ontologyExtractionOperations.getDataPropertiesFromClass(owlClassObject);
 

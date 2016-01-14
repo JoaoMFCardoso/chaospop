@@ -3,12 +3,11 @@ package domain.bo.ontologies;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ontologies.extractor.OntologyExtractionOperations;
+import ontologies.extractor.OntologyOperations;
 
 import org.bson.types.ObjectId;
 import org.semanticweb.owlapi.model.IRI;
 
-import utils.TransferObjectUtils;
 import domain.bo.parsers.ParsedFile;
 import domain.to.OntologyFileTO;
 
@@ -30,7 +29,7 @@ public class OntologyFile extends ParsedFile{
 	private ArrayList<IRI> classes;
 
 	/** The ontology's individuals and labels */
-	private HashMap<IRI, String> individuals;
+	private HashMap<IRI, String[]> individuals;
 
 	public OntologyFile() {
 		super();
@@ -53,8 +52,6 @@ public class OntologyFile extends ParsedFile{
 		}
 		this.namespace = IRI.create(ontologyFileTO.getNamespace());
 		this.path = ontologyFileTO.getPath();
-		this.classes = TransferObjectUtils.convertALStringToIRI(ontologyFileTO.getClasses());
-		this.individuals = TransferObjectUtils.convertHMSSToIRIS(ontologyFileTO.getIndividuals());
 	}
 
 	/**
@@ -73,9 +70,6 @@ public class OntologyFile extends ParsedFile{
 			ofto.setPath(this.path);
 		}
 
-		ofto.setClasses(TransferObjectUtils.convertALIRIToString(this.classes));
-		ofto.setIndividuals(TransferObjectUtils.convertHMIRISToSS(this.individuals));
-
 		return ofto;
 	}
 
@@ -84,18 +78,18 @@ public class OntologyFile extends ParsedFile{
 	 * the namespace, the classes and individuals and labels.
 	 * @param ontologyExtractionOperations The OntologyExtractionsOperations object
 	 */
-	public void setsGeneralOntologyFileAttributes(OntologyExtractionOperations ontologyExtractionOperations) throws Exception{
+	public void setsGeneralOntologyFileAttributes(OntologyOperations ontologyOperations) throws Exception{
 
 		/* Sets the namespace */
-		IRI namespace = ontologyExtractionOperations.getNamespace();
+		IRI namespace = ontologyOperations.getNamespace();
 		this.setNamespace(namespace);
 
 		/* Gets all the classes */
-		ArrayList<IRI> classes = ontologyExtractionOperations.getClasses();
+		ArrayList<IRI> classes = ontologyOperations.getClasses();
 		this.setClasses(classes);
 
-		/* Gets all the individuals and labels */
-		HashMap<IRI, String> individualsAndLabelsMap = ontologyExtractionOperations.getIndividualsAndLabels();
+		/* Gets all the individuals, labels and classes */
+		HashMap<IRI, String[]> individualsAndLabelsMap = ontologyOperations.getIndividualsInSignatureData();
 		this.setIndividuals(individualsAndLabelsMap);
 
 		return;
@@ -146,14 +140,14 @@ public class OntologyFile extends ParsedFile{
 	/**
 	 * @return the individuals
 	 */
-	public HashMap<IRI, String> getIndividuals() {
+	public HashMap<IRI, String[]> getIndividuals() {
 		return individuals;
 	}
 
 	/**
 	 * @param individuals the individuals to set
 	 */
-	public void setIndividuals(HashMap<IRI, String> individuals) {
+	public void setIndividuals(HashMap<IRI, String[]> individuals) {
 		this.individuals = individuals;
 	}
 }

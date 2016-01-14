@@ -2,7 +2,7 @@ package parsing.parsers;
 
 import java.io.File;
 
-import ontologies.extractor.OntologyExtractionOperations;
+import ontologies.extractor.OntologyOperations;
 import parsing.ParserInterface;
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
@@ -27,7 +27,7 @@ public class OWLParserImpl implements ParserInterface {
 		ontologyFile.setPath(file.getAbsolutePath());
 
 		/* Loads the ontology from the file */
-		OntologyExtractionOperations ontologyExtractionOperations = new OntologyExtractionOperations(file);
+		OntologyOperations ontologyExtractionOperations = new OntologyOperations(file);
 
 		/* Sets  */
 		ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);

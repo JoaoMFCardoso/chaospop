@@ -59,7 +59,7 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 		}
 
 		if(null != ontologyFile.getIndividuals()){
-			HashMap<String, String> individuals = MongoUtilities.convertPropertyMapToDB(ontologyFile.getIndividuals());
+			HashMap<String, Object> individuals = MongoUtilities.convertHM_IRISA_SBDBOToDB(ontologyFile.getIndividuals());
 			ontologyFileDBObj.append("individuals", individuals);
 		}
 
@@ -113,8 +113,8 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 				ArrayList<IRI> classes = MongoUtilities.convertArrayListIRIFromDB((ArrayList<String>) persistent.get(key));
 				ontologyFile.setClasses(classes);
 			case "individuals":
-				HashMap<String, String> individualsDBMap = (HashMap<String, String>) persistent.get(key);
-				HashMap<IRI, String> individuals = MongoUtilities.convertPropertyMapFromDB(individualsDBMap);
+				HashMap<String, Object> individualsDBMap = (HashMap<String, Object>) persistent.get(key);
+				HashMap<IRI, String[]> individuals = MongoUtilities.convertHM_SBDBO_IRISAFromDB(individualsDBMap);
 				ontologyFile.setIndividuals(individuals);
 			default:
 				break;
