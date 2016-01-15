@@ -224,6 +224,15 @@ public class PopulationOperations {
 																								individualLabel,
 																								individualIRI,
 																								individualClassIRI);
+
+		/* Checks if an OWLNamedIndividual is in need of an update. There are two reasons for an OWLNamedIndividual to need an update:
+		 *  	1. The individual is a proto individual created as the second individual of an object property. As such it only has
+		 *  basic information such as its IRI and label. No OWLClass has been asigned to it.
+		 *  	2. The IndividualMapping requires that this individual is a specification of an existing individual */
+		Boolean individualNeedsUpdate = this.ontologyOperations.isIndividualInNeedOfUpdate(individual);
+		if(individualMapping.getSpecification() || individualNeedsUpdate){
+			this.ontologyOperations.updateOWLNamedIndividual(individual, individualLabel, individualClassIRI);
+		}
 	}
 
 

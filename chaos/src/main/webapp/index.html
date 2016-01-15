@@ -15,6 +15,12 @@
 		<input type="submit" value="Get File" />
 	</form>
 
+	<p>Download File From SFTP</p>
+	<form action="wsapi/fileManager/downloadFile" method="post">
+		<p>File Name : <input type="text" name="fileName" /></p>
+		<input type="submit" value="download file" />
+	</form>
+
 	<p>Remove File</p>
 	<form action="wsapi/fileManager/removeFile" method="post">
 		<p>File ID(s) : <input type="text" name="ids" /></p>
@@ -118,5 +124,6 @@
 		</p>
 		<input type="submit" value="Get data Properties" />
 	</form>
+
 </body>
 </html>

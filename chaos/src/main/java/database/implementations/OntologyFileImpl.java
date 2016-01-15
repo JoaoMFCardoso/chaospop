@@ -112,6 +112,7 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 			case "classes":
 				ArrayList<IRI> classes = MongoUtilities.convertArrayListIRIFromDB((ArrayList<String>) persistent.get(key));
 				ontologyFile.setClasses(classes);
+				break;
 			case "individuals":
 				HashMap<String, Object> individualsDBMap = (HashMap<String, Object>) persistent.get(key);
 				HashMap<IRI, String[]> individuals = MongoUtilities.convertHM_SBDBO_IRISAFromDB(individualsDBMap);

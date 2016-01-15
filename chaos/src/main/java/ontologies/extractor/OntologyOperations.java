@@ -4,6 +4,7 @@ import static org.semanticweb.owlapi.search.Searcher.annotationObjects;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -137,8 +138,9 @@ public class OntologyOperations {
 	}
 
 	/******************************************************************************************************************************
-	 * ONTOLOGY CREATION METHODS
+	 * ONTOLOGY IMPORTATION METHODS
 	 ******************************************************************************************************************************/
+
 	/**
 	 * Gets a set of Ontologies that imported into the original Ontology
 	 * @return A Set<OWLOntology> with the imported ontologies
@@ -184,6 +186,136 @@ public class OntologyOperations {
 		return;
 	}
 
+	/******************************************************************************************************************************
+	 * ONTOLOGY CREATION METHODS
+	 ******************************************************************************************************************************/
+
+	/**
+	 * This method creates an annotation assertion axiom, associating an owl class with a named individual
+	 * @param owlClassIRI The owl class IRI
+	 * @param owlNamedIndividual The owl named individual
+	 */
+	private void createOwlClass(IRI owlClassIRI, OWLNamedIndividual owlNamedIndividual){
+		OWLClass owlClass = this.factory.getOWLClass(owlClassIRI);
+
+		OWLClassAssertionAxiom classAssertion = this.factory.getOWLClassAssertionAxiom(owlClass, owlNamedIndividual);
+
+		// Add the class assertion
+		this.manager.applyChange(new AddAxiom(this.ontology, classAssertion));
+	}
+
+	/**
+	 * Creates a new OWLAnnotationAssertion Axiom, associating a Label with an Individual
+	 * @param individualIRI The Individual IRI
+	 * @param individualLabel The label to be associated
+	 */
+	private void createLabel(IRI individualIRI, String individualLabel){
+		/* Creates the OWLAnnotation and OWLAnnotationAssertionAxiom */
+		OWLAnnotation annotation = this.factory.getOWLAnnotation(this.factory.getRDFSLabel(), this.factory.getOWLLiteral(individualLabel));
+		OWLAnnotationAssertionAxiom annotationAssertionAxiom = this.factory.getOWLAnnotationAssertionAxiom(individualIRI, annotation);
+
+		/* Adds the new Axiom to the Manager */
+		this.manager.applyChange(new AddAxiom(this.ontology, annotationAssertionAxiom));
+	}
+
+	/**
+	 * Creates a new OWLNamedIndividual based on the input data
+	 * @param individualFragment The Individual Name
+	 * @param individualLabel The Individual Label
+	 * @param individualIRI The Individual IRI
+	 * @param individualClassIRI The Individual OWLClass IRI. Might be null if a proto individual is being created
+	 * @return A valid OWLNamedIndividual
+	 */
+	private OWLNamedIndividual createOWLNamedIndividual(String individualFragment, String individualLabel, IRI individualIRI,
+			IRI individualClassIRI){
+
+		/* A new OWLNamedIndividual Object must be associated with the DataFactory */
+		OWLNamedIndividual owlNamedIndividual = this.factory.getOWLNamedIndividual(individualIRI);
+
+		/* Assigns the individual with a label. If the individualLabel provided in this methods input is an empty string, then the
+		 * individualFragment should be adopted as label */
+
+		/* Uses the individualFragment if the individualLabelindividualLabel is empty or null */
+		if(null == individualLabel || individualLabel.isEmpty()){
+			individualLabel = individualFragment;
+		}
+
+		/* Creates the new Label OWLAnnotationAxiom */
+		createLabel(individualIRI, individualLabel);
+
+		/* Assigns the individual with a class. */
+		if(null != individualClassIRI){
+			createOwlClass(individualClassIRI, owlNamedIndividual);
+		}
+
+		return owlNamedIndividual;
+	}
+
+	/******************************************************************************************************************************
+	 * ONTOLOGY UPDATE METHODS
+	 ******************************************************************************************************************************/
+
+	/**
+	 * Updates an existing OWLNamedIndividual. This method is called in two instances. When an existing individual is being updated as
+	 * a specification. Or if a proto individual that was created in the context of an object property creation needs to be updated.
+	 * @param owlNamedIndividual The OWLNamedIndividual object
+	 * @param individualLabel The individual label
+	 * @param individualClassIRI The individual OWLClass IRI
+	 */
+	public void updateOWLNamedIndividual(OWLNamedIndividual owlNamedIndividual, String individualLabel, IRI individualClassIRI){
+		/* Gets the Individual IRI */
+		IRI individualIRI = owlNamedIndividual.getIRI();
+
+		/* Checks if the label is updated, and updates it if necessary */
+		if(isLabelInNeedOfUpdate(individualIRI, individualLabel)){
+			updateIndividualLabel(individualIRI, individualLabel);
+		}
+
+		/* Checks if the class needs to be updated, and updates it if necessary */
+		if(isClassInNeedOfUpdate(owlNamedIndividual, individualClassIRI)){
+			updateIndividualClass(owlNamedIndividual, individualClassIRI);
+		}
+
+		return;
+	}
+
+	/**
+	 * Updates an Individual Label by first removing any existing OWLAnnotationAxioms and then adding a new one
+	 * containing the new label
+	 * @param individualIRI The individual IRI
+	 * @param individualLabel The new label
+	 */
+	private void updateIndividualLabel(IRI individualIRI, String individualLabel){
+		/* Removes all previously existing AnnotationAssertionAxioms */
+		for(OWLAnnotationAssertionAxiom axiom : this.ontology.getAnnotationAssertionAxioms(individualIRI)){
+			this.manager.removeAxiom(this.ontology, axiom);
+		}
+
+		/* Creates a new OWLAnnotationAssertionAxiom with the new individual label */
+		createLabel(individualIRI, individualLabel);
+	}
+
+	/**
+	 * Uldates an Individual OWLClass by first removing any existing OWLClassAssertionAxioms and then adding a new one
+	 * containing the new OWLClass
+	 * @param owlNamedIndividual The OWLNamedIndividual
+	 * @param owlClassIRI The new OWLClass IRI
+	 */
+	private void updateIndividualClass(OWLNamedIndividual owlNamedIndividual, IRI owlClassIRI){
+		/* Removes all the OWLClassAssertionAxioms for this individual */
+		Set<OWLClassAssertionAxiom> owlClassAssertionAxioms = this.ontology.getClassAssertionAxioms(owlNamedIndividual);
+		for(OWLClassAssertionAxiom owlClassAssertionAxiom : owlClassAssertionAxioms){
+			this.manager.removeAxiom(this.ontology, owlClassAssertionAxiom);
+		}
+
+		/* Creates a new OWLClassAssertionAxiom for this individual */
+		createOwlClass(owlClassIRI, owlNamedIndividual);
+	}
+
+	/******************************************************************************************************************************
+	 * ONTOLOGY BOOLEAN METHODS
+	 ******************************************************************************************************************************/
+
 	/**
 	 * Checks if a given ontology IRI exists in the loaded Ontology's imports
 	 * @param ontology The candidate ontology
@@ -207,17 +339,89 @@ public class OntologyOperations {
 	}
 
 	/**
-	 * This method creates an annotation assertion axiom, associating an owl class with a named individual
-	 * @param owlClassIRI The owl class IRI
-	 * @param owlNamedIndividual The owl named individual
+	 * Checks if an OWLNamedIndividual is a proto individual that needs to be updated.
+	 *  The individual will need an update if it has OWLClass assigned as an OWLClassAssertionAxiom.
+	 * @param owlNamedIndividual The OWLNamedIndividual that is to be analysed
+	 * @return True if the OWLNamedIndividual needs to be updated, False otherwise
 	 */
-	private void createOwlClass(IRI owlClassIRI, OWLNamedIndividual owlNamedIndividual){
-		OWLClass owlClass = this.factory.getOWLClass(owlClassIRI);
+	public Boolean isIndividualInNeedOfUpdate(OWLNamedIndividual owlNamedIndividual){
+		Boolean update = true;
 
-		OWLClassAssertionAxiom classAssertion = this.factory.getOWLClassAssertionAxiom(owlClass, owlNamedIndividual);
+		Set<OWLClassAssertionAxiom> owlClassAssertionAxioms = this.ontology.getClassAssertionAxioms(owlNamedIndividual);
+		if(owlClassAssertionAxioms.isEmpty()){
+			return update;
+		}else{
+			update = false;
+			return update;
+		}
+	}
 
-		// Add the class assertion
-		this.manager.applyChange(new AddAxiom(this.ontology, classAssertion));
+	/**
+	 * Checks if a label is need of an update, by comparing a given new label with the existing OWLAnnotationAxiom labels
+	 * associated with a given Individual IRI
+	 * @param individualIRI The Individual IRI
+	 * @param newIndividualLabel The new Label that will serve as comparison
+	 * @return True if an update is necessary (i.e. no label was found that matches the new Label), False otherwise
+	 */
+	private Boolean isLabelInNeedOfUpdate(IRI individualIRI, String newIndividualLabel){
+		Boolean update = true;
+
+		/* Gathers the Individual's OWLAnnotations that are Labels */
+		Collection<OWLAnnotation> owlAnnotations = annotationObjects(this.ontology.getAnnotationAssertionAxioms(individualIRI),
+				this.factory.getRDFSLabel());
+
+		/* If the collection is empty or there are more than one, then the label needs to be updated */
+		if(owlAnnotations.isEmpty() || owlAnnotations.size() > 1){
+			return update;
+		}
+
+		/* Runs Annotation Properties that match the RDFSLabel to see if the new individualLabel matches the existing one */
+		for(OWLAnnotation annotation : owlAnnotations){
+
+			if(annotation.getValue() instanceof OWLLiteral) {
+				OWLLiteral value = (OWLLiteral) annotation.getValue();
+				String label = value.getLiteral();
+
+				/* Adds the label to the labelAndClass array */
+				if(label.equals(newIndividualLabel)){
+					update = false;
+					return update;
+				}
+			}
+		}
+
+		return update;
+	}
+
+	/**
+	 * Checks if a given OWLNamedIndividual is in need for its OWLClass to be updated
+	 * @param owlNamedIndividual The OWLNamedIndividual Object
+	 * @param owlClassIRI The new OWLClass IRI
+	 * @return True if an update is necessary, False otherwise
+	 */
+	private Boolean isClassInNeedOfUpdate(OWLNamedIndividual owlNamedIndividual, IRI owlClassIRI){
+		Boolean update = true;
+
+		/* Gathers the OWLClassAssertionAxiom objects */
+		Set<OWLClassAssertionAxiom> owlClassAssertionAxioms = this.ontology.getClassAssertionAxioms(owlNamedIndividual);
+
+		/* If the Set of OWLClassAssertioAxiom objects is empty or there are more than one, then the OWLClass needs to be updated */
+		if(owlClassAssertionAxioms.isEmpty() || owlClassAssertionAxioms.size() > 1){
+			return update;
+		}
+
+		/* Runs the OWLClassAssertionAxiom Objects to see if any matches the OWLClassIRI */
+		for(OWLClassAssertionAxiom owlClassAssertionAxiom : owlClassAssertionAxioms){
+			String candidateOWLClass = owlClassAssertionAxiom.getClassExpression().asOWLClass().getIRI().toString();
+
+			/* Checks if the candidateOWLClass matches the new OWLClass */
+			if(owlClassIRI.toString().equals(candidateOWLClass)){
+				update = false;
+				return update;
+			}
+		}
+
+		return update;
 	}
 
 	/******************************************************************************************************************************
@@ -295,10 +499,10 @@ public class OntologyOperations {
 				}
 			}
 
-			/* Gets all the Annotation Properties that match the RDFType */
-			Set<OWLClassAssertionAxiom> ca = this.ontology.getClassAssertionAxioms(individual);
-			for(OWLClassAssertionAxiom a : ca){
-				String indOwlClass = a.getClassExpression().asOWLClass().getIRI().toString();
+			/* Gets all the OWLClassAssertionAxioms for this individual and fetches the first */
+			Set<OWLClassAssertionAxiom> owlClassAssertionAxioms = this.ontology.getClassAssertionAxioms(individual);
+			for(OWLClassAssertionAxiom owlClassAssertionAxiom : owlClassAssertionAxioms){
+				String indOwlClass = owlClassAssertionAxiom.getClassExpression().asOWLClass().getIRI().toString();
 
 				/* Adds the OWL Class to the labelAndClass array */
 				labelAndClass[1] = indOwlClass;
@@ -312,12 +516,13 @@ public class OntologyOperations {
 	}
 
 	/**
-	 *
-	 * @param individualFragment
-	 * @param individualLabel
-	 * @param individualIRI
-	 * @param individualClassIRI
-	 * @return
+	 * Gets an OWLNamedIndividual from the Ontology. It either gets an existing one or creates a new one it no match exists
+	 * in the Ontology Signature.
+	 * @param individualFragment The Individual Name
+	 * @param individualLabel The Individual Label
+	 * @param individualIRI The Individual IRI
+	 * @param individualClassIRI The Individual OWL Class IRI
+	 * @return A valid OWLNamedIndividual
 	 */
 	public OWLNamedIndividual getOWLNamedIndividual(String individualFragment, String individualLabel, IRI individualIRI,
 			IRI individualClassIRI){
@@ -337,14 +542,6 @@ public class OntologyOperations {
 			if(candidateIndividualName.equals(individualFragment)){
 				/* The owlNamedIndividual that is to be returned is the candidateIndividual */
 				owlNamedIndividual = candidateIndividual;
-
-				/* Now there is the need to check that this individual isn't a proto individual with no class
-				 * i.e., it was created as the second individual in an object property. This would mean that it
-				 * has no class and no label, just its name.
-				 *
-				 * This verification is made through the individual's axioms. */
-				//TODO handle this situation
-
 			}
 		}
 
@@ -353,25 +550,7 @@ public class OntologyOperations {
 		 *****************************************************************************************************************/
 		/* If no matches were found with any existing individuals, a new individual must be created with the input data */
 
-		/* A new OWLNamedIndividual Object must be associated with the DataFactory */
-		owlNamedIndividual = this.factory.getOWLNamedIndividual(individualIRI);
-
-		/* Assigns the individual with a label. If the individualLabel provided in this methods input is an empty string, then the
-		 * individualFragment should be adopted as label */
-
-		/* Uses the individualFragment if the individualLabelindividualLabel is empty */
-		if(individualLabel.isEmpty()){
-			individualLabel = individualFragment;
-		}
-
-		OWLAnnotation annotation = this.factory.getOWLAnnotation(this.factory.getRDFSLabel(), this.factory.getOWLLiteral(individualLabel));
-		OWLAnnotationAssertionAxiom annotationAssertionAxiom = this.factory.getOWLAnnotationAssertionAxiom(individualIRI, annotation);
-		manager.applyChange(new AddAxiom(this.ontology, annotationAssertionAxiom));
-
-		/* Assings the individual with a class. */
-		if(null != individualClassIRI){
-			createOwlClass(individualClassIRI, owlNamedIndividual);
-		}
+		owlNamedIndividual = createOWLNamedIndividual(individualFragment, individualLabel, individualIRI, individualClassIRI);
 
 		return owlNamedIndividual;
 	}
