@@ -1,5 +1,6 @@
 package domain.bo.mappings;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bson.types.ObjectId;
@@ -17,6 +18,9 @@ public class IndividualMapping {
 	 * The mongodb id for the object
 	 */
 	private ObjectId _id;
+
+	/** The mongodb ids for the DataFile objects that this IndividualMapping map */
+	private ArrayList<ObjectId> dataFileIds;
 
 	/**
 	 * The tag.
@@ -69,6 +73,7 @@ public class IndividualMapping {
 	 */
 	public IndividualMapping() {
 		this._id = new ObjectId();
+		this.dataFileIds = null;
 		this.tag = null;
 		this.individualName = null;
 		this.individualLabel = null;
@@ -89,6 +94,7 @@ public class IndividualMapping {
 			this._id = new ObjectId(individualMappingTO.get_id());
 		}
 
+		this.dataFileIds = TransferObjectUtils.convertALStringToObjectId(individualMappingTO.getDataFileIds());
 		this.tag = individualMappingTO.getTag();
 		this.individualName = individualMappingTO.getIndividualName();
 		this.individualLabel = individualMappingTO.getIndividualLabel();
@@ -117,6 +123,13 @@ public class IndividualMapping {
 
 		/* Sets the object's attributes */
 		imto.set_id(this._id.toString());
+
+		if(null == this.dataFileIds){
+			imto.setDataFileIds(null);
+		}else{
+			imto.setDataFileIds(TransferObjectUtils.convertALObjectIdToString(this.dataFileIds));
+		}
+
 		imto.setTag(this.tag);
 		imto.setIndividualName(this.individualName);
 		imto.setIndividualLabel(this.individualLabel);
@@ -141,6 +154,20 @@ public class IndividualMapping {
 	 */
 	public void setID(ObjectId _id) {
 		this._id = _id;
+	}
+
+	/**
+	 * @return the dataFileIds
+	 */
+	public ArrayList<ObjectId> getDataFileIds() {
+		return dataFileIds;
+	}
+
+	/**
+	 * @param dataFileIds the dataFileIds to set
+	 */
+	public void setDataFileIds(ArrayList<ObjectId> dataFileIds) {
+		this.dataFileIds = dataFileIds;
 	}
 
 	/**

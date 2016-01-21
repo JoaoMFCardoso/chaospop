@@ -10,10 +10,12 @@ import org.semanticweb.owlapi.model.IRI;
 
 import utils.MongoUtilities;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 import database.DatabaseConnector;
 import database.MongoService;
@@ -54,6 +56,23 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 
 		/* Appends the various attributes to the database object */
 		individualMappingDBObj.append("_id", individualMapping.getID());
+
+		/* Appends the DataFile Id's */
+		if(null != individualMapping.getDataFileIds()){
+			List<Object> DataFileIdsDBList = new BasicDBList();
+
+			/* Runs all the DataFile Ids */
+			for(ObjectId dataFileID : individualMapping.getDataFileIds()){
+				DBObject dataFileIDDBObject = new BasicDBObject();
+
+				/* Stores the individual mappings id */
+				dataFileIDDBObject.put("dataFileId", dataFileID);
+				DataFileIdsDBList.add(dataFileIDDBObject);
+			}
+
+			individualMappingDBObj.append("dataFileIds", DataFileIdsDBList);
+		}
+
 		individualMappingDBObj.append("tag", individualMapping.getTag());
 		individualMappingDBObj.append("individualName", individualMapping.getIndividualName());
 		individualMappingDBObj.append("individualLabel", individualMapping.getIndividualLabel());
@@ -115,6 +134,10 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 			switch (key) {
 			case "_id":
 				individualMapping.setID(dbID);
+				break;
+			case "dataFileIds":
+				ArrayList<ObjectId> dataFileIDs = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "dataFileId");
+				individualMapping.setDataFileIds(dataFileIDs);
 				break;
 			case "tag":
 				individualMapping.setTag((String) persistent.get(key));

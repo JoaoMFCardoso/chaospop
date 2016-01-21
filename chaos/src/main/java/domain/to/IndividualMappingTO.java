@@ -1,5 +1,6 @@
 package domain.to;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -19,6 +20,9 @@ public class IndividualMappingTO {
 	 * The mongodb id for the object
 	 */
 	private String _id;
+
+	/** The mongodb id for the DataFile object that this IndividualMapping maps */
+	private ArrayList<String> dataFileIds;
 
 	/**
 	 * The tag.
@@ -71,6 +75,7 @@ public class IndividualMappingTO {
 
 	public IndividualMappingTO() {
 		this._id = null;
+		this.dataFileIds = null;
 		this.tag = null;
 		this.individualName = null;
 		this.individualLabel = null;
@@ -92,6 +97,20 @@ public class IndividualMappingTO {
 	 */
 	public void set_id(String _id) {
 		this._id = _id;
+	}
+
+	/**
+	 * @return the dataFileIds
+	 */
+	public ArrayList<String> getDataFileIds() {
+		return dataFileIds;
+	}
+
+	/**
+	 * @param dataFileIds the dataFileIds to set
+	 */
+	public void setDataFileIds(ArrayList<String> dataFileIds) {
+		this.dataFileIds = dataFileIds;
 	}
 
 	/**

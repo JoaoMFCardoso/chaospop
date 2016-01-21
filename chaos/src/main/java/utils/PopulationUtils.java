@@ -1,22 +1,19 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import ontologies.extractor.OntologyOperations;
 
 import org.bson.types.ObjectId;
-import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import database.implementations.IndividualMappingsImpl;
 import database.implementations.NodeImpl;
 import domain.bo.mappings.IndividualMapping;
 import domain.bo.mappings.Mapping;
@@ -89,6 +86,86 @@ public class PopulationUtils {
 	}
 
 	/**
+	 * Gets the IndividualMapping which matches the tag of a given Node, within the range set by a Mapping's DataFile list
+	 * @param node The Node whose tag is going to be the query attribute
+	 * @param mapping The Mapping which sets the range to search
+	 * @return An individual Mapping which matches the result, null otherwise.
+	 */
+	public static IndividualMapping getNodeMatchingIndividualMapping(Node node, Mapping mapping){
+		/* Gets the Node tag which will act as query */
+		String nodeTag = node.getTag();
+
+		/* Initializes the IndividualMapping database implementation */
+		IndividualMappingsImpl individualMappingsImpl = new IndividualMappingsImpl();
+
+		/* Gets all the IndividualMappings that match the Node's tag */
+		List<IndividualMapping> matches = individualMappingsImpl.getBy("tag", nodeTag);
+
+		/* Runs all the IndividualMapping objects that were matched and returns the one which is matched in the Mapping
+		 * IndividualMapping Id's list */
+		for(IndividualMapping individualMapping : matches){
+			if(individualMapping.getDataFileIds().contains(node.getDataFileId())){
+				return individualMapping;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the value from a specific child
+	 * @param node The node to be searched
+	 * @param path The path to be followed
+	 * @param depth The current depth
+	 * @return An array containing the values of several individuals
+	 */
+	public static ArrayList<IRI> getIndividualIRIsFromChildPath(Node node, String[] path, int depth,
+			IRI namespace, NodeImpl nodeImpl){
+		ArrayList<IRI> individualIRIs = new ArrayList<IRI>();
+		Boolean inAttributes = false;
+
+		/* Checks if the tag has a specification for attributes
+		 * ex. the tag would be <tag>/<attribute>
+		 * this would mean that the value of the IRI is in the attribute */
+		String[] complexTag = path[depth].split("/");
+		String childTag = complexTag[0];
+		int nextDepth = depth + 1;
+
+		String attribute = null;
+		if(complexTag.length > 1){
+			inAttributes = true;
+			attribute = complexTag[1];
+		}
+
+		/* Gets the Node' children */
+		List<Node> childNodes = nodeImpl.getChildNodes(node.getID());
+
+		/* Looks in the childs for the specific tag */
+		for(Node child : childNodes){
+			if(child.getTag().equals(childTag)){
+				/* if it's the end of the path */
+				if(path.length == nextDepth){
+					String individualName = null;
+
+					/* If the IRI is in the attributes it fetches the correct attribute */
+					if(inAttributes){
+						individualName = child.getAttributes().get(attribute);
+					}else{
+						individualName = child.getValue();
+					}
+
+					individualIRIs.add(IRI.create(namespace.toString(), individualName));
+				}else{ /* keep going to another child */
+					individualIRIs = getIndividualIRIsFromChildPath(child, path, nextDepth, namespace, nodeImpl);
+					break;
+				}
+			}
+		}
+
+		return individualIRIs;
+	}
+
+	/**
 	 * Creates a new Individual Name from the Node and the IndividualMapping objects
 	 * @param node The Node which holds the new individual information
 	 * @param individualMapping The IndividualMapping which regulates how the new individual is to be created
@@ -100,6 +177,20 @@ public class PopulationUtils {
 
 		/* Gets the Individual's Name from the Node */
 		String individualName = extractFieldFromNode(node, individualNameMapping);
+
+		return individualName;
+	}
+
+	/**
+	 * Creates an individual name when its name is based on an attribue
+	 * @param node The Node from which data will be gathered to create the individual
+	 * @param attributeName The name of the attribute
+	 * @return An Individual Name
+	 */
+	public static String createIndividualNameFromAttribute(Node node, String attributeName){
+
+		/* Gets the Individual's Name from the Node */
+		String individualName = extractFieldFromNode(node, attributeName);
 
 		return individualName;
 	}
@@ -120,6 +211,12 @@ public class PopulationUtils {
 		return individualLabel;
 	}
 
+	/**
+	 * Extracts a given field from a given node
+	 * @param node The Node from which the data is extracted
+	 * @param field The field that is being processed
+	 * @return The value of the field
+	 */
 	private static String extractFieldFromNode(Node node, String field){
 		String[] fieldParams = field.split("-");
 
