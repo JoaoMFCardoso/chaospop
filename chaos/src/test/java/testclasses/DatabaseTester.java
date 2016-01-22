@@ -39,6 +39,7 @@ public class DatabaseTester {
 
 		HashMap<IRI, String> testDataProp = new HashMap<IRI, String>();
 		testDataProp.put(IRI.create("http://sysresearch.org/ontologies/DSOs/software.owl#hasInstallDate"), ".inattributes-idade");
+		testDataProp.put(IRI.create("http://sysresearch.org/ontologies/DSOs/software.owl#hasVersion"), ".inattributes-cor_olhos");
 		indMap.setDataProperties(testDataProp);
 
 		IndividualMappingsImpl indMapImpl = new IndividualMappingsImpl();
@@ -69,6 +70,7 @@ public class DatabaseTester {
 		n1attrs.put("nome", "JoaoAntero");
 		n1attrs.put("alcunha", "JoaoPai");
 		n1attrs.put("idade", "55");
+		n1attrs.put("cor_olhos", "azul");
 		n1.setAttributes(n1attrs);
 
 		Node n2 = new Node();
@@ -80,6 +82,7 @@ public class DatabaseTester {
 		n2attrs.put("nome", "MariaGoretti");
 		n2attrs.put("alcunha", "MaeGoretti");
 		n2attrs.put("idade", "55");
+		n2attrs.put("cor_olhos", "castanho");
 		n2.setAttributes(n2attrs);
 
 		Node n3 = new Node();
@@ -91,6 +94,7 @@ public class DatabaseTester {
 		n3attrs.put("nome", "JoaoManuel");
 		n3attrs.put("alcunha", "Jonini");
 		n3attrs.put("idade", "28");
+		n3attrs.put("cor_olhos", "castanho");
 		n3.setAttributes(n3attrs);
 
 		Node n4 = new Node();
@@ -102,6 +106,7 @@ public class DatabaseTester {
 		n4attrs.put("nome", "AnaRita");
 		n4attrs.put("alcunha", "Ritinha");
 		n4attrs.put("idade", "24");
+		n4attrs.put("cor_olhos", "verde");
 		n4.setAttributes(n4attrs);
 
 		Node n5 = new Node();
@@ -262,10 +267,8 @@ public class DatabaseTester {
 	}
 
 	public static void main(String[] args) {
+		dropCollections();
 		populate();
-//		dropCollections();
-
-
 	}
 
 }

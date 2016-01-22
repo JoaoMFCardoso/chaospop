@@ -20,6 +20,7 @@ import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -277,6 +278,21 @@ public class OntologyOperations {
 		}
 	}
 
+	public void handleDataPropertyCreation(Node node, Mapping mapping, IndividualMapping individualMapping, OWLNamedIndividual individual){
+		/* Runs each Data Property and creates each one */
+		HashMap<IRI, String> dataProperties = individualMapping.getDataProperties();
+		for(IRI dataPropertyIRI : dataProperties.keySet()){
+
+			/* Gets the data property value */
+			String dataPropertyValue = PopulationUtils.getDataPropertyValue(node, dataProperties.get(dataPropertyIRI));
+
+			/* Creates the object property if allowed */
+			if(isAllowedToCreateDataProperty(dataPropertyIRI, individual, dataPropertyValue)){
+				createDataProperty(dataPropertyIRI, individual, dataPropertyValue);
+			}
+		}
+	}
+
 	/**
 	 * Creates object properties of a given type between a first individual and a list of second individuals
 	 * @param objectPropertyIRI The object property type IRI
@@ -329,6 +345,21 @@ public class OntologyOperations {
 			assertion = this.factory.getOWLObjectPropertyAssertionAxiom(objectProperty, firstIndividual, secondIndividual);
 		}
 
+		/* Add the axiom to the ontology and save */
+		AddAxiom addAxiomChange = new AddAxiom(this.ontology, assertion);
+		this.manager.applyChange(addAxiomChange);
+	}
+
+	/**
+	 * Creates a given data property for a given individual with a given value
+	 * @param dataPropertyIRI The data property to be created
+	 * @param individual The individual
+	 * @param dataPropertyValue The data property value
+	 */
+	private void createDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, String dataPropertyValue){
+		/* Create the relation */
+		OWLDataProperty dataProperty = this.factory.getOWLDataProperty(dataPropertyIRI);
+		OWLDataPropertyAssertionAxiom assertion = this.factory.getOWLDataPropertyAssertionAxiom(dataProperty, individual, dataPropertyValue);
 		/* Add the axiom to the ontology and save */
 		AddAxiom addAxiomChange = new AddAxiom(this.ontology, assertion);
 		this.manager.applyChange(addAxiomChange);
@@ -536,6 +567,29 @@ public class OntologyOperations {
 		return isAllowed;
 	}
 
+	/**
+	 * Checks if a data property is allowed to be created
+	 * @param dataPropertyIRI The data property that is being tested
+	 * @param individual The individual which is the object of the data property
+	 * @param dataPropertyValue The data property value
+	 * @return True if it is allowed to be created, false otherwise
+	 */
+	private Boolean isAllowedToCreateDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, String dataPropertyValue){
+		Boolean isAllowed = true;
+
+		/* Checks if the data property has already been created */
+		isAllowed = !isExistingDataProperty(dataPropertyIRI, individual, dataPropertyValue);
+
+		return isAllowed;
+	}
+
+	/**
+	 * Checks if a given object property exists
+	 * @param objectPropertyIRI the object property IRI
+	 * @param firstIndividual The first individual
+	 * @param secondIndividual The second individual
+	 * @return True if it exists, false otherwise
+	 */
 	private Boolean isExistingObjectProperty(IRI objectPropertyIRI, OWLNamedIndividual firstIndividual, OWLNamedIndividual secondIndividual){
 		Boolean exists = false;
 
@@ -545,6 +599,30 @@ public class OntologyOperations {
 			 * then this Object Property already exists.*/
 			if(axiom.getProperty().asOWLObjectProperty().getIRI().equals(objectPropertyIRI)
 					&& axiom.getObject().asOWLNamedIndividual().getIRI().equals(secondIndividual.getIRI())){
+				exists = true;
+				break;
+			}
+		}
+
+		return exists;
+	}
+
+	/**
+	 * Checks if a data property exists
+	 * @param dataPropertyIRI The data property that is being tested
+	 * @param individual The individual which is the object of the data property
+	 * @param dataPropertyValue The data property value
+	 * @return True if it exists, false otherwise
+	 */
+	private Boolean isExistingDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, String dataPropertyValue){
+		Boolean exists = false;
+
+		/* Gets all the data Properties that have the first individual involved */
+		for(OWLDataPropertyAssertionAxiom axiom : this.ontology.getDataPropertyAssertionAxioms(individual)){
+			/* If the data Property matches the one in the axiom and the value is the same
+			 * then this data Property already exists.*/
+			if(axiom.getProperty().asOWLDataProperty().getIRI().equals(dataPropertyIRI)
+					&& axiom.getObject().getLiteral().equals(dataPropertyValue)){
 				exists = true;
 				break;
 			}

@@ -13,7 +13,7 @@ public class ParsingTester {
 
 	public static void main(String[] args) {
 		PropertiesHandler.propertiesLoader();
-		String fp = PropertiesHandler.configProperties.getProperty("uploaded.files.path") + File.separator + "testDir1.zip";
+		String fp = PropertiesHandler.configProperties.getProperty("uploaded.files.path") + File.separator + "family.xml";
 		File xml = new File(fp);
 		System.out.println(xml.getAbsolutePath());
 		try {

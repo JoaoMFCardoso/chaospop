@@ -257,6 +257,11 @@ public class PopulationOperations {
 		/*****************************************************************************************************************
 		 * DATA PROPERTIES CREATION
 		 *****************************************************************************************************************/
+
+		/* Checks if the Individual Mapping implies the creation of Data Properties for this individual */
+		if(!individualMapping.getDataProperties().isEmpty()){
+			this.ontologyOperations.handleDataPropertyCreation(node, mapping, individualMapping, individual);
+		}
 	}
 
 

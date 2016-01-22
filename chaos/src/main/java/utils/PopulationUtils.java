@@ -154,6 +154,9 @@ public class PopulationUtils {
 						individualName = child.getValue();
 					}
 
+					/* Removes all whitespaces between words  */
+					individualName = individualName.replaceAll("\\s+","");
+
 					individualIRIs.add(IRI.create(namespace.toString(), individualName));
 				}else{ /* keep going to another child */
 					individualIRIs = getIndividualIRIsFromChildPath(child, path, nextDepth, namespace, nodeImpl);
@@ -184,6 +187,19 @@ public class PopulationUtils {
 	}
 
 	/**
+	 * Gets a data property value when given a node and a data property mapping detail
+	 * @param node The Node from whom the data property value will be extracted
+	 * @param dataPropertyMappingDetail The data property mapping detail which details how the information is stored in the node
+	 * @return A data property value
+	 */
+	public static String getDataPropertyValue(Node node, String dataPropertyMappingDetail){
+		/* Extracts the data property value from the node */
+		String dataPropertyValue = extractFieldFromNode(node, dataPropertyMappingDetail);
+
+		return dataPropertyValue;
+	}
+
+	/**
 	 * Creates a new Individual Name from the Node and the IndividualMapping objects
 	 * @param node The Node which holds the new individual information
 	 * @param individualMapping The IndividualMapping which regulates how the new individual is to be created
@@ -195,6 +211,9 @@ public class PopulationUtils {
 
 		/* Gets the Individual's Name from the Node */
 		String individualName = extractFieldFromNode(node, individualNameMapping);
+
+		/* Removes all whitespaces between words  */
+		individualName = individualName.replaceAll("\\s+","");
 
 		return individualName;
 	}
@@ -209,6 +228,9 @@ public class PopulationUtils {
 
 		/* Gets the Individual's Name from the Node */
 		String individualName = extractFieldFromNode(node, attributeName);
+
+		/* Removes all whitespaces between words  */
+		individualName = individualName.replaceAll("\\s+","");
 
 		return individualName;
 	}
