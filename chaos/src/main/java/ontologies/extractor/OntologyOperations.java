@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -24,6 +25,7 @@ import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -34,8 +36,12 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import utils.PopulationUtils;
+import database.implementations.NodeImpl;
 import database.implementations.OntologyFileImpl;
+import domain.bo.mappings.IndividualMapping;
+import domain.bo.mappings.Mapping;
 import domain.bo.ontologies.OntologyFile;
+import domain.bo.parsers.Node;
 
 /**
  * This class implements Ontology data Extraction methods
@@ -220,13 +226,13 @@ public class OntologyOperations {
 
 	/**
 	 * Creates a new OWLNamedIndividual based on the input data
-	 * @param individualFragment The Individual Name
+	 * @param individualName The Individual Name
 	 * @param individualLabel The Individual Label
 	 * @param individualIRI The Individual IRI
 	 * @param individualClassIRI The Individual OWLClass IRI. Might be null if a proto individual is being created
 	 * @return A valid OWLNamedIndividual
 	 */
-	private OWLNamedIndividual createOWLNamedIndividual(String individualFragment, String individualLabel, IRI individualIRI,
+	private OWLNamedIndividual createOWLNamedIndividual(String individualName, String individualLabel, IRI individualIRI,
 			IRI individualClassIRI){
 
 		/* A new OWLNamedIndividual Object must be associated with the DataFactory */
@@ -237,7 +243,7 @@ public class OntologyOperations {
 
 		/* Uses the individualFragment if the individualLabelindividualLabel is empty or null */
 		if(null == individualLabel || individualLabel.isEmpty()){
-			individualLabel = individualFragment;
+			individualLabel = individualName;
 		}
 
 		/* Creates the new Label OWLAnnotationAxiom */
@@ -249,6 +255,83 @@ public class OntologyOperations {
 		}
 
 		return owlNamedIndividual;
+	}
+
+	/**
+	 * Handles the creation of a HashMap of Object Properties for a given OWLNamedIndividual
+	 * @param node The Node object that is used to gather data for the object property creation
+	 * @param mapping The Mapping associated with this population
+	 * @param individualMapping The IndividualMapping object associated with this node
+	 * @param firstIndividual The OWLNamedIndividual that will act as first individual
+	 */
+	public void handleObjectPropertyCreation(Node node, Mapping mapping, IndividualMapping individualMapping, OWLNamedIndividual firstIndividual){
+		/* Runs each Object Property and creates each one */
+		HashMap<IRI, String> objectProperties = individualMapping.getObjectProperties();
+		for(IRI objectPropertyIRI : objectProperties.keySet()){
+			/* Gets the second individuals data */
+			Pair<ArrayList<IRI>, Boolean> secondIndividualsData = getSecondIndividuals(node, mapping, objectPropertyIRI,
+					objectProperties.get(objectPropertyIRI));
+
+			/* Now that the second individuals have been gathered the object properties can be created */
+			createObjectProperties(objectPropertyIRI, firstIndividual, secondIndividualsData);
+		}
+	}
+
+	/**
+	 * Creates object properties of a given type between a first individual and a list of second individuals
+	 * @param objectPropertyIRI The object property type IRI
+	 * @param firstIndividual The first OWLNamedIndividual.
+	 * @param secondIndividualsData A Pair containing all the second individuals IRI's and a boolean indicating if the property is
+	 * inverted (i.e. the second individuals will act as first individuals whilst the first will act as second)
+	 */
+	private void createObjectProperties(IRI objectPropertyIRI, OWLNamedIndividual firstIndividual, Pair<ArrayList<IRI>,
+			Boolean> secondIndividualsData){
+
+		/* Extracts the Second Individuals Data  */
+		Boolean isInverted = secondIndividualsData.getValue1();
+		ArrayList<IRI> secondIndividualsIRIs = secondIndividualsData.getValue0();
+
+		/* Runs each second Individual and creates the object property */
+		for(IRI secondIndividualIRI : secondIndividualsIRIs){
+			/* Gets the second individual name */
+			String secondIndividualName = secondIndividualIRI.getRemainder().get();
+
+			/* Gets the second individual as an OWLNamedIndividual Object
+			 * If the individual has not been created yet, the getOWLNamedIndividual method will create a proto individual
+			 * thus the label and OWLClass must be null in this call */
+			OWLNamedIndividual secondIndividual = getOWLNamedIndividual(secondIndividualName, null, secondIndividualIRI, null);
+
+			/* Runs the Object Property Creation Pre Checks and creates the object property if allowed */
+			if(isAllowedToCreateObjectProperty(objectPropertyIRI, firstIndividual, secondIndividual, isInverted)){
+				createObjectProperty(objectPropertyIRI, firstIndividual, secondIndividual, isInverted);
+			}
+		}
+	}
+
+	/**
+	 * Creates an object property between a first and second individuals
+	 * @param objectPropertyIRI The Object Property to be created
+	 * @param firstIndividual The first individual
+	 * @param secondIndividual The second individual
+	 * @param isInverted A boolean indicating if the property is to be inverted
+	 */
+	private void createObjectProperty(IRI objectPropertyIRI, OWLNamedIndividual firstIndividual, OWLNamedIndividual secondIndividual,
+			Boolean isInverted){
+
+		/* Create the relation */
+		OWLObjectProperty objectProperty = this.factory.getOWLObjectProperty(objectPropertyIRI);
+
+		/* Switches the First Individual for the Second in the event that this property is to be inverted */
+		OWLObjectPropertyAssertionAxiom assertion = null;
+		if(isInverted){
+			assertion = this.factory.getOWLObjectPropertyAssertionAxiom(objectProperty, secondIndividual, firstIndividual);
+		}else{
+			assertion = this.factory.getOWLObjectPropertyAssertionAxiom(objectProperty, firstIndividual, secondIndividual);
+		}
+
+		/* Add the axiom to the ontology and save */
+		AddAxiom addAxiomChange = new AddAxiom(this.ontology, assertion);
+		this.manager.applyChange(addAxiomChange);
 	}
 
 	/******************************************************************************************************************************
@@ -424,6 +507,52 @@ public class OntologyOperations {
 		return update;
 	}
 
+	/**
+	 * Checks if an Object Property is allowed to be created between two individuals
+	 * @param objectPropertyIRI The Object property IRI
+	 * @param firstIndividual The first OWLNamedIndividual
+	 * @param secondIndividual The second OWLNamedIndividual
+	 * @param isInverted A boolean indicating if the Object Property is inverted
+	 * @return True if the Object Property is allowed to be created, false otherwise
+	 */
+	private Boolean isAllowedToCreateObjectProperty(IRI objectPropertyIRI, OWLNamedIndividual firstIndividual, OWLNamedIndividual secondIndividual,
+			Boolean isInverted){
+		Boolean isAllowed = true;
+
+		/* Checks if the first and second individuals have the same IRI */
+		if(firstIndividual.toString().equals(secondIndividual.toString())){
+			isAllowed = false;
+			return isAllowed;
+		}
+
+		/* Checks if the property already exists between this two individuals,
+		 * considering the possibility of it being an inverted object property */
+		if(isInverted){
+			isAllowed = !isExistingObjectProperty(objectPropertyIRI, secondIndividual, firstIndividual);
+		}else{
+			isAllowed = !isExistingObjectProperty(objectPropertyIRI, firstIndividual, secondIndividual);
+		}
+
+		return isAllowed;
+	}
+
+	private Boolean isExistingObjectProperty(IRI objectPropertyIRI, OWLNamedIndividual firstIndividual, OWLNamedIndividual secondIndividual){
+		Boolean exists = false;
+
+		/* Gets all the Object Properties that have the first individual involved */
+		for(OWLObjectPropertyAssertionAxiom axiom : this.ontology.getObjectPropertyAssertionAxioms(firstIndividual)){
+			/* If the Object Property matches the one in the axiom and the second individual is the same
+			 * then this Object Property already exists.*/
+			if(axiom.getProperty().asOWLObjectProperty().getIRI().equals(objectPropertyIRI)
+					&& axiom.getObject().asOWLNamedIndividual().getIRI().equals(secondIndividual.getIRI())){
+				exists = true;
+				break;
+			}
+		}
+
+		return exists;
+	}
+
 	/******************************************************************************************************************************
 	 * ONTOLOGY EXTRACTION METHODS
 	 ******************************************************************************************************************************/
@@ -518,13 +647,13 @@ public class OntologyOperations {
 	/**
 	 * Gets an OWLNamedIndividual from the Ontology. It either gets an existing one or creates a new one it no match exists
 	 * in the Ontology Signature.
-	 * @param individualFragment The Individual Name
+	 * @param individualName The Individual Name
 	 * @param individualLabel The Individual Label
 	 * @param individualIRI The Individual IRI
 	 * @param individualClassIRI The Individual OWL Class IRI
 	 * @return A valid OWLNamedIndividual
 	 */
-	public OWLNamedIndividual getOWLNamedIndividual(String individualFragment, String individualLabel, IRI individualIRI,
+	public OWLNamedIndividual getOWLNamedIndividual(String individualName, String individualLabel, IRI individualIRI,
 			IRI individualClassIRI){
 
 		OWLNamedIndividual owlNamedIndividual = null;
@@ -539,9 +668,10 @@ public class OntologyOperations {
 
 			/* If there is a match, then the individual already exists, and it's either being requested
 			 * or needs to be updated */
-			if(candidateIndividualName.equals(individualFragment)){
+			if(candidateIndividualName.equals(individualName)){
 				/* The owlNamedIndividual that is to be returned is the candidateIndividual */
 				owlNamedIndividual = candidateIndividual;
+				return owlNamedIndividual;
 			}
 		}
 
@@ -550,9 +680,85 @@ public class OntologyOperations {
 		 *****************************************************************************************************************/
 		/* If no matches were found with any existing individuals, a new individual must be created with the input data */
 
-		owlNamedIndividual = createOWLNamedIndividual(individualFragment, individualLabel, individualIRI, individualClassIRI);
+		owlNamedIndividual = createOWLNamedIndividual(individualName, individualLabel, individualIRI, individualClassIRI);
 
 		return owlNamedIndividual;
+	}
+
+	/**
+	 * Gets all the second individuals necessary for the creation of a given object property.
+	 *The mapping detail is as follows:
+	 * 1. .parent, the second individual IRI should be the parent of the first individual IRI
+	 * 2. .inspecificchild-<childnode.tag>-<grandchildnode.tag>-<...>, then the IRI of the final child should be used as second individual IRI
+	 * 3. value, the second individual IRI is in the value
+	 * @param node The Node Object that is used to gather data for the creation of Individuals
+	 * @param mapping The Mapping associated with this population
+	 * @param individualMapping The IndividualMapping Object that is associated with this Node
+	 * @param ObjectPropertyIRI The Object Property IRI
+	 * @param mappingDetail The Mapping detail wich indicates how the second individual should be fetched
+	 * @return A Pair Object containing the Second Individuals IRI array, and a Boolean which indicates if the object property
+	 * relation is inverted or not.
+	 */
+	private Pair<ArrayList<IRI>, Boolean> getSecondIndividuals(Node node, Mapping mapping, IRI ObjectPropertyIRI, String mappingDetail){
+		/* Initialization of the second individuals array */
+		ArrayList<IRI> secondIndividuals = new ArrayList<IRI>();
+
+		/* Processes the mapping detail */
+		String[] processedMappingDetail = mappingDetail.split("-");
+		Boolean isInverted = false;
+
+		/* Initializes the NodeImpl Object */
+		NodeImpl nodeImpl = null;
+
+		/* Initializes the Ontology Namespace */
+		IRI namespace = this.ontology.getOntologyID().getOntologyIRI().get();
+
+		/* Initializes the parentIndividual IRI */
+		IRI parentIndividualIRI = null;
+
+		/* Adds second individuals to the second individuals array */
+		switch (processedMappingDetail[0]) {
+		case ".parent":
+			/* Gets the ParentIndividual IRI */
+			parentIndividualIRI = PopulationUtils.getParentIndividualIRI(mapping, node, namespace);
+			secondIndividuals.add(parentIndividualIRI);
+			break;
+		case ".parentinverted":
+			/* The second individual is in the parent but the relation is inverted */
+			/* Gets the ParentIndividual IRI */
+			parentIndividualIRI = PopulationUtils.getParentIndividualIRI(mapping, node, namespace);
+			secondIndividuals.add(parentIndividualIRI);
+
+			/* Signals that this is an inverted relation */
+			isInverted = true;
+			break;
+		case ".inspecificchild":
+			/* Gets the individual name */
+			nodeImpl = new NodeImpl();
+			secondIndividuals = PopulationUtils.getIndividualIRIsFromChildPath(node, processedMappingDetail, 1, namespace, nodeImpl);
+			break;
+		case ".forspecificchild": /* The first and second individuals must be switched,
+		 because this is an inverted relation*/
+			/* Gets the individual name */
+			nodeImpl = new NodeImpl();
+			secondIndividuals = PopulationUtils.getIndividualIRIsFromChildPath(node, processedMappingDetail, 1, namespace, nodeImpl);
+
+			/* Signals that this is an inverted relation */
+			isInverted = true;
+			break;
+		case ".inattributes":
+			/* The second individual IRI is in the attributes of the invidiual */
+			String individualName = PopulationUtils.createIndividualNameFromAttribute(node, processedMappingDetail[1]);
+			secondIndividuals.add(IRI.create(namespace.toString() , individualName));
+			break;
+		default:
+			secondIndividuals.add(IRI.create(mappingDetail));
+			break;
+		}
+
+		/* Builds and returns the return Pair */
+		Pair<ArrayList<IRI>, Boolean> returnPair = new Pair<ArrayList<IRI>, Boolean>(secondIndividuals, isInverted);
+		return returnPair;
 	}
 
 	/**

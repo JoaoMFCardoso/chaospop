@@ -190,7 +190,7 @@ public class PopulationOperations {
 			ArrayList<Node> nodeList = PopulationUtils.getIndividualMappingMatchingNode(mapping, individualMapping);
 
 			/* Populates all the matching Nodes */
-			processNodes(nodeList, individualMapping);
+			processNodes(nodeList, mapping, individualMapping);
 		}
 	}
 
@@ -198,12 +198,13 @@ public class PopulationOperations {
 	 * Runs the Node list and creates an individual for each Node instance, according to the rules
 	 * specified in the IndividualMapping object.
 	 * @param nodeList An ArrayList of Nodes that will be processed to create OWLIndividuals
+	 * @param mapping The population operation mapping
 	 * @param individualMapping The IndividualMapping object that specifies the rules of the population
 	 */
-	private void processNodes(ArrayList<Node> nodeList, IndividualMapping individualMapping){
+	private void processNodes(ArrayList<Node> nodeList, Mapping mapping, IndividualMapping individualMapping){
 		/* Runs the Node List */
 		for(Node node : nodeList){
-			createIndividual(node, individualMapping);
+			createIndividual(node, mapping, individualMapping);
 		}
 	}
 
@@ -211,7 +212,17 @@ public class PopulationOperations {
 	 * Individual Creation Methods
 	 *********************************************************************************************************************/
 
-	private void createIndividual(Node node, IndividualMapping individualMapping){
+	/**
+	 * Creates a new Individual and its object and data properties
+	 * @param node The Node that is used to generate the new individual
+	 * @param mapping The Mapping in the population procedure
+	 * @param individualMapping The individual mapping for the creation of this individual
+	 */
+	private void createIndividual(Node node, Mapping mapping, IndividualMapping individualMapping){
+
+		/*****************************************************************************************************************
+		 * INDIVIDUAL DATA CREATION
+		 *****************************************************************************************************************/
 
 		/* Creates the Individual Name, Label, IRI and OWLClass IRI */
 		String individualName = PopulationUtils.createIndividualName(node, individualMapping);
@@ -233,6 +244,19 @@ public class PopulationOperations {
 		if(individualMapping.getSpecification() || individualNeedsUpdate){
 			this.ontologyOperations.updateOWLNamedIndividual(individual, individualLabel, individualClassIRI);
 		}
+
+		/*****************************************************************************************************************
+		 * OBJECT PROPERTIES CREATION
+		 *****************************************************************************************************************/
+
+		/* Checks if the Individual Mapping implies the creation of Object Properties for this individual */
+		if(!individualMapping.getObjectProperties().isEmpty()){
+			this.ontologyOperations.handleObjectPropertyCreation(node, mapping, individualMapping, individual);
+		}
+
+		/*****************************************************************************************************************
+		 * DATA PROPERTIES CREATION
+		 *****************************************************************************************************************/
 	}
 
 

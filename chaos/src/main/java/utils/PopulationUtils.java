@@ -166,6 +166,24 @@ public class PopulationUtils {
 	}
 
 	/**
+	 * Gets the Parent Individual IRI of a given Node
+	 * @param mapping The Mapping used in the population
+	 * @param node The Node whose parent is to be fetched
+	 * @param namespace The namespace of the ontology being populated
+	 * @return The IRI of the parent individual of the given node
+	 */
+	public static IRI getParentIndividualIRI(Mapping mapping, Node node, IRI namespace){
+		/* Gets the Individual IRI of the Parent Individual. This might later be used to fetch a second individual. */
+		NodeImpl nodeImpl = new NodeImpl();
+		Node parentNode = nodeImpl.get(node.getParent().toString());
+		IndividualMapping parentIndividualMapping = PopulationUtils.getNodeMatchingIndividualMapping(parentNode, mapping);
+		String parentIndividualName = PopulationUtils.createIndividualName(parentNode, parentIndividualMapping);
+		IRI parentIndividualIRI = IRI.create(namespace.toString(), parentIndividualName);
+
+		return parentIndividualIRI;
+	}
+
+	/**
 	 * Creates a new Individual Name from the Node and the IndividualMapping objects
 	 * @param node The Node which holds the new individual information
 	 * @param individualMapping The IndividualMapping which regulates how the new individual is to be created
