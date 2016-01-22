@@ -8,7 +8,10 @@ import java.util.UUID;
 import ontologies.extractor.OntologyOperations;
 
 import org.bson.types.ObjectId;
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -192,9 +195,34 @@ public class PopulationUtils {
 	 * @param dataPropertyMappingDetail The data property mapping detail which details how the information is stored in the node
 	 * @return A data property value
 	 */
-	public static String getDataPropertyValue(Node node, String dataPropertyMappingDetail){
+	public static OWLLiteral getDataPropertyValue(OWLDataFactory factory, Node node, Pair<String, String> dataPropertyMappingDetails){
 		/* Extracts the data property value from the node */
-		String dataPropertyValue = extractFieldFromNode(node, dataPropertyMappingDetail);
+		OWLLiteral dataPropertyValue = null;
+		String dataPropertyStringValue = extractFieldFromNode(node, dataPropertyMappingDetails.getValue0());
+
+		switch (dataPropertyMappingDetails.getValue1()) {
+		case "Boolean":
+			Boolean booleanValue = Boolean.parseBoolean(dataPropertyStringValue);
+			dataPropertyValue = factory.getOWLLiteral(booleanValue);
+			break;
+		case "Double":
+			double doubleValue = Double.parseDouble(dataPropertyStringValue);
+			dataPropertyValue = factory.getOWLLiteral(doubleValue);
+			break;
+		case "Float":
+			float floatValue = Float.parseFloat(dataPropertyStringValue);
+			dataPropertyValue = factory.getOWLLiteral(floatValue);
+			break;
+		case "Integer":
+			int intValue = Integer.parseInt(dataPropertyStringValue);
+			dataPropertyValue = factory.getOWLLiteral(intValue);
+			break;
+		case "String":
+			dataPropertyValue = factory.getOWLLiteral(dataPropertyStringValue);
+			break;
+		default:
+			break;
+		}
 
 		return dataPropertyValue;
 	}

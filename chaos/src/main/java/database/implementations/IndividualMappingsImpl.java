@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
 
 import utils.MongoUtilities;
@@ -91,9 +92,8 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 
 		/* Creates the data properties database object and appends it to the individual mappings database object */
 		if(null != individualMapping.getDataProperties()){
-			HashMap<String, String> dataProperties = MongoUtilities.convertPropertyMapToDB(individualMapping.getDataProperties());
-			BasicDBObject dataPropertiesDBObj = new BasicDBObject(dataProperties);
-			individualMappingDBObj.append("dataProperties", dataPropertiesDBObj);
+			HashMap<String, Object> dataProperties = MongoUtilities.convertHMIRIPairtoDB(individualMapping.getDataProperties());
+			individualMappingDBObj.append("dataProperties", dataProperties);
 		}
 
 		return individualMappingDBObj;
@@ -161,8 +161,8 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 				individualMapping.setObjectProperties(objectProperties);
 				break;
 			case "dataProperties":
-				HashMap<String, String> dataPropertiesDBMap = (HashMap<String, String>) persistent.get(key);
-				HashMap<IRI, String> dataProperties = MongoUtilities.convertPropertyMapFromDB(dataPropertiesDBMap);
+				HashMap<String, Object> dataPropertiesDBMap = (HashMap<String, Object>) persistent.get(key);
+				HashMap<IRI, Pair<String, String>> dataProperties = MongoUtilities.convertHMSPairFromDB(dataPropertiesDBMap);
 				individualMapping.setDataProperties(dataProperties);
 				break;
 			default:

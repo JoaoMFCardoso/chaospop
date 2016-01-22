@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
 
 import database.implementations.BatchImpl;
@@ -37,9 +38,11 @@ public class DatabaseTester {
 		testObjProp.put(IRI.create("http://sysresearch.org/ontologies/UO.owl#aggregates"), ".inspecificchild-conjuge");
 		indMap.setObjectProperties(testObjProp);
 
-		HashMap<IRI, String> testDataProp = new HashMap<IRI, String>();
-		testDataProp.put(IRI.create("http://sysresearch.org/ontologies/DSOs/software.owl#hasInstallDate"), ".inattributes-idade");
-		testDataProp.put(IRI.create("http://sysresearch.org/ontologies/DSOs/software.owl#hasVersion"), ".inattributes-cor_olhos");
+		HashMap<IRI, Pair<String, String>> testDataProp = new HashMap<IRI, Pair<String, String>>();
+		Pair<String, String> p1 = new Pair<String, String>(".inattributes-idade", "Integer");
+		testDataProp.put(IRI.create("http://sysresearch.org/ontologies/DSOs/software.owl#hasInstallDate"), p1);
+		Pair<String, String> p2 = new Pair<String, String>(".inattributes-cor_olhos", "String");
+		testDataProp.put(IRI.create("http://sysresearch.org/ontologies/DSOs/software.owl#hasVersion"), p2);
 		indMap.setDataProperties(testDataProp);
 
 		IndividualMappingsImpl indMapImpl = new IndividualMappingsImpl();

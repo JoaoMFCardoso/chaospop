@@ -280,11 +280,11 @@ public class OntologyOperations {
 
 	public void handleDataPropertyCreation(Node node, Mapping mapping, IndividualMapping individualMapping, OWLNamedIndividual individual){
 		/* Runs each Data Property and creates each one */
-		HashMap<IRI, String> dataProperties = individualMapping.getDataProperties();
+		HashMap<IRI, Pair<String, String>> dataProperties = individualMapping.getDataProperties();
 		for(IRI dataPropertyIRI : dataProperties.keySet()){
 
 			/* Gets the data property value */
-			String dataPropertyValue = PopulationUtils.getDataPropertyValue(node, dataProperties.get(dataPropertyIRI));
+			OWLLiteral dataPropertyValue = PopulationUtils.getDataPropertyValue(this.factory, node, dataProperties.get(dataPropertyIRI));
 
 			/* Creates the object property if allowed */
 			if(isAllowedToCreateDataProperty(dataPropertyIRI, individual, dataPropertyValue)){
@@ -356,10 +356,11 @@ public class OntologyOperations {
 	 * @param individual The individual
 	 * @param dataPropertyValue The data property value
 	 */
-	private void createDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, String dataPropertyValue){
+	private void createDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, OWLLiteral dataPropertyValue){
 		/* Create the relation */
 		OWLDataProperty dataProperty = this.factory.getOWLDataProperty(dataPropertyIRI);
 		OWLDataPropertyAssertionAxiom assertion = this.factory.getOWLDataPropertyAssertionAxiom(dataProperty, individual, dataPropertyValue);
+
 		/* Add the axiom to the ontology and save */
 		AddAxiom addAxiomChange = new AddAxiom(this.ontology, assertion);
 		this.manager.applyChange(addAxiomChange);
@@ -574,7 +575,7 @@ public class OntologyOperations {
 	 * @param dataPropertyValue The data property value
 	 * @return True if it is allowed to be created, false otherwise
 	 */
-	private Boolean isAllowedToCreateDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, String dataPropertyValue){
+	private Boolean isAllowedToCreateDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, OWLLiteral dataPropertyValue){
 		Boolean isAllowed = true;
 
 		/* Checks if the data property has already been created */
@@ -614,7 +615,7 @@ public class OntologyOperations {
 	 * @param dataPropertyValue The data property value
 	 * @return True if it exists, false otherwise
 	 */
-	private Boolean isExistingDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, String dataPropertyValue){
+	private Boolean isExistingDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, OWLLiteral dataPropertyValue){
 		Boolean exists = false;
 
 		/* Gets all the data Properties that have the first individual involved */

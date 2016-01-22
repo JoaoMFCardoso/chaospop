@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bson.types.ObjectId;
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
 
 import utils.TransferObjectUtils;
@@ -65,7 +66,7 @@ public class IndividualMapping {
 	 * If the value is .invalue: The value is the tag value. It must first be searched within the tag attributes
 	 * and if not found, it must be searched within the tag's children.
 	 */
-	private HashMap<IRI, String> dataProperties;
+	private HashMap<IRI, Pair<String, String>> dataProperties;
 
 
 	/**
@@ -110,7 +111,7 @@ public class IndividualMapping {
 		if(null == individualMappingTO.getDataProperties()){
 			this.dataProperties = null;
 		}else{
-		this.dataProperties = TransferObjectUtils.convertHMSSToIRIS(individualMappingTO.getDataProperties());
+		this.dataProperties = TransferObjectUtils.convertHMSPToIRIP(individualMappingTO.getDataProperties());
 		}
 	}
 
@@ -135,7 +136,7 @@ public class IndividualMapping {
 		imto.setIndividualLabel(this.individualLabel);
 		imto.setOwlClassIRI(this.owlClassIRI.toString());
 		imto.setObjectProperties(TransferObjectUtils.convertHMIRISToSS(this.objectProperties));
-		imto.setDataProperties(TransferObjectUtils.convertHMIRISToSS(this.dataProperties));
+		imto.setDataProperties(TransferObjectUtils.convertHMIRIPToSP(this.dataProperties));
 
 		return imto;
 	}
@@ -285,7 +286,7 @@ public class IndividualMapping {
 	 *
 	 * @return the dataProperties
 	 */
-	public HashMap<IRI, String> getDataProperties() {
+	public HashMap<IRI,  Pair<String, String>> getDataProperties() {
 		return dataProperties;
 	}
 
@@ -295,7 +296,7 @@ public class IndividualMapping {
 	 *
 	 * @param dataProperties the dataProperties to set
 	 */
-	public void setDataProperties(HashMap<IRI, String> dataProperties) {
+	public void setDataProperties(HashMap<IRI, Pair<String, String>> dataProperties) {
 		this.dataProperties = dataProperties;
 	}
 }

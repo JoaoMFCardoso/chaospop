@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
 
 import com.mongodb.BasicDBList;
@@ -90,6 +91,63 @@ public class MongoUtilities {
 			}
 
 			returnMap.put(newKey, labelAndClass);
+		}
+		return returnMap;
+	}
+
+	/**
+	 * Converts a DataPropertiesMap into a suitable version for the database
+	 * @param dataPropertiesMap The data properties map
+	 * @return a suitable version of the map for the DB
+	 */
+	public static HashMap<String, Object> convertHMIRIPairtoDB(HashMap<IRI, Pair<String, String>> dataPropertiesMap){
+		HashMap<String, Object> returnMap = new HashMap<String, Object>();
+
+		for(IRI key : dataPropertiesMap.keySet()){
+			BasicDBObject dataPropertyDBObject = new BasicDBObject();
+			dataPropertyDBObject.append("dataProperty", dataPropertiesMap.get(key).getValue0());
+			dataPropertyDBObject.append("dpDataType", dataPropertiesMap.get(key).getValue1());
+
+			String newKey = convertIRItoDB(key);
+
+			returnMap.put(newKey, dataPropertyDBObject);
+		}
+
+		return returnMap;
+	}
+
+	/**
+	 * Converts the data properties map from the DB
+	 * @param dataPropertiesDBMap The DB data properties map
+	 * @return A suitable version of the data properties map for general use
+	 */
+	public static HashMap<IRI, Pair<String, String>> convertHMSPairFromDB(HashMap<String, Object> dataPropertiesDBMap){
+		HashMap<IRI, Pair<String, String>> returnMap = new HashMap<IRI, Pair<String, String>>();
+
+		for(String key : dataPropertiesDBMap.keySet()){
+			IRI newKey = convertIRIfromDB(key);
+
+			BasicDBObject persistent = (BasicDBObject) dataPropertiesDBMap.get(key);
+			Set<String> keyset = persistent.keySet();
+			String dataProperty = null;
+			String dpDataType = null;
+
+			for(String value : keyset){
+				/* Creates the data properties mappings based on the values */
+				switch (value) {
+				case "dataProperty":
+					dataProperty = (String) persistent.get(value);
+					break;
+				case "dpDataType":
+					dpDataType = (String) persistent.get(value);
+					break;
+				default:
+					break;
+				}
+			}
+
+			Pair<String, String> dataPropertiesData = new Pair<String, String>(dataProperty, dpDataType);
+			returnMap.put(newKey, dataPropertiesData);
 		}
 		return returnMap;
 	}

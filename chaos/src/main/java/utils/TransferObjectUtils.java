@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bson.types.ObjectId;
+import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
 
 import database.implementations.NodeImpl;
@@ -78,6 +79,22 @@ public class TransferObjectUtils {
 	}
 
 	/**
+	 * Converts a HashMap with IRI keys and Pair<String, String> values into a HashMap with String keys and Pair<String, String> values
+	 * @param map A HashMap with IRI keys and Pair<String, String> values
+	 * @return A HashMap with String keys and Pair<String, String> values
+	 */
+	public static HashMap<String, Pair<String, String>> convertHMIRIPToSP(HashMap<IRI, Pair<String, String>> map){
+		HashMap<String, Pair<String, String>> returnMap = new HashMap<String, Pair<String, String>>();
+
+		/* Runs the HashMap and converts the keys */
+		for(IRI key : map.keySet()){
+			returnMap.put(key.toString(), map.get(key));
+		}
+
+		return returnMap;
+	}
+
+	/**
 	 * This method converts a HashMap with IRI keys and String values to both String key and values
 	 * @param map A HashMap with IRI keys and String values
 	 * @return A HashMap with String keys and values
@@ -88,6 +105,22 @@ public class TransferObjectUtils {
 		/* Runs the HashMap and converts the keys */
 		for(IRI key : map.keySet()){
 			returnMap.put(key.toString(), map.get(key));
+		}
+
+		return returnMap;
+	}
+
+	/**
+	 * This method converts a HashMap with String keys and Pair<String, String> values to a HashMap with IRI keys and Pair<String, String> values
+	 * @param map A HashMap with String keys and Pair<String, String> values
+	 * @return A HashMap with IRI keys and Pair<String, String> values
+	 */
+	public static HashMap<IRI, Pair<String, String>> convertHMSPToIRIP(HashMap<String, Pair<String, String>> map){
+		HashMap<IRI, Pair<String, String>> returnMap = new HashMap<IRI, Pair<String, String>>();
+
+		/* Runs the HashMap and converts the keys */
+		for(String key : map.keySet()){
+			returnMap.put(IRI.create(key), map.get(key));
 		}
 
 		return returnMap;
