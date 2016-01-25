@@ -33,6 +33,9 @@ public class SFTPServerConnectionManager {
 	/** The SFTP server ontologies directory */
 	String sftpDirectory;
 
+	/** The SFTP server base namespace */
+	String sftpNamespace;
+
 	/**
 	 * The SFTP connection Manager constructor
 	 * @throws Exception
@@ -46,6 +49,7 @@ public class SFTPServerConnectionManager {
 		String user = PropertiesHandler.configProperties.getProperty("sftp.user");
 		String password = PropertiesHandler.configProperties.getProperty("sftp.password");
 		this.sftpDirectory = PropertiesHandler.configProperties.getProperty("sftp.ontologies");
+		this.sftpNamespace = PropertiesHandler.configProperties.getProperty("sftp.namespace");
 
 		/* Connects to the SFTP server */
 		JSch jsch = new JSch();
@@ -61,13 +65,25 @@ public class SFTPServerConnectionManager {
 	}
 
 	/**
-	 * This method uploads a given file into the SFTP server that has been initialized
+	 * This method uploads a given file into the SFTP server that has been initialised
 	 * @param filePath The path to the file that is being uploaded
 	 * @throws Exception
 	 */
-	public void uploadSFTPFile(String filePath) throws Exception{
-		/* Sets the destination directory and uploads the file */
+	public void uploadSFTPFile(String filePath, String namespace) throws Exception{
+		/* Initializes the channelSFTP with the base namespace for the SFTP Server */
 		this.channelSftp.cd(this.sftpDirectory);
+
+		/* Checks if there is a necessity to create other directories in the channelSFTP
+		 * This is only necessary when the namespace differs from the sftpDirectory */
+		if(FileOperationsUtils.isDirectoryCreationNeeded(this.sftpNamespace, namespace)){
+
+			/* Gets the directories path for the given namespace */
+			String directoriesPath = FileOperationsUtils.createNamespaceDirectories(this.sftpNamespace, namespace);
+			this.channelSftp.mkdir(this.sftpDirectory + directoriesPath);
+			this.channelSftp.cd(this.sftpDirectory + directoriesPath);
+		}
+
+		/* Uploads the file */
         File f = new File(filePath);
         this.channelSftp.put(new FileInputStream(f), f.getName());
 	}

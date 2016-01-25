@@ -9,6 +9,12 @@
 
 	<p><a href="wsapi/fileManager/listDataFiles">list files</a></p>
 
+	<p>Upload Ontology</p>
+	<form action="wsapi/fileManager/uploadFileSFTP" method="post">
+		<p>Ontology File ID : <input type="text" name="ontologyFileId" /></p>
+		<input type="submit" value="Upload Ontology File" />
+	</form>
+
 	<p>Get File</p>
 	<form action="wsapi/fileManager/getFile" method="post">
 		<p>File ID : <input type="text" name="id" /></p>

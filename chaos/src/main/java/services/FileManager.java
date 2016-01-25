@@ -20,6 +20,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import utils.FileOperationsUtils;
 import database.implementations.DataFileImpl;
+import database.implementations.OntologyFileImpl;
+import domain.bo.ontologies.OntologyFile;
 import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
 import file.operations.FileOperations;
@@ -73,6 +75,52 @@ public class FileManager {
 				processedFile.delete();
 				FileOperationsUtils.deleteDirectoryStructure(processedFile);
 			}
+		}
+
+		return response;
+	}
+
+	/**
+	 * Uploads an Ontology file to the database
+	 * @param fileName
+	 * @return
+	 */
+	@POST
+	@Path("/uploadFileSFTP")
+	public Response uploadFileSFTP(@FormParam("ontologyFileId") String ontologyFileId){
+		File file = null;
+		Response response;
+		try{
+			/* Gets the OntologyFile from the database */
+			OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
+			OntologyFile ontologyFile = ontologyFileImpl.get(ontologyFileId);
+
+			/* Checks that the namespace is compliant with the sftp server namespace
+			 * In case it is not compliant an exception is thrown */
+			String ontologyNamespace = ontologyFile.getNamespace().toString();
+			if(!FileOperationsUtils.isSFTPServerCompliant(ontologyNamespace)){
+				throw new Exception("Upload Failed - Namespace is not compliant with the SFTP Server Base Namespace");
+			}
+
+			/* Uploads the file to the SFTP server */
+			SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
+			file = new File(ontologyFile.getPath());
+			sftpManager.uploadSFTPFile(ontologyFile.getPath(), ontologyNamespace);
+
+			/* Updates the OntologyFile */
+			ontologyFile.setPath(null);
+			ontologyFileImpl.replace(ontologyFileId, ontologyFile);
+
+			/* Gets the Response */
+			response = Response.status(200).build();
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}finally{
+			/* Deletes the local created file */
+			file.delete();
+			FileOperationsUtils.deleteDirectoryStructure(file);
 		}
 
 		return response;

@@ -134,6 +134,71 @@ public class FileOperationsUtils {
 	}
 
 	/**
+	 * Checks if a given namespace is compliant with the SFTP server base namespace
+	 * @param namespace The given namespace
+	 * @return True if it is compliant, false otherwise
+	 */
+	public static Boolean isSFTPServerCompliant(String namespace){
+		Boolean compliant = false;
+
+		/* Gets the base namespace for the SFTP server */
+		PropertiesHandler.propertiesLoader();
+		String sftpNamespace = PropertiesHandler.configProperties.getProperty("sftp.namespace");
+
+		/* Sets the compliance to true if the given namespace starts with the sftp Namespace */
+		if(namespace.startsWith(sftpNamespace)){
+			compliant = true;
+		}
+
+		return compliant;
+	}
+
+	/**
+	 * Checks if directory creation is needed by analising a given namespace
+	 * @param sftpNamespace The SFTP server base namespace
+	 * @param namespace A SFTP Server compliant namespace
+	 * @return True if directory creation is needed, false otherwise
+	 */
+	public static Boolean isDirectoryCreationNeeded(String sftpNamespace, String namespace){
+		Boolean create = false;
+
+		/* Eliminate the sftpNamespace from the namespace, i.e
+		 * sftpNamespace = http://dev.sysresearch.org/chaos_pop/Ontologies/
+		 * namespace = http://dev.sysresearch.org/chaos_pop/Ontologies/directory/ontology.owl
+		 * result = directory/ontology.owl */
+		namespace = namespace.replace(sftpNamespace, "");
+
+		/* if the result of a parse on the remainder is an array with a size of bigger than one
+		 *  then directories need to be created. i.e.
+		 *  namespace = directory/ontology.owl
+		 *  result = [directory, ontology.owl] -> length = 2 > 1 -> directory creation is needed*/
+		if(namespace.split("/").length > 1){
+			create = true;
+		}
+
+		return create;
+	}
+
+	public static String createNamespaceDirectories(String sftpNamespace, String namespace){
+		/* Eliminate the sftpNamespace from the namespace, i.e
+		 * sftpNamespace = http://dev.sysresearch.org/chaos_pop/Ontologies/
+		 * namespace = http://dev.sysresearch.org/chaos_pop/Ontologies/directory/ontology.owl
+		 * result = directory/ontology.owl */
+			namespace = namespace.replace(sftpNamespace, "");
+
+			/* Get the Array with the directories */
+			String[] directories = namespace.split("/");
+
+			/* Create the directories path */
+			String directoriesPath = "/";
+			for (int i = 0; i < directories.length - 1; i++) {
+				directoriesPath += directories[i];
+			}
+
+			return directoriesPath;
+	}
+
+	/**
 	 * This method creates a File
 	 * @param destination The destination directory
 	 * @param name The name of the File
