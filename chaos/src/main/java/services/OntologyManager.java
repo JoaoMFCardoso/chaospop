@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,12 +15,15 @@ import ontologies.extractor.OntologyOperations;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 
+import properties.PropertiesHandler;
+import utils.FileOperationsUtils;
 import utils.TransferObjectUtils;
 
 import com.google.gson.Gson;
 
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
+import file.sftp.SFTPServerConnectionManager;
 
 /**
  * This class implements a jax rs service layer
@@ -53,6 +57,74 @@ public class OntologyManager {
 			response = Response.status(200).build();
 		}catch(Exception exception){
 			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
+	 * This method removes a list of OntologyFile objects from the database
+	 * @param ontologyIds The OntologyFile id list. All ids are separated by ",".
+	 * @return 200 if everything went well, 500 if not.
+	 */
+	@POST
+	@Path("/removeOntologyFiles")
+	public Response removeOntologyFiles(@FormParam("ontologyIds") String ontologyIds){
+		Response response;
+		try{
+			/* Gets the OntologyFile id's from the ontologyIds string
+			 * The id's are sepparated by ","
+			 * e.g. 123,2344,455 */
+			String[] ids = ontologyIds.split(",");
+
+			/* Runs all ids and fetches the OntologyFile object  */
+			for(String ontologyId : ids){
+
+				/* Gets the OntologyFile */
+				OntologyFile ontologyFile = this.ontologyFileImpl.get(ontologyId);
+
+				/* If the DataFile is in the SFTP Server, it removes it from the server */
+				String namespace = ontologyFile.getNamespace().toString();
+				if(FileOperationsUtils.isSFTPServerCompliant(namespace)){
+					SFTPServerConnectionManager sftpCManager = new SFTPServerConnectionManager();
+					sftpCManager.removeSFTPFile(namespace);
+				}
+
+				/* Removes the OntologyFile */
+				this.ontologyFileImpl.remove(ontologyId);
+			}
+
+			/* Gets the Response */
+			response = Response.status(200).build();
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(500).build();
+		}
+
+		return response;
+	}
+
+	/**
+	 * Gets the SFTP Default Namespace
+	 * @return The SFTP Default Namespace
+	 */
+	@GET
+	@Path("/getSFTPDefaultNamespace")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSFTPDefaultNamespace(){
+		Response response;
+		try{
+			/* Gets the Namespace from the properties */
+			PropertiesHandler.propertiesLoader();
+
+			String defaultNamespace = PropertiesHandler.configProperties.getProperty("sftp.namespace");
+
+			/* Gets the Response */
+			response = Response.ok(defaultNamespace, MediaType.APPLICATION_JSON).build();
+		}catch(Exception exception){
 			/* Sends a response that is not ok */
 			response = Response.status(500).build();
 		}

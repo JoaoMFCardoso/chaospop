@@ -9,10 +9,18 @@
 
 	<p><a href="wsapi/fileManager/listDataFiles">list files</a></p>
 
+	<p><a href="wsapi/ontologyManager/getSFTPDefaultNamespace">get default SFTP Namespace</a></p>
+
 	<p>Upload Ontology</p>
 	<form action="wsapi/fileManager/uploadFileSFTP" method="post">
 		<p>Ontology File ID : <input type="text" name="ontologyFileId" /></p>
 		<input type="submit" value="Upload Ontology File" />
+	</form>
+
+	<p>Remove Ontology Files</p>
+	<form action="wsapi/ontologyManager/removeOntologyFiles" method="post">
+		<p>Ontology File ID(s) : <input type="text" name="ids" /></p>
+		<input type="submit" value="Remove Ontology Files" />
 	</form>
 
 	<p>Get File</p>

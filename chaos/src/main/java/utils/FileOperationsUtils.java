@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.javatuples.Pair;
 
 import properties.PropertiesHandler;
 
@@ -179,7 +180,13 @@ public class FileOperationsUtils {
 		return create;
 	}
 
-	public static String createNamespaceDirectories(String sftpNamespace, String namespace){
+	/**
+	 * Creates all the necessary directories to store a given namespace in the sftp server
+	 * @param sftpNamespace The sftp standard namespace
+	 * @param namespace The given namespace
+	 * @return A pair containing both a string with the path from the sftp satandard namespace to the file, and the file name
+	 */
+	public static Pair<String, String> getNamespaceDirectories(String sftpNamespace, String namespace){
 		/* Eliminate the sftpNamespace from the namespace, i.e
 		 * sftpNamespace = http://dev.sysresearch.org/chaos_pop/Ontologies/
 		 * namespace = http://dev.sysresearch.org/chaos_pop/Ontologies/directory/ontology.owl
@@ -191,12 +198,17 @@ public class FileOperationsUtils {
 
 			/* Create the directories path */
 			String directoriesPath = "/";
-			for (int i = 0; i < directories.length - 1; i++) {
+			int lastPosition = directories.length - 1;
+			for (int i = 0; i < lastPosition; i++) {
 				directoriesPath += directories[i];
 			}
 
-			return directoriesPath;
+			Pair<String, String> returnPair = new Pair<String, String>(directoriesPath, directories[lastPosition]);
+
+			return returnPair;
 	}
+
+
 
 	/**
 	 * This method creates a File

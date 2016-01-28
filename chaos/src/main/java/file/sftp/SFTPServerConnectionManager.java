@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
+import org.javatuples.Pair;
 
 import properties.PropertiesHandler;
 import utils.FileOperationsUtils;
@@ -78,7 +79,7 @@ public class SFTPServerConnectionManager {
 		if(FileOperationsUtils.isDirectoryCreationNeeded(this.sftpNamespace, namespace)){
 
 			/* Gets the directories path for the given namespace */
-			String directoriesPath = FileOperationsUtils.createNamespaceDirectories(this.sftpNamespace, namespace);
+			String directoriesPath = FileOperationsUtils.getNamespaceDirectories(this.sftpNamespace, namespace).getValue0();
 			this.channelSftp.mkdir(this.sftpDirectory + directoriesPath);
 			this.channelSftp.cd(this.sftpDirectory + directoriesPath);
 		}
@@ -112,13 +113,24 @@ public class SFTPServerConnectionManager {
 
 	/**
 	 * Removes a file from the SFTP server
-	 * @param fileName The filename
+	 * @param namespace The namespace
 	 * @throws SftpException
 	 */
-	public void removeSFTPFile(String fileName) throws SftpException{
+	public void removeSFTPFile(String namespace) throws SftpException{
+		/* Gets the path to the file from the sftp standard directory, and the file name */
+		Pair<String, String> fileData = FileOperationsUtils.getNamespaceDirectories(this.sftpNamespace, namespace);
+
 		/* Sets the correct directory and removes the file */
-		this.channelSftp.cd(this.sftpDirectory);
-		this.channelSftp.rm(fileName);
+		String filePath = this.sftpDirectory + fileData.getValue0();
+		this.channelSftp.cd(filePath);
+		this.channelSftp.rm(fileData.getValue1());
+
+		/* Checks if the directory is empty and removes the directory if so */
+		if(listSFTPFiles(filePath).isEmpty()){
+			this.channelSftp.rmdir(filePath);
+		}
+
+		return;
 	}
 
 	/**
@@ -127,11 +139,11 @@ public class SFTPServerConnectionManager {
 	 * @throws SftpException
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public ArrayList<String> listSFTPFiles() throws SftpException{
+	public ArrayList<String> listSFTPFiles(String directory) throws SftpException{
 		ArrayList<String> fileNames = new ArrayList<String>();
 
 		/* Sets the working directory and gets the file list */
-		Vector<LsEntry> filelist = this.channelSftp.ls(this.sftpDirectory);
+		Vector<LsEntry> filelist = this.channelSftp.ls(directory);
         for(LsEntry file : filelist){
         	String fileName = file.getFilename();
 
