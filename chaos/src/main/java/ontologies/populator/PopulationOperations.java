@@ -161,15 +161,12 @@ public class PopulationOperations {
 					this.ontology,
 					this.reasoner);
 
-			/* Gets the base ontology and extracts its imported ontologies list */
-			PopulationUtils.importOntologies(mapping.getBaseOntology().toString(), this.ontologyOperations);
-
-			/* Imports any existing specific ontologies */
-			if(null != mapping.getSpecificOntologies()){
-				for(ObjectId ontologyId : mapping.getSpecificOntologies()){
-					PopulationUtils.importOntologies(ontologyId.toString(), this.ontologyOperations);
-				}
-			}
+			/* Imports Ontologies.
+			 * It gather all the indirectly imported ontologies by each directly imported ontology
+			 * and then it creates a final list of directly imported ontologies, only importing those ontologies that
+			 * are not indirectly imported by others.
+			 */
+			PopulationUtils.importOntologies(mapping.getDirectOntologyImports(), this.ontologyOperations);
 
 		} catch (OWLOntologyCreationException e) {
 			e.printStackTrace();
@@ -232,9 +229,9 @@ public class PopulationOperations {
 
 		/* Gets an existing OWLNamedIndividual object or creates a new one */
 		OWLNamedIndividual individual = this.ontologyOperations.getOWLNamedIndividual(individualName,
-																								individualLabel,
-																								individualIRI,
-																								individualClassIRI);
+				individualLabel,
+				individualIRI,
+				individualClassIRI);
 
 		/* Checks if an OWLNamedIndividual is in need of an update. There are two reasons for an OWLNamedIndividual to need an update:
 		 *  	1. The individual is a proto individual created as the second individual of an object property. As such it only has

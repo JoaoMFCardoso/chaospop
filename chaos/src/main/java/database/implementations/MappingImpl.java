@@ -71,24 +71,19 @@ public class MappingImpl implements MongoService<Mapping> {
 			mappingDBObj.append("fileList", fileNamesDBList);
 		}
 
-		/* Appends the base ontology */
-		mappingDBObj.append("baseOntology", mapping.getBaseOntology());
+		/* Appends the directly imported ontologies */
+		List<Object> specificOntologiesDBList = new BasicDBList();
 
-		/* Appends the specific ontologies */
-		if(null != mapping.getSpecificOntologies()){
-			List<Object> specificOntologiesDBList = new BasicDBList();
+		/* Runs all specific ontologies */
+		for(ObjectId ontologyId : mapping.getDirectOntologyImports()){
+			DBObject specificOntologyDBObject = new BasicDBObject();
 
-			/* Runs all specific ontologies */
-			for(ObjectId ontologyId : mapping.getSpecificOntologies()){
-				DBObject specificOntologyDBObject = new BasicDBObject();
-
-				/* stores the specific ontology iri */
-				specificOntologyDBObject.put("specificOntologyId", ontologyId);
-				specificOntologiesDBList.add(specificOntologyDBObject);
-			}
-
-			mappingDBObj.append("specificOntologies", specificOntologiesDBList);
+			/* stores the specific ontology iri */
+			specificOntologyDBObject.put("importedOntologyId", ontologyId);
+			specificOntologiesDBList.add(specificOntologyDBObject);
 		}
+
+		mappingDBObj.append("directOntologyImports", specificOntologiesDBList);
 
 		/* Appends Individual Mappings */
 		if(null != mapping.getIndividualMappings()){
@@ -154,12 +149,9 @@ public class MappingImpl implements MongoService<Mapping> {
 				ArrayList<ObjectId> filelistDBArray = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "fileId");
 				mapping.setFileList(filelistDBArray);
 				break;
-			case "baseOntology":
-				mapping.setBaseOntology((ObjectId) persistent.get(key));
-				break;
-			case "specificOntologies":
-				ArrayList<ObjectId> specificOntologiesList = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "specificOntologyId");
-				mapping.setSpecificOntologies(specificOntologiesList);
+			case "directOntologyImports":
+				ArrayList<ObjectId> directOntologyImportsIdList = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "importedOntologyId");
+				mapping.setDirectOntologyImports(directOntologyImportsIdList);
 				break;
 			case "individualMappings":
 				ArrayList<ObjectId> individualMappingsIDs = MongoUtilities.convertALOIdFromBDBL((BasicDBList) persistent.get(key), "individualMappingID");
@@ -186,15 +178,15 @@ public class MappingImpl implements MongoService<Mapping> {
 
 		Mapping mapping = null;
 		try {
-		   while(cursor.hasNext()) {
-			   /* Gets the object id and converts it to a mapping
+			while(cursor.hasNext()) {
+				/* Gets the object id and converts it to a mapping
 				 * The imapping is then returned */
 				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
 				mapping = get(((ObjectId) basicDBObject.get("_id")).toString());
 				mappingsList.add(mapping);
-		   }
+			}
 		} finally {
-		   cursor.close();
+			cursor.close();
 		}
 
 		return mappingsList;

@@ -26,11 +26,8 @@ public class Mapping{
 	/** The file list. */
 	private ArrayList<ObjectId> fileList;
 
-	/** The specific ontology IRI. */
-	private ArrayList<ObjectId> specificOntologies;
-
-	/** The base ontology IRI. */
-	private ObjectId baseOntology;
+	/** The directly imported ontologies IRI array. */
+	private ArrayList<ObjectId> directOntologyImports;
 
 	/**  The individuals mappings. */
 	private ArrayList<ObjectId> individualMappings;
@@ -43,8 +40,7 @@ public class Mapping{
 		this.outputOntologyFileName = null;
 		this.outputOntologyNamespace = null;
 		this.fileList = null;
-		this.specificOntologies = null;
-		this.baseOntology = null;
+		this.directOntologyImports = null;
 		this.individualMappings = null;
 	}
 
@@ -61,9 +57,8 @@ public class Mapping{
 		}
 		this.outputOntologyFileName = mappingTO.getOutputOntologyFileName();
 		this.outputOntologyNamespace = IRI.create(mappingTO.getOutputOntologyNamespace());
-		this.baseOntology = new ObjectId(mappingTO.getBaseOntology());
 		this.fileList = TransferObjectUtils.convertALStringToObjectId(mappingTO.getFileNames());
-		this.specificOntologies = TransferObjectUtils.convertALStringToObjectId(mappingTO.getSpecificOntologies());
+		this.directOntologyImports = TransferObjectUtils.convertALStringToObjectId(mappingTO.getDirectOntologyImports());
 		this.individualMappings = TransferObjectUtils.convertALStringToObjectId(mappingTO.getIndividualMappings());
 	}
 
@@ -76,14 +71,13 @@ public class Mapping{
 
 		/* Sets the MappingTO attributes */
 		mto.set_id(this._id.toString());
-		mto.setBaseOntology(this.baseOntology.toString());
 		mto.setOutputOntologyFileName(this.outputOntologyFileName);
 		mto.setOutputOntologyNamespace(this.outputOntologyNamespace.toString());
 
-		if(null == this.specificOntologies){
-			mto.setSpecificOntologies(null);
+		if(null == this.directOntologyImports){
+			mto.setDirectOntologyImports(null);
 		}else{
-			mto.setSpecificOntologies(TransferObjectUtils.convertALObjectIdToString(this.specificOntologies));
+			mto.setDirectOntologyImports(TransferObjectUtils.convertALObjectIdToString(this.directOntologyImports));
 		}
 
 		if(null == this.individualMappings){
@@ -164,39 +158,19 @@ public class Mapping{
 	}
 
 	/**
-	 * @return the specificOntologies
+	 * @return the directOntologyImports
 	 */
-	public ArrayList<ObjectId> getSpecificOntologies() {
-		return specificOntologies;
+	public ArrayList<ObjectId> getDirectOntologyImports() {
+		return directOntologyImports;
 	}
 
 
 	/**
-	 * @param specificOntologies the specificOntologies to set
+	 * @param directOntologyImports the directOntologyImports to set
 	 */
-	public void setSpecificOntologies(ArrayList<ObjectId> specificOntologies) {
-		this.specificOntologies = specificOntologies;
+	public void setDirectOntologyImports(ArrayList<ObjectId> directOntologyImports) {
+		this.directOntologyImports = directOntologyImports;
 	}
-
-
-	/**
-	 * Gets the base ontology.
-	 *
-	 * @return the baseOntology
-	 */
-	public ObjectId getBaseOntology() {
-		return baseOntology;
-	}
-
-	/**
-	 * Sets the base ontology.
-	 *
-	 * @param baseOntology the baseOntology to set
-	 */
-	public void setBaseOntology(ObjectId baseOntology) {
-		this.baseOntology = baseOntology;
-	}
-
 
 	/**
 	 * @return the individualMappings

@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -25,25 +26,37 @@ import domain.bo.parsers.Node;
 public class PopulationUtils {
 
 	/**
-	 * Imports an Ontology and all it's signature imports into a destination ontology already loaded into the OntologyOperations object
-	 * and avoids duplicates.
-	 * @param ontologyId The ontology id of the ontology to be imported
-	 * @param ontologyOperations The OntologyOperations loaded with the destination ontology
-	 * @throws OWLOntologyCreationException
+	 * This method imports ontologies. It runs through the ontologies which are candidate to being directly imported
+	 * If it detects that a directly imported ontology A is already being indirectly imported through a directly imported
+	 * ontology B, then it removes A and directly imports only B. Leaving A to be indirectly imported.
+	 * @param candidateOntologies The list of ObjectIds of the candidate ontologies
+	 * @param ontologyOperations The OntologyOperations object of the new ontology being created
+	 * @throws OWLOntologyCreationException Throws an Ontology Creation Exception if it fails to load a candidate ontology
 	 */
-	public static void importOntologies(String ontologyId, OntologyOperations ontologyOperations) throws OWLOntologyCreationException{
-		/* Creates the ontology to be imported and gets all its inner imports. Then it runs the destination ontology imports to see if any match
-		 * If they do then the inner import is skipped.
-		 * The end result is the aggregation of the imports of both ontologies but without any duplicates */
-		OntologyOperations baseOntologyOperations = new OntologyOperations(ontologyId);
+	public static void importOntologies(ArrayList<ObjectId> candidateOntologies, OntologyOperations ontologyOperations) throws OWLOntologyCreationException{
+		/* Creates two sets, one for the directly imported ontologies, and one for the indirectly imported ontologies */
+		Set<OWLOntology> indirectlyImportedOntologies = new HashSet<OWLOntology>();
+		Set<OWLOntology> directlyImportedOntologies = new HashSet<OWLOntology>();
 
-		Set<OWLOntology> importedOntologies = baseOntologyOperations.getImportedOntologiesList();
-		importedOntologies.add(baseOntologyOperations.getOntology());
+		/* Runs the candidate ontologies adding their imported ontologies to the indirectly imported ontologies set
+		 * and themselves to the directly imported ontologies set */
+		for(ObjectId candidateOntologyId : candidateOntologies){
+			OntologyOperations candidateOntologyOperations = new OntologyOperations(candidateOntologyId.toString());
 
-		ontologyOperations.importOntologies(importedOntologies);
+			indirectlyImportedOntologies.addAll(candidateOntologyOperations.getImportedOntologiesList());
+			directlyImportedOntologies.add(candidateOntologyOperations.getOntology());
+		}
+
+		/* Removes any matches of indirectly imported ontologies from the directly imported ontologies set.
+		 * This is to avoid that any ontologies that are being imported indirectly should be imported directly as well */
+		directlyImportedOntologies.removeAll(indirectlyImportedOntologies);
+
+		/* Imports the directly imported ontologies */
+		ontologyOperations.importOntologies(directlyImportedOntologies);
 
 		return;
 	}
+
 
 	/**
 	 * Gets the name in form of String of a given OWLNamedIndividual. If the OWLNamedIndividual has no name, it returns an empty String

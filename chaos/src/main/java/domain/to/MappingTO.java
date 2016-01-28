@@ -16,11 +16,8 @@ public class MappingTO {
 	/** The file name. */
 	private ArrayList<String> fileNames;
 
-	/** The specific ontology. */
-	private ArrayList<String> specificOntologies;
-
-	/** The base ontology. */
-	private String baseOntology;
+	/** The directly imported ontologies. */
+	private ArrayList<String> directOntologyImports;
 
 	/**  The individuals mappings. */
 	private ArrayList<String> individualMappings;
@@ -30,8 +27,7 @@ public class MappingTO {
 		this.outputOntologyFileName = null;
 		this.outputOntologyNamespace = null;
 		this.fileNames = null;
-		this.specificOntologies = null;
-		this.baseOntology = null;
+		this.directOntologyImports = null;
 		this.individualMappings = null;
 	}
 
@@ -92,31 +88,17 @@ public class MappingTO {
 	}
 
 	/**
-	 * @return the specificOntologies
+	 * @return the directOntologyImports
 	 */
-	public ArrayList<String> getSpecificOntologies() {
-		return specificOntologies;
+	public ArrayList<String> getDirectOntologyImports() {
+		return directOntologyImports;
 	}
 
 	/**
-	 * @param specificOntologies the specificOntologies to set
+	 * @param directOntologyImports the directOntologyImports to set
 	 */
-	public void setSpecificOntologies(ArrayList<String> specificOntologies) {
-		this.specificOntologies = specificOntologies;
-	}
-
-	/**
-	 * @return the baseOntology
-	 */
-	public String getBaseOntology() {
-		return baseOntology;
-	}
-
-	/**
-	 * @param baseOntology the baseOntology to set
-	 */
-	public void setBaseOntology(String baseOntology) {
-		this.baseOntology = baseOntology;
+	public void setDirectOntologyImports(ArrayList<String> directOntologyImports) {
+		this.directOntologyImports = directOntologyImports;
 	}
 
 	/**
