@@ -224,11 +224,12 @@ public class DatabaseTester {
 		m.setOutputOntologyFileName("family");
 		m.setOutputOntologyNamespace(IRI.create("http://sysresearch.org/ontologies/scenarios/family.owl#"));
 
-		m.setBaseOntology(of4.getID());
-
+		/* Imported Ontologies */
+		
 		ArrayList<ObjectId> ios = new ArrayList<ObjectId>();
 		ios.add(of1.getID());
-		m.setSpecificOntologies(ios);
+		ios.add(of4.getID());
+		m.setDirectOntologyImports(ios);
 
 		ArrayList<ObjectId> imIDList = new ArrayList<ObjectId>();
 		for(IndividualMapping im : testIndMapList){

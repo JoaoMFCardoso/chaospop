@@ -16,9 +16,9 @@ public class SFTPTester {
 
         	String filePath = PropertiesHandler.configProperties.getProperty("uploaded.files.path") + File.separator + "BPMN.owl";
 
-        	for(String name : sftp.listSFTPFiles()){
-        		System.out.println(name);
-        	}
+//        	for(String name : sftp.listSFTPFiles()){
+//        		System.out.println(name);
+//        	}
 
         	sftp.disconnect();
         } catch (Exception e) {
