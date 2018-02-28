@@ -212,6 +212,12 @@ public class PopulationUtils {
 		/* Extracts the data property value from the node */
 		OWLLiteral dataPropertyValue = null;
 		String dataPropertyStringValue = extractFieldFromNode(node, dataPropertyMappingDetails.getValue0());
+		
+		/* Safeguard to prevent against a data property string value being empty, or null
+		 * The behaviour in this situation, should be to return a null value */
+		if(dataPropertyStringValue.isEmpty() || dataPropertyStringValue == null) {
+			return null;
+		}
 
 		switch (dataPropertyMappingDetails.getValue1()) {
 		case "Boolean":
@@ -250,8 +256,14 @@ public class PopulationUtils {
 		/* Gets the Individual Name Mapping from the IndividualMapping*/
 		String individualNameMapping = individualMapping.getIndividualName();
 
-		/* Gets the Individual's Name from the Node */
-		String individualName = extractFieldFromNode(node, individualNameMapping);
+		/* Gets the Individual's Name from the Node 
+		 * The Individual's Name might be a conjugation of attributes and values
+		 * As such there must be a loop to find conjugations before extracting the field from the node*/
+		String[] conjugations = individualNameMapping.split(";");
+		String individualName = "";
+		for (String conjugation : conjugations) {
+			individualName += extractFieldFromNode(node, conjugation);
+		}
 
 		/* Removes all whitespaces between words  */
 		individualName = individualName.replaceAll("\\s+","");
@@ -266,9 +278,15 @@ public class PopulationUtils {
 	 * @return An Individual Name
 	 */
 	public static String createIndividualNameFromAttribute(Node node, String attributeName){
-
-		/* Gets the Individual's Name from the Node */
-		String individualName = extractFieldFromNode(node, attributeName);
+	
+		/* Gets the Individual's Name from the Node 
+		 * The Individual's Name might be a conjugation of attributes and values
+		 * As such there must be a loop to find conjugations before extracting the field from the node*/
+		String[] conjugations = attributeName.split(";");
+		String individualName = "";
+		for (String conjugation : conjugations) {
+			individualName += extractFieldFromNode(node, conjugation);
+		}
 
 		/* Removes all whitespaces between words  */
 		individualName = individualName.replaceAll("\\s+","");
@@ -286,8 +304,14 @@ public class PopulationUtils {
 		/* Gets the Individual Label Mapping from the IndividualMapping */
 		String individualLabelMapping = individualMapping.getIndividualLabel();
 
-		/* Gets the Individual's Label from the Node */
-		String individualLabel = extractFieldFromNode(node, individualLabelMapping);
+		/* Gets the Individual's Label from the Node 
+		 * The Individual's Label might be a conjugation of attributes and values
+		 * As such there must be a loop to find conjugations before extracting the field from the node*/
+		String[] conjugations = individualLabelMapping.split(";");
+		String individualLabel = "";
+		for (String conjugation : conjugations) {
+			individualLabel += extractFieldFromNode(node, conjugation);
+		}
 
 		return individualLabel;
 	}
@@ -336,7 +360,7 @@ public class PopulationUtils {
 
 		/* Gets the Children Nodes */
 		NodeImpl nodeImpl = new NodeImpl();
-		ArrayList<Node> children = (ArrayList<Node>) nodeImpl.getBy("parent", node.getID().toString());
+		ArrayList<Node> children = (ArrayList<Node>) nodeImpl.getBy("parent", node.getID());
 
 		/* Looks in the childs for the specific tag */
 		for(Node child : children){

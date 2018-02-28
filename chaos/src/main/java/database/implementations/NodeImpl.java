@@ -175,6 +175,37 @@ public class NodeImpl implements MongoService<Node> {
 
 		return nodeList;
 	}
+	
+	/**
+	 * This method gets a list of nodes by id
+	 * @param field The field to be searched
+	 * @param id The id to be searched
+	 */
+	public List<Node> getBy(String field, ObjectId id) {
+		/* Creates the Node list */
+		List<Node> nodeList = new ArrayList<Node>();
+
+		/* A query is created with the given field */
+		BasicDBObject query = new BasicDBObject(field, id);
+
+		/* Creates the cursor and gets all basic db objects in the collection that match the query*/
+		DBCursor cursor = this.collection.find(query);
+
+		Node node = null;
+		try {
+		   while(cursor.hasNext()) {
+			   /* Gets the object id and converts it to a Node
+				 * The Node is then returned */
+				BasicDBObject basicDBObject = (BasicDBObject) cursor.next();
+				node = get(((ObjectId) basicDBObject.get("_id")).toString());
+				nodeList.add(node);
+		   }
+		} finally {
+		   cursor.close();
+		}
+
+		return nodeList;
+	}
 
 	/**
 	 * Gets the Nodes from a specific DataFile that match a certain tag

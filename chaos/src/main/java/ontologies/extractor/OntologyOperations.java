@@ -286,7 +286,7 @@ public class OntologyOperations {
 			/* Gets the data property value */
 			OWLLiteral dataPropertyValue = PopulationUtils.getDataPropertyValue(this.factory, node, dataProperties.get(dataPropertyIRI));
 
-			/* Creates the object property if allowed */
+			/* Creates the data property if allowed */
 			if(isAllowedToCreateDataProperty(dataPropertyIRI, individual, dataPropertyValue)){
 				createDataProperty(dataPropertyIRI, individual, dataPropertyValue);
 			}
@@ -309,8 +309,15 @@ public class OntologyOperations {
 
 		/* Runs each second Individual and creates the object property */
 		for(IRI secondIndividualIRI : secondIndividualsIRIs){
-			/* Gets the second individual name */
-			String secondIndividualName = secondIndividualIRI.getRemainder().get();
+			/* Gets the second individual name
+			 * If an IllegalStateException is launched, then that means that the second Individual name is non existant
+			 * As such the object property creation should be aborted  */
+			String secondIndividualName = "";
+			try {
+				secondIndividualName = secondIndividualIRI.getRemainder().get();
+			}catch(IllegalStateException exception) {
+				return;
+			}
 
 			/* Gets the second individual as an OWLNamedIndividual Object
 			 * If the individual has not been created yet, the getOWLNamedIndividual method will create a proto individual
@@ -578,6 +585,11 @@ public class OntologyOperations {
 	private Boolean isAllowedToCreateDataProperty(IRI dataPropertyIRI, OWLNamedIndividual individual, OWLLiteral dataPropertyValue){
 		Boolean isAllowed = true;
 
+		/* Checks if the data property value is null */
+		if(dataPropertyValue == null) {
+			return false;
+		}
+		
 		/* Checks if the data property has already been created */
 		isAllowed = !isExistingDataProperty(dataPropertyIRI, individual, dataPropertyValue);
 
