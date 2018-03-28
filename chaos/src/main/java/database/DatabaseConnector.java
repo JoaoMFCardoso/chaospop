@@ -1,13 +1,16 @@
 package database;
 
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
-import properties.PropertiesHandler;
-
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+
+import properties.PropertiesHandler;
 
 public class DatabaseConnector {
 
@@ -20,6 +23,11 @@ public class DatabaseConnector {
 	 * The mongo client that is used to create the connection to the database
 	 */
 	private MongoClient mongoClient;
+	
+	/**
+	 * The mongo credential that is used to store the credentials for the connection to the database
+	 */
+	private MongoCredential credential;
 
 	/**
 	 * The database
@@ -35,9 +43,13 @@ public class DatabaseConnector {
 		String host = PropertiesHandler.configProperties.getProperty("db.host");
 		Integer port = Integer.valueOf(PropertiesHandler.configProperties.getProperty("db.port"));
 		String databaseName = PropertiesHandler.configProperties.getProperty("db.name");
-
+		String user = PropertiesHandler.configProperties.getProperty("db.user");
+		char[] passwd = PropertiesHandler.configProperties.getProperty("db.passwd").toCharArray();
+		
 		try {
-			this.mongoClient = new MongoClient(host, port);
+			this.credential = MongoCredential.createCredential(user, databaseName, passwd);
+			this.mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(credential));
+			//this.mongoClient = new MongoClient(host, port);
 			this.database = this.mongoClient.getDB(databaseName);
 		} catch (UnknownHostException e) {
 			log.error("Mongo Client throwed an exception", e);
