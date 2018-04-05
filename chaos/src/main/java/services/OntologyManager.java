@@ -18,8 +18,6 @@ import com.google.gson.Gson;
 
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
-import domain.bo.parsers.DataFile;
-import domain.to.DataFileTO;
 import domain.to.OntologyFileTO;
 import file.sftp.SFTPServerConnectionManager;
 import ontologies.extractor.OntologyOperations;
