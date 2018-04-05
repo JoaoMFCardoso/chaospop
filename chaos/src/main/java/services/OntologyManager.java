@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -10,20 +11,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ontologies.extractor.OntologyOperations;
-
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
-
-import properties.PropertiesHandler;
-import utils.FileOperationsUtils;
-import utils.TransferObjectUtils;
 
 import com.google.gson.Gson;
 
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
+import domain.bo.parsers.DataFile;
+import domain.to.DataFileTO;
+import domain.to.OntologyFileTO;
 import file.sftp.SFTPServerConnectionManager;
+import ontologies.extractor.OntologyOperations;
+import properties.PropertiesHandler;
+import utils.FileOperationsUtils;
+import utils.TransferObjectUtils;
 
 /**
  * This class implements a jax rs service layer
@@ -64,6 +66,44 @@ public class OntologyManager {
 		return response;
 	}
 
+	/**
+	 * This method returns all the OntologyFiles stored in the database
+	 * @return An ArrayList with all DataFiles
+	 */
+	@GET
+	@Path("/listOntologyFiles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<OntologyFileTO> listOntologyFiles(){
+		ArrayList<OntologyFileTO> ontologyFilesTO = new ArrayList<OntologyFileTO>();
+
+		/* Get all OntologyFile objects from the database */
+		List<OntologyFile> dataFiles = this.ontologyFileImpl.getAll();
+
+		/* Runs the DataFile objects and fills the DataFileTO array  */
+		for(OntologyFile ontologyFile : dataFiles){
+			OntologyFileTO ontologyFileTO = ontologyFile.createTransferObject();
+			ontologyFilesTO.add(ontologyFileTO);
+		}
+
+		return ontologyFilesTO;
+	}
+	
+	/**
+	 * This method gets a OntologyFile object when given its id
+	 * @param ontologyFileId The OntologyFile id
+	 * @return A OntologyFile transfer object
+	 */
+	@POST
+	@Path("/getOntologyFile")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OntologyFileTO getOntologyFile(@FormParam("id") String ontologyFileId){
+		/* Gets the OntologyFile object from the database and builds the transfer object */
+		OntologyFile ontologyFile = this.ontologyFileImpl.get(ontologyFileId);
+		OntologyFileTO ontologyFileTO = ontologyFile.createTransferObject();
+
+		return ontologyFileTO;
+	}
+	
 	/**
 	 * This method removes a list of OntologyFile objects from the database
 	 * @param ontologyIds The OntologyFile id list. All ids are separated by ",".
