@@ -91,7 +91,7 @@ public class OntologyManager {
 	 * @param ontologyFileId The OntologyFile id
 	 * @return A OntologyFile transfer object
 	 */
-	@POST
+	@GET
 	@Path("/getOntologyFile")
 	@Produces(MediaType.APPLICATION_JSON)
 	public OntologyFileTO getOntologyFile(@FormParam("id") String ontologyFileId){
