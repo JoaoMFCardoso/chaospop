@@ -221,17 +221,13 @@ public class PopulationOperations {
 		 * INDIVIDUAL DATA CREATION
 		 *****************************************************************************************************************/
 
-		/* Creates the Individual Name, Label, IRI and OWLClass IRI */
+		/* Creates the Individual Name, IRI and OWLClass IRI */
 		String individualName = PopulationUtils.createIndividualName(node, individualMapping);
-		String individualLabel = PopulationUtils.createIndividualLabel(node, individualMapping);
 		IRI individualIRI = IRI.create(this.ontologyNamespace.toString() ,individualName);
 		IRI individualClassIRI = individualMapping.getOwlClassIRI();
 
 		/* Gets an existing OWLNamedIndividual object or creates a new one */
-		OWLNamedIndividual individual = this.ontologyOperations.getOWLNamedIndividual(individualName,
-				individualLabel,
-				individualIRI,
-				individualClassIRI);
+		OWLNamedIndividual individual = this.ontologyOperations.getOWLNamedIndividual(individualName, individualIRI, individualClassIRI);
 
 		/* Checks if an OWLNamedIndividual is in need of an update. There are two reasons for an OWLNamedIndividual to need an update:
 		 *  	1. The individual is a proto individual created as the second individual of an object property. As such it only has
@@ -239,9 +235,18 @@ public class PopulationOperations {
 		 *  	2. The IndividualMapping requires that this individual is a specification of an existing individual */
 		Boolean individualNeedsUpdate = this.ontologyOperations.isIndividualInNeedOfUpdate(individual);
 		if(individualMapping.getSpecification() || individualNeedsUpdate){
-			this.ontologyOperations.updateOWLNamedIndividual(individual, individualLabel, individualClassIRI);
+			this.ontologyOperations.updateOWLNamedIndividual(individual, individualClassIRI);
 		}
 
+		/*****************************************************************************************************************
+		 * ANNOTATION PROPERTIES CREATION
+		 *****************************************************************************************************************/
+		
+		/* Checks if the Individual Mapping implies the creation of Annotation Properties for this individual */
+		if(!individualMapping.getAnnotationProperties().isEmpty()){
+			this.ontologyOperations.handleAnnotationPropertyCreation(this.ontologyNamespace.toString(), node, mapping, individualMapping, individual);
+		}
+		
 		/*****************************************************************************************************************
 		 * OBJECT PROPERTIES CREATION
 		 *****************************************************************************************************************/

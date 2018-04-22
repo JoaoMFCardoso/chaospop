@@ -76,13 +76,20 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 
 		individualMappingDBObj.append("tag", individualMapping.getTag());
 		individualMappingDBObj.append("individualName", individualMapping.getIndividualName());
-		individualMappingDBObj.append("individualLabel", individualMapping.getIndividualLabel());
 
 		String owlClassIRI = MongoUtilities.convertIRItoDB(individualMapping.getOwlClassIRI());
 		individualMappingDBObj.append("owlClassIRI", owlClassIRI);
 
 		individualMappingDBObj.append("specification", individualMapping.getSpecification());
 
+		//TODO create the annotation properties
+		/* Creates the annotation properties database object and appends it to the individual mappings database object*/
+		if(null != individualMapping.getAnnotationProperties()){
+			HashMap<String, String> annotationProperties = individualMapping.getAnnotationProperties();
+			BasicDBObject annotationPropertiesDBObj = new BasicDBObject(annotationProperties);
+			individualMappingDBObj.append("annotationProperties", annotationPropertiesDBObj);
+		}
+		
 		/* Creates the object properties database object and appends it to the individual mappings database object*/
 		if(null != individualMapping.getObjectProperties()){
 			HashMap<String, String> objectProperties = MongoUtilities.convertPropertyMapToDB(individualMapping.getObjectProperties());
@@ -145,15 +152,16 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 			case "individualName":
 				individualMapping.setIndividualName((String) persistent.get(key));
 				break;
-			case "individualLabel":
-				individualMapping.setIndividualLabel((String) persistent.get(key));
-				break;
 			case "owlClassIRI":
 				IRI owlClassIRI = MongoUtilities.convertIRIfromDB((String) persistent.get(key));
 				individualMapping.setOwlClassIRI(owlClassIRI);
 				break;
 			case "specification":
 				individualMapping.setSpecification((Boolean) persistent.get(key));
+				break;
+			case "annotationProperties":
+				HashMap<String, String> annotationPropertiesDBMap = (HashMap<String, String>) persistent.get(key);
+				individualMapping.setAnnotationProperties(annotationPropertiesDBMap);
 				break;
 			case "objectProperties":
 				HashMap<String, String> objectPropertiesDBMap = (HashMap<String, String>) persistent.get(key);
