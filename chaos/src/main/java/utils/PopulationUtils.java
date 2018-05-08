@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import ontologies.extractor.OntologyOperations;
-
 import org.bson.types.ObjectId;
 import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -22,6 +21,7 @@ import database.implementations.NodeImpl;
 import domain.bo.mappings.IndividualMapping;
 import domain.bo.mappings.Mapping;
 import domain.bo.parsers.Node;
+import ontologies.extractor.OntologyOperations;
 
 public class PopulationUtils {
 
@@ -247,6 +247,64 @@ public class PopulationUtils {
 	}
 
 	/**
+	 * This method builds a Pair structure containing an OWLAnnotationProperty and the Annotation Property Value (IRI or String) extracted from the Node according to the
+	 * individual mapping designation.
+	 * @param factory The ontology data factory
+	 * @param ontologyNamespace The ontology namespace
+	 * @param node The node from which data will be extracted
+	 * @param annotationProperty The annotation property type
+	 * @param annotationPropertyValueMapping The designation of how to extract the annotation property value from the node.
+	 * @return A Pair structure containing an OWLAnnotationProperty and the Annotation Property Value (IRI or String)
+	 */
+	public static Pair<OWLAnnotationProperty, Object> getAnnotationPropertyValue(OWLDataFactory factory, String ontologyNamespace, Node node, String annotationProperty, String annotationPropertyValueMapping) { 
+		
+		/* Get annotation property value from Node */
+		String annotationPropertyStringValue = createAnnotationPropertyValue(node, annotationPropertyValueMapping);
+		
+		/* Allocates the correct OWLAnnotationProperty and annotation value type */
+		OWLAnnotationProperty owlAnnotationProperty = null;
+		Object annotationPropertyValue = null;
+		
+		switch (annotationProperty) {
+		case "label":
+			owlAnnotationProperty = factory.getRDFSLabel();
+			annotationPropertyValue = factory.getOWLLiteral(annotationPropertyStringValue);
+			break;
+		case "comment":
+			owlAnnotationProperty = factory.getRDFSComment();
+			annotationPropertyValue = factory.getOWLLiteral(annotationPropertyStringValue);
+			break;
+		case "seeAlso":
+			owlAnnotationProperty = factory.getRDFSSeeAlso();
+			annotationPropertyValue = IRI.create(ontologyNamespace, annotationPropertyStringValue);
+			break;
+		case "isDefinedBy":
+			owlAnnotationProperty = factory.getRDFSIsDefinedBy();
+			annotationPropertyValue = IRI.create(ontologyNamespace, annotationPropertyStringValue);
+			break;
+		case "versionInfo":
+			owlAnnotationProperty = factory.getOWLVersionInfo();
+			annotationPropertyValue = factory.getOWLLiteral(annotationPropertyStringValue);
+			break;
+		case "backwardCompatibleWith":
+			owlAnnotationProperty = factory.getOWLDeprecated();
+			annotationPropertyValue = IRI.create(ontologyNamespace, annotationPropertyStringValue);
+			break;
+		case "incompatibleWith":
+			owlAnnotationProperty = factory.getOWLIncompatibleWith();
+			annotationPropertyValue = IRI.create(ontologyNamespace, annotationPropertyStringValue); 
+			break;
+		default:
+			break;
+		} 
+	
+		/* Builds the return Pair */
+		Pair<OWLAnnotationProperty, Object> annotationPropertyValues = new Pair<OWLAnnotationProperty, Object>(owlAnnotationProperty, annotationPropertyValue);
+		
+		return annotationPropertyValues;
+	}
+	
+	/**
 	 * Creates a new Individual Name from the Node and the IndividualMapping objects
 	 * @param node The Node which holds the new individual information
 	 * @param individualMapping The IndividualMapping which regulates how the new individual is to be created
@@ -294,26 +352,26 @@ public class PopulationUtils {
 		return individualName;
 	}
 
+	
+	
 	/**
-	 * Creates a new Label from the Node and the IndividualMapping objects
+	 * Creates a new Annotation Property Value from the Node and the annotationPropertyValueMapping
 	 * @param node The Node which holds the new individual information
-	 * @param individualMapping The IndividualMapping which regulates how the new individual is to be created
-	 * @return An individual label
+	 * @param annotationPropertyValueMapping The Annotation Property Value Mapping which regulates how the new Annotation Property Value is to be fetched from the Node.
+	 * @return An Annotation Property Value
 	 */
-	public static String createIndividualLabel(Node node, IndividualMapping individualMapping){
-		/* Gets the Individual Label Mapping from the IndividualMapping */
-		String individualLabelMapping = individualMapping.getIndividualLabel();
-
-		/* Gets the Individual's Label from the Node 
-		 * The Individual's Label might be a conjugation of attributes and values
+	public static String createAnnotationPropertyValue(Node node, String annotationPropertyValueMapping){
+	
+		/* Gets the Annotation Property Value from the Node 
+		 * The Annotation Property Value might be a conjugation of attributes and values
 		 * As such there must be a loop to find conjugations before extracting the field from the node*/
-		String[] conjugations = individualLabelMapping.split(";");
-		String individualLabel = "";
+		String[] conjugations = annotationPropertyValueMapping.split(";");
+		String annotatioPropertyValue = "";
 		for (String conjugation : conjugations) {
-			individualLabel += extractFieldFromNode(node, conjugation);
+			annotatioPropertyValue += extractFieldFromNode(node, conjugation);
 		}
 
-		return individualLabel;
+		return annotatioPropertyValue;
 	}
 
 	/**
