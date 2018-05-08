@@ -40,14 +40,6 @@ public class IndividualMappingTO {
 	private String individualName;
 
 	/**
-	 * The individual label. If individualLabel is .invalue then the individual label is the tag value.
-	 * However the value must first be searched within the tag attributes, and if not found, it must be searched within
-	 * the tag's children.
-	 * If no value is given to individualLabel, an individual label must be created.
-	 */
-	private String individualLabel;
-
-	/**
 	 * The individual owl class.
 	 */
 	private String owlClassIRI;
@@ -58,6 +50,17 @@ public class IndividualMappingTO {
 	 */
 	private Boolean specification;
 
+	/**
+	 * The annotation properties [PropertyIRI, IndividualIRI].
+	 * If annotation property value is .invalue then the individual label is the tag value.
+	 * However the value must first be searched within the tag attributes, and if not found, it must be searched within
+	 * the tag's children.
+	 * There must be at least one rdfs:label
+	 */
+	@XmlElementWrapper(name = "annotationProps")
+	@XmlElement(name = "annotationProp")
+	private HashMap<String, String> annotationProperties;
+	
 	/**
 	 * The object properties [PropertyIRI, IndividualIRI].
 	 * If individualIRI is .parent then the individual String is the xml parent for this tag.
@@ -80,9 +83,9 @@ public class IndividualMappingTO {
 		this.dataFileIds = null;
 		this.tag = null;
 		this.individualName = null;
-		this.individualLabel = null;
 		this.owlClassIRI = null;
 		this.specification = null;
+		this.annotationProperties = null;
 		this.objectProperties = null;
 		this.dataProperties = null;
 	}
@@ -144,20 +147,6 @@ public class IndividualMappingTO {
 	}
 
 	/**
-	 * @return the individualLabel
-	 */
-	public String getIndividualLabel() {
-		return individualLabel;
-	}
-
-	/**
-	 * @param individualLabel the individualLabel to set
-	 */
-	public void setIndividualLabel(String individualLabel) {
-		this.individualLabel = individualLabel;
-	}
-
-	/**
 	 * @return the owlClassIRI
 	 */
 	public String getOwlClassIRI() {
@@ -185,6 +174,20 @@ public class IndividualMappingTO {
 		this.specification = specification;
 	}
 
+	/**
+	 * @return the annotationProperties
+	 */
+	public HashMap<String, String> getAnnotationProperties() {
+		return annotationProperties;
+	}
+
+	/**
+	 * @param annotationProperties the annotationProperties to set
+	 */
+	public void setAnnotationProperties(HashMap<String, String> annotationProperties) {
+		this.annotationProperties = annotationProperties;
+	}
+	
 	/**
 	 * @return the objectProperties
 	 */

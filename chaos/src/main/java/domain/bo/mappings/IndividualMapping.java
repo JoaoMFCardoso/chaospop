@@ -37,14 +37,6 @@ public class IndividualMapping {
 	private String individualName;
 
 	/**
-	 * The individual label. If individualLabel is .invalue then the individual label is the tag value.
-	 * However the value must first be searched within the tag attributes, and if not found, it must be searched within
-	 * the tag's children.
-	 * If no value is given to individualLabel, an individual label must be created.
-	 */
-	private String individualLabel;
-
-	/**
 	 * The individual owl class String.
 	 */
 	private IRI owlClassIRI;
@@ -55,6 +47,15 @@ public class IndividualMapping {
 	 */
 	private Boolean specification;
 
+	/**
+	 * The annotation properties [Property, value].
+	 * If annotation property value is .invalue then the individual label is the tag value.
+	 * However the value must first be searched within the tag attributes, and if not found, it must be searched within
+	 * the tag's children.
+	 * There must be at least one rdfs:label
+	 */
+	private HashMap<String, String> annotationProperties;
+	
 	/**
 	 * The object properties [PropertyIRI, IndividualIRI].
 	 * If individualIRI is .parent then the individual String is the xml parent for this tag.
@@ -77,9 +78,9 @@ public class IndividualMapping {
 		this.dataFileIds = null;
 		this.tag = null;
 		this.individualName = null;
-		this.individualLabel = null;
 		this.owlClassIRI = null;
 		this.specification = null;
+		this.annotationProperties = null;
 		this.objectProperties = null;
 		this.dataProperties = null;
 	}
@@ -98,10 +99,15 @@ public class IndividualMapping {
 		this.dataFileIds = TransferObjectUtils.convertALStringToObjectId(individualMappingTO.getDataFileIds());
 		this.tag = individualMappingTO.getTag();
 		this.individualName = individualMappingTO.getIndividualName();
-		this.individualLabel = individualMappingTO.getIndividualLabel();
 		this.owlClassIRI = IRI.create(individualMappingTO.getOwlClassIRI());
 		this.specification = individualMappingTO.getSpecification();
 
+		if(null == individualMappingTO.getAnnotationProperties()){
+			this.annotationProperties = null;
+		}else{
+			this.annotationProperties = individualMappingTO.getAnnotationProperties();
+		}
+		
 		if(null == individualMappingTO.getObjectProperties()){
 			this.objectProperties = null;
 		}else{
@@ -133,8 +139,8 @@ public class IndividualMapping {
 
 		imto.setTag(this.tag);
 		imto.setIndividualName(this.individualName);
-		imto.setIndividualLabel(this.individualLabel);
 		imto.setOwlClassIRI(this.owlClassIRI.toString());
+		imto.setAnnotationProperties(this.annotationProperties);
 		imto.setObjectProperties(TransferObjectUtils.convertHMIRISToSS(this.objectProperties));
 		imto.setDataProperties(TransferObjectUtils.convertHMIRIPToSP(this.dataProperties));
 
@@ -211,22 +217,6 @@ public class IndividualMapping {
 	}
 
 	/**
-	 * @return the individualLabel
-	 */
-	public String getIndividualLabel() {
-		return individualLabel;
-	}
-
-
-	/**
-	 * @param individualLabel the individualLabel to set
-	 */
-	public void setIndividualLabel(String individualLabel) {
-		this.individualLabel = individualLabel;
-	}
-
-
-	/**
 	 * Gets the owl class String.
 	 *
 	 * @return the owlClassIRI
@@ -261,6 +251,25 @@ public class IndividualMapping {
 		this.specification = specification;
 	}
 
+	/**
+	 * Gets the annotation properties.
+	 *
+	 * @return the annotationProperties
+	 */
+	public HashMap<String, String> getAnnotationProperties() {
+		return annotationProperties;
+	}
+
+
+	/**
+	 * Sets the annotation properties.
+	 *
+	 * @param annotationProperties the annotationProperties to set
+	 */
+	public void setAnnotationProperties(HashMap<String, String> annotationProperties) {
+		this.annotationProperties = annotationProperties;
+	}
+	
 
 	/**
 	 * Gets the object properties.
