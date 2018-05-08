@@ -37,6 +37,22 @@ public class MappingManager {
 	private DataFileImpl dataFileImpl = new DataFileImpl();
 
 	/**
+	 * This method gets a Mapping object when given its id
+	 * @param mappingID The Mapping id
+	 * @return A Mapping transfer object
+	 */
+	@POST
+	@Path("/getMapping")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MappingTO getMapping(@FormParam("id") String mappingID){
+		/* Gets the IndividualMapping Object from the database and then builds the transfer object */
+		Mapping mapping = this.mappingImpl.get(mappingID);
+		MappingTO mappingTO = mapping.createTransferObject();
+
+		return mappingTO;
+	}
+	
+	/**
 	 * This method returns all the Mappings stored in the database
 	 * @return An ArrayList with all Mappings transfer objects
 	 */
@@ -67,6 +83,7 @@ public class MappingManager {
 	@POST
 	@Path("/createMapping")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createMapping(MappingTO mappingTO){
 		Response response;
 		try{
@@ -74,10 +91,10 @@ public class MappingManager {
 			Mapping mapping = new Mapping(mappingTO);
 
 			/* Stores the new mapping in the database */
-			this.mappingImpl.save(mapping);
+			String id = this.mappingImpl.save(mapping);
 
 			/* Creates the Response */
-			response = Response.status(200).build();
+			response = Response.ok(id).build();
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */

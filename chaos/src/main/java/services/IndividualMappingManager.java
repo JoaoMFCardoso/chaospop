@@ -36,6 +36,7 @@ public class IndividualMappingManager {
 	@POST
 	@Path("/createIndividualMapping")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createIndividualMapping(IndividualMappingTO individualMappingTO){
 		Response response;
 		try{
@@ -43,10 +44,10 @@ public class IndividualMappingManager {
 			IndividualMapping individualMapping = new IndividualMapping(individualMappingTO);
 
 			/* Stores the new individual mapping in the database */
-			this.individualMappingsImpl.save(individualMapping);
+			String individualMappingID = this.individualMappingsImpl.save(individualMapping);
 
 			/* Creates the Response */
-			response = Response.status(200).build();
+			response = Response.ok(individualMappingID).build();
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */
@@ -56,6 +57,22 @@ public class IndividualMappingManager {
 		return response;
 	}
 
+	/**
+	 * This method gets a IndividualMapping object when given its id
+	 * @param individualMappingID The IndividualMapping id
+	 * @return A IndividualMapping transfer object
+	 */
+	@POST
+	@Path("/getIndividualMapping")
+	@Produces(MediaType.APPLICATION_JSON)
+	public IndividualMappingTO getIndividualMapping(@FormParam("id") String individualMappingID){
+		/* Gets the IndividualMapping Object from the database and then builds the transfer object */
+		IndividualMapping individualMapping = this.individualMappingsImpl.get(individualMappingID);
+		IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
+
+		return individualMappingTO;
+	}
+	
 	/**
 	 * Replaces as existing IndividualMapping in the Database
 	 * @param individualMappingTO The individual Mapping transfer object

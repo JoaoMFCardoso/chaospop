@@ -39,6 +39,7 @@ public class OntologyManager {
 
 	@POST
 	@Path("/addOntologyNamespace")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addOntologyFromNamespace(@FormParam("namespace") String namespace){
 		Response response;
 		try{
@@ -51,10 +52,10 @@ public class OntologyManager {
 			ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 			/* Saves the OntologyFile */
-			this.ontologyFileImpl.save(ontologyFile);
+			String id = this.ontologyFileImpl.save(ontologyFile);
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok(id).build();
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */

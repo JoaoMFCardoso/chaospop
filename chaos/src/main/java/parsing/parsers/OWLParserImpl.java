@@ -20,7 +20,7 @@ public class OWLParserImpl implements ParserInterface {
 	}
 
 	@Override
-	public void parseFile(File file) throws Exception {
+	public String parseFile(File file) throws Exception {
 		OntologyFile ontologyFile = new OntologyFile();
 
 		/* Sets the path */
@@ -33,9 +33,9 @@ public class OWLParserImpl implements ParserInterface {
 		ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 		/* Saves the OntologyFile */
-		this.ontologyFileImpl.save(ontologyFile);
+		String ontologyFileID = this.ontologyFileImpl.save(ontologyFile);
 
-		return;
+		return ontologyFileID;
 	}
 
 }

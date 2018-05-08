@@ -39,7 +39,7 @@ public class XMLParserImpl implements ParserInterface {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void parseFile(File file) throws Exception{
+	public String parseFile(File file) throws Exception{
 		SAXBuilder builder = new SAXBuilder();
 		DataFile dataFile = new DataFile();
 		ObjectId dataFileId = dataFile.getID();
@@ -88,7 +88,9 @@ public class XMLParserImpl implements ParserInterface {
 			}
 
 			/* Stores the DataFile in the database */
-			storeDataFile(dataFile, file, node);
+			String dataFileID = storeDataFile(dataFile, file, node);
+			
+			return dataFileID;
 
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
@@ -170,14 +172,17 @@ public class XMLParserImpl implements ParserInterface {
 	 * @param dataFile The DataFile Object
 	 * @param file The file
 	 * @param node The node
+	 * @return The ID of the DataFile
 	 */
-	private void storeDataFile(DataFile dataFile, File file, Node node){
+	private String storeDataFile(DataFile dataFile, File file, Node node){
 
 		/* Sets the DataFile object attributes */
 		dataFile.setName(file.getName());
 		dataFile.setNodeID(node.getID());
 
 		/* Saves the DataFile object */
-		this.dataFileImpl.save(dataFile);
+		String dataFileID = this.dataFileImpl.save(dataFile);
+		
+		return dataFileID;
 	}
 }

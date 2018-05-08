@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.javatuples.Pair;
 
 import utils.FileOperationsUtils;
 import database.implementations.DataFileImpl;
@@ -49,6 +50,7 @@ public class FileManager {
 	@POST
 	@Path("/addFile")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({MediaType.APPLICATION_JSON})
 	public Response addFile(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 
@@ -57,13 +59,19 @@ public class FileManager {
 		File uploadedFile = FileOperationsUtils.writeToFile(uploadedInputStream, uploadedFileName);
 
 		Response response;
+		Pair<File, String> processedFileData;
 		File processedFile = uploadedFile;
+		String processedFileID = "";
+		
 		try{
 			/* Processes the File */
-			processedFile = FileOperations.fileProcessor(uploadedFile);
+			processedFileData = FileOperations.fileProcessor(uploadedFile); 
+			
+			processedFile = processedFileData.getValue0();
+			processedFileID = processedFileData.getValue1();
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok(processedFileID).build();
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
 			response = Response.status(500).build();

@@ -6,5 +6,5 @@ public interface ParserInterface {
 
 	/** This method parses a file
 	 * @throws Exception */
-	void parseFile(File file) throws Exception;
+	String parseFile(File file) throws Exception;
 }

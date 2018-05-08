@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.javatuples.Pair;
 
 import parsing.ParserInterface;
 import parsing.parsers.JSONParserImpl;
@@ -24,7 +25,7 @@ public class FileOperations {
 	 * @param file The file to be processed
 	 * @return The sorted file
 	 */
-	public static File fileProcessor(File unsortedFile) throws Exception{
+	public static Pair<File, String> fileProcessor(File unsortedFile) throws Exception{
 		/* Gets the extension */
 		String extension = FilenameUtils.getExtension(unsortedFile.getName());
 		ParserInterface parserInterface;
@@ -49,24 +50,25 @@ public class FileOperations {
 
 		CompressedFilesExtractor compressedFilesExtractor;
 		ArrayList<File> extractedFiles;
+		String dataFileID = "";
 
 		/* Processes the file according to its file extension */
 		switch (extension) {
 		case "xml": /* It's an xml file */
 			parserInterface = new XMLParserImpl();
-			parserInterface.parseFile(file);
+			dataFileID = parserInterface.parseFile(file);
 			break;
 		case "bpmn": /* It's an bpmn file */
 			parserInterface = new XMLParserImpl();
-			parserInterface.parseFile(file);
+			dataFileID = parserInterface.parseFile(file);
 			break;
 		case "epml": /* It's an epml file */
 			parserInterface = new XMLParserImpl();
-			parserInterface.parseFile(file);
+			dataFileID = parserInterface.parseFile(file);
 			break;
 		case "json": /* It's an json file */
 			parserInterface = new JSONParserImpl();
-			parserInterface.parseFile(file);
+			dataFileID = parserInterface.parseFile(file);
 			break;
 		case "zip": /* It's an zip file */
 			/* Extracts the zip file and gets the extracted files */
@@ -75,7 +77,7 @@ public class FileOperations {
 
 			/* Processes the extracted files */
 			for(File extractedFile : extractedFiles){
-				extractedFile = fileProcessor(extractedFile);
+				extractedFile = fileProcessor(extractedFile).getValue0();
 				extractedFile.delete();
 			}
 			break;
@@ -86,19 +88,20 @@ public class FileOperations {
 
 			/* Processes the extracted files */
 			for(File extractedFile : extractedFiles){
-				extractedFile = fileProcessor(extractedFile);
+				extractedFile = fileProcessor(extractedFile).getValue0();
 				extractedFile.delete();
 			}
 			break;
 		case "owl": /* It's an Ontology file */
 			parserInterface = new OWLParserImpl();
-			parserInterface.parseFile(file);
+			dataFileID = parserInterface.parseFile(file);
 			break;
 		default:
 			break;
 		}
 
-		return file;
+		Pair<File, String> returnPair = new Pair<File, String>(file, dataFileID);
+		return returnPair;
 	}
 
 	public static void createRemoteOutputFile(File outputFile){

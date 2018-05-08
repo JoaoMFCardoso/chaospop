@@ -35,7 +35,7 @@ public class JSONParserImpl implements ParserInterface {
 	}
 
 	@Override
-	public void parseFile(File jsonFile) throws Exception {
+	public String parseFile(File jsonFile) throws Exception {
 		DataFile dataFile = new DataFile();
 		ObjectId dataFileId = dataFile.getID();
 
@@ -58,8 +58,10 @@ public class JSONParserImpl implements ParserInterface {
 			this.nodeImpl.replace(rootNode.getID().toString(), rootNode);
 
 			/* Stores the DataFile */
-			storeDataFile(dataFile, jsonFile, rootNode);
+			String dataFileID = storeDataFile(dataFile, jsonFile, rootNode);
 
+			return dataFileID; 
+			
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw exception;
@@ -71,15 +73,18 @@ public class JSONParserImpl implements ParserInterface {
 	 * @param dataFile The DataFile Object
 	 * @param file The file
 	 * @param node The node
+	 * @return The DataFile ID
 	 */
-	private void storeDataFile(DataFile dataFile, File file, Node node){
+	private String storeDataFile(DataFile dataFile, File file, Node node){
 
 		/* Sets the DataFile object attributes */
 		dataFile.setName(file.getName());
 		dataFile.setNodeID(node.getID());
 
 		/* Saves the DataFile object */
-		this.dataFileImpl.save(dataFile);
+		String dataFileID = this.dataFileImpl.save(dataFile);
+		
+		return dataFileID;
 	}
 
 	/**
