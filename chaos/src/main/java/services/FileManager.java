@@ -3,6 +3,7 @@ package services;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
 import file.operations.FileOperations;
 import file.sftp.SFTPServerConnectionManager;
+import properties.PropertiesHandler;
 
 /**
  * This class implements a jax rs service layer
@@ -53,12 +55,40 @@ public class FileManager {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response addFile(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
-
+		Response response;
+		
+		/**
+		 * Input Checks
+		 */
+		/* If the file is null */
+		if(fileDetail == null) {
+			/* Sends a response that is an internal server error */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			return response;
+		}
+		
+		/* If it respects the max upload size */
+		long maxUploadSize = Long.parseLong(PropertiesHandler.configProperties.getProperty("max.upload.size"));
+		if(fileDetail.getSize() > maxUploadSize) {
+			/* Sends a response that the input is not acceptable */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			return response;
+		}
+		
+		/* Checks if the file extension is supported */
+		String[] supportedExtensions = PropertiesHandler.configProperties.getProperty("extensions").split(";");
+		String extension = FilenameUtils.getExtension(fileDetail.getFileName());
+		if(!Arrays.asList(supportedExtensions).contains(extension)) {
+			/* Sends a response that the input is not acceptable */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			return response;
+		}
+		
 		// save it
 		String uploadedFileName = fileDetail.getFileName();
 		File uploadedFile = FileOperationsUtils.writeToFile(uploadedInputStream, uploadedFileName);
 
-		Response response;
+		
 		Pair<File, String> processedFileData;
 		File processedFile = uploadedFile;
 		String processedFileID = "";
@@ -73,8 +103,8 @@ public class FileManager {
 			/* Gets the Response */
 			response = Response.ok(processedFileID).build();
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			/* Sends a response that is an internal server error */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}finally{
 
 			/* Deletes the temporary file but only if it is a data file.
@@ -98,37 +128,53 @@ public class FileManager {
 	public Response uploadFileSFTP(@FormParam("ontologyFileId") String ontologyFileId){
 		File file = null;
 		Response response;
+		Boolean uploaded = false;
 		try{
 			/* Gets the OntologyFile from the database */
 			OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
 			OntologyFile ontologyFile = ontologyFileImpl.get(ontologyFileId);
+			
+			/* Checks if the Ontology File was found based on the given ID */
+			if(ontologyFile == null) {
+				/* No ontology file was found. It either doesn't exist or the id was wrong. */
+				response = Response.status(Response.Status.BAD_REQUEST).build();
+				return response;
+			}
 
 			/* Checks that the namespace is compliant with the sftp server namespace
-			 * In case it is not compliant an exception is thrown */
+			 * In case it is not compliant a response with a not accetable status is sent. */
 			String ontologyNamespace = ontologyFile.getNamespace().toString();
 			if(!FileOperationsUtils.isSFTPServerCompliant(ontologyNamespace)){
-				throw new Exception("Upload Failed - Namespace is not compliant with the SFTP Server Base Namespace");
+				response = Response.status(Response.Status.BAD_REQUEST).build();
+				return response;
 			}
 
 			/* Uploads the file to the SFTP server */
 			SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
 			file = new File(ontologyFile.getPath());
-			sftpManager.uploadSFTPFile(ontologyFile.getPath(), ontologyNamespace);
+			uploaded = sftpManager.uploadSFTPFile(ontologyFile.getPath(), ontologyNamespace);
 
 			/* Updates the OntologyFile */
 			ontologyFile.setPath(null);
 			ontologyFileImpl.replace(ontologyFileId, ontologyFile);
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+		
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}finally{
-			/* Deletes the local created file */
-			file.delete();
-			FileOperationsUtils.deleteDirectoryStructure(file);
+			/* Deletes the local created file if created */
+			if(file != null && uploaded) {
+				file.delete();
+				FileOperationsUtils.deleteDirectoryStructure(file);
+			}
 		}
 
 		return response;
@@ -145,26 +191,29 @@ public class FileManager {
 	public Response downloadFile(@FormParam("fileName") String fileName) {
 		File file = null;
 		Response response;
+		Boolean downloaded = false;
 		try{
 
 		/* Gets the file from the SFTP server */
 		SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
 		String localPath = sftpManager.downloadSFTPFile(fileName);
+		downloaded = true;
 		file = new File(localPath);
 		sftpManager.disconnect();
 
 		/* Gets the Response */
-		response = Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-        .build();
+		response = Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
+		
 	}catch(Exception exception){
 		exception.printStackTrace();
 		/* Sends a response that is not ok */
-		response = Response.status(500).build();
+		response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}finally{
 		/* Deletes the temporarily created file */
-		file.delete();
-		FileOperationsUtils.deleteDirectoryStructure(file);
+		if(downloaded) {
+			file.delete();
+			FileOperationsUtils.deleteDirectoryStructure(file);
+		}
 	}
 
 	return response;
@@ -230,11 +279,16 @@ public class FileManager {
 			}
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+		}catch(NullPointerException nullPointerException){
+			nullPointerException.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+		
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;

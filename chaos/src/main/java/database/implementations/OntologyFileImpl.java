@@ -94,7 +94,15 @@ public class OntologyFileImpl implements MongoService<OntologyFile> {
 		ObjectId dbID = new ObjectId(id);
 		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
-		OntologyFile ontologyFile = new OntologyFile();
+		/* Checks if a match was found, returns a null object if not */
+		OntologyFile ontologyFile;
+		if(persistent == null) {
+			ontologyFile = null;
+			return ontologyFile;
+		}else {
+			ontologyFile = new OntologyFile();
+		}
+		
 		Set<String> keyset = persistent.keySet();
 		for(String key: keyset){
 			/* Creates the OntologyFile based on the keys */

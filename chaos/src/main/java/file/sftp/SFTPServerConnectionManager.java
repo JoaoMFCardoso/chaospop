@@ -48,14 +48,15 @@ public class SFTPServerConnectionManager {
 		String host = PropertiesHandler.configProperties.getProperty("sftp.host");
 		int port = Integer.parseInt(PropertiesHandler.configProperties.getProperty("sftp.port"));
 		String user = PropertiesHandler.configProperties.getProperty("sftp.user");
-		String password = PropertiesHandler.configProperties.getProperty("sftp.password");
+		String sshPrivateKey = PropertiesHandler.configProperties.getProperty("sftp.ssh.private.key");
 		this.sftpDirectory = PropertiesHandler.configProperties.getProperty("sftp.ontologies");
 		this.sftpNamespace = PropertiesHandler.configProperties.getProperty("sftp.namespace");
 
 		/* Connects to the SFTP server */
 		JSch jsch = new JSch();
+		jsch.addIdentity(sshPrivateKey);
         this.session = jsch.getSession(user, host, port);
-        this.session.setPassword(password);
+        this.session.setConfig("PreferredAuthentications", "publickey");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         this.session.setConfig(config);
@@ -68,9 +69,10 @@ public class SFTPServerConnectionManager {
 	/**
 	 * This method uploads a given file into the SFTP server that has been initialised
 	 * @param filePath The path to the file that is being uploaded
+	 * @return boolean indicating whether the operation was successful
 	 * @throws Exception
 	 */
-	public void uploadSFTPFile(String filePath, String namespace) throws Exception{
+	public boolean uploadSFTPFile(String filePath, String namespace) throws Exception{
 		/* Initializes the channelSFTP with the base namespace for the SFTP Server */
 		this.channelSftp.cd(this.sftpDirectory);
 
@@ -87,6 +89,8 @@ public class SFTPServerConnectionManager {
 		/* Uploads the file */
         File f = new File(filePath);
         this.channelSftp.put(new FileInputStream(f), f.getName());
+        
+        return true;
 	}
 
 	/**
@@ -107,7 +111,7 @@ public class SFTPServerConnectionManager {
 		File downloadedFile = FileOperationsUtils.writeToFile(inputStream, fileName);
 		FileUtils.moveFileToDirectory(downloadedFile, directory, false);
 
-		String filePath = downloadedFile.getAbsolutePath();
+		String filePath = directory + File.separator + downloadedFile.getName();
 		return filePath;
 	}
 

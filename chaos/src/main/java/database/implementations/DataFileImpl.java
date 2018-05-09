@@ -81,7 +81,15 @@ public class DataFileImpl implements MongoService<DataFile> {
 		ObjectId dbID = new ObjectId(id);
 		BasicDBObject persistent = (BasicDBObject) this.collection.findOne(dbID);
 
-		DataFile dataFile = new DataFile();
+		/* Checks if a match was found, returns a null object if not */
+		DataFile dataFile;
+		if(persistent == null) {
+			dataFile = null;
+			return dataFile;
+		}else {
+			dataFile = new DataFile();
+		}
+		
 		Set<String> keyset = persistent.keySet();
 		for(String key: keyset){
 			/* Creates the DataFile based on the keys */
@@ -159,6 +167,10 @@ public class DataFileImpl implements MongoService<DataFile> {
 		/* Removes the associated Node object tree */
 		/* Gets the DataFile */
 		DataFile dataFile = get(id);
+		
+		if(dataFile == null) {
+			throw new NullPointerException(); 
+		}
 
 		ObjectId rootNodeId = dataFile.getNodeID();
 		NodeImpl nodeImpl = new NodeImpl();
