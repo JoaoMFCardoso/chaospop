@@ -2,7 +2,6 @@ package services;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,15 +19,16 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.javatuples.Pair;
 
-import utils.FileOperationsUtils;
 import database.implementations.DataFileImpl;
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
 import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
+import domain.to.wrappers.DataFileTOWrapper;
 import file.operations.FileOperations;
 import file.sftp.SFTPServerConnectionManager;
 import properties.PropertiesHandler;
+import utils.FileOperationsUtils;
 
 /**
  * This class implements a jax rs service layer
@@ -56,7 +56,7 @@ public class FileManager {
 	public Response addFile(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 		Response response;
-		
+
 		/**
 		 * Input Checks
 		 */
@@ -66,7 +66,7 @@ public class FileManager {
 			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			return response;
 		}
-		
+
 		/* If it respects the max upload size */
 		long maxUploadSize = Long.parseLong(PropertiesHandler.configProperties.getProperty("max.upload.size"));
 		if(fileDetail.getSize() > maxUploadSize) {
@@ -74,7 +74,7 @@ public class FileManager {
 			response = Response.status(Response.Status.BAD_REQUEST).build();
 			return response;
 		}
-		
+
 		/* Checks if the file extension is supported */
 		String[] supportedExtensions = PropertiesHandler.configProperties.getProperty("extensions").split(";");
 		String extension = FilenameUtils.getExtension(fileDetail.getFileName());
@@ -83,20 +83,20 @@ public class FileManager {
 			response = Response.status(Response.Status.BAD_REQUEST).build();
 			return response;
 		}
-		
+
 		// save it
 		String uploadedFileName = fileDetail.getFileName();
 		File uploadedFile = FileOperationsUtils.writeToFile(uploadedInputStream, uploadedFileName);
 
-		
+
 		Pair<File, String> processedFileData;
 		File processedFile = uploadedFile;
 		String processedFileID = "";
-		
+
 		try{
 			/* Processes the File */
 			processedFileData = FileOperations.fileProcessor(uploadedFile); 
-			
+
 			processedFile = processedFileData.getValue0();
 			processedFileID = processedFileData.getValue1();
 
@@ -133,7 +133,7 @@ public class FileManager {
 			/* Gets the OntologyFile from the database */
 			OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
 			OntologyFile ontologyFile = ontologyFileImpl.get(ontologyFileId);
-			
+
 			/* Checks if the Ontology File was found based on the given ID */
 			if(ontologyFile == null) {
 				/* No ontology file was found. It either doesn't exist or the id was wrong. */
@@ -160,11 +160,11 @@ public class FileManager {
 
 			/* Gets the Response */
 			response = Response.ok().build();
-			
+
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Sends a response that is not ok */
 			response = Response.status(Response.Status.BAD_REQUEST).build();
-		
+
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */
@@ -194,29 +194,29 @@ public class FileManager {
 		Boolean downloaded = false;
 		try{
 
-		/* Gets the file from the SFTP server */
-		SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
-		String localPath = sftpManager.downloadSFTPFile(fileName);
-		downloaded = true;
-		file = new File(localPath);
-		sftpManager.disconnect();
+			/* Gets the file from the SFTP server */
+			SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
+			String localPath = sftpManager.downloadSFTPFile(fileName);
+			downloaded = true;
+			file = new File(localPath);
+			sftpManager.disconnect();
 
-		/* Gets the Response */
-		response = Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
-		
-	}catch(Exception exception){
-		exception.printStackTrace();
-		/* Sends a response that is not ok */
-		response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-	}finally{
-		/* Deletes the temporarily created file */
-		if(downloaded) {
-			file.delete();
-			FileOperationsUtils.deleteDirectoryStructure(file);
+			/* Gets the Response */
+			response = Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
+
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}finally{
+			/* Deletes the temporarily created file */
+			if(downloaded) {
+				file.delete();
+				FileOperationsUtils.deleteDirectoryStructure(file);
+			}
 		}
-	}
 
-	return response;
+		return response;
 	}
 
 	/**
@@ -226,19 +226,29 @@ public class FileManager {
 	@GET
 	@Path("/listDataFiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<DataFileTO> listDataFiles(){
-		ArrayList<DataFileTO> dataFilesTO = new ArrayList<DataFileTO>();
+	public Response listDataFiles(){
+		DataFileTOWrapper dataFilesTOWrapper = new DataFileTOWrapper();
+		Response response;
+		
+		try {
+			/* Get all DataFile objects from the database */
+			List<DataFile> dataFiles = this.dataFileImpl.getAll();
 
-		/* Get all DataFile objects from the database */
-		List<DataFile> dataFiles = this.dataFileImpl.getAll();
-
-		/* Runs the DataFile objects and fills the DataFileTO array  */
-		for(DataFile dataFile : dataFiles){
-			DataFileTO dataFileTO = dataFile.createTransferObject();
-			dataFilesTO.add(dataFileTO);
+			/* Runs the DataFile objects and fills the DataFileTO array  */
+			for(DataFile dataFile : dataFiles){
+				DataFileTO dataFileTO = dataFile.createTransferObject();
+				dataFilesTOWrapper.dataFilesTO.add(dataFileTO);
+			}
+			
+			/* Builds the response */
+			response = Response.ok(dataFilesTOWrapper).build();
+			
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			exception.printStackTrace();
 		}
 
-		return dataFilesTO;
+		return response;
 	}
 
 	/**
@@ -249,12 +259,31 @@ public class FileManager {
 	@POST
 	@Path("/getFile")
 	@Produces(MediaType.APPLICATION_JSON)
-	public DataFileTO getDataFile(@FormParam("id") String dataFileId){
+	public Response getDataFile(@FormParam("id") String dataFileId){
 		/* Gets the DataFile object from the database and builds the transfer object */
-		DataFile dataFile = this.dataFileImpl.get(dataFileId);
-		DataFileTO dataFileTO = dataFile.createTransferObject();
+		DataFile dataFile;
+		DataFileTO dataFileTO;
+		Response response;
 
-		return dataFileTO;
+		try {
+			dataFile = this.dataFileImpl.get(dataFileId);
+			dataFileTO = dataFile.createTransferObject();
+
+			/* Builds the response with a filled DataFileTO */
+			response = Response.ok(dataFileTO).build();
+
+			/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return response;
 	}
 
 	/**
@@ -266,6 +295,7 @@ public class FileManager {
 	@Path("/removeFile")
 	public Response removeFile(@FormParam("ids") String dataFileIds){
 		Response response;
+		
 		try{
 			/* Gets the DataFile id's from the dataFileIds string
 			 * The id's are sepparated by ","
@@ -280,11 +310,15 @@ public class FileManager {
 
 			/* Gets the Response */
 			response = Response.ok().build();
+			
 		}catch(NullPointerException nullPointerException){
 			nullPointerException.printStackTrace();
 			/* Sends a response that is not ok */
 			response = Response.status(Response.Status.BAD_REQUEST).build();
-		
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */

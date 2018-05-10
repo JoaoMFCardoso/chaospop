@@ -1,6 +1,5 @@
 package services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,6 +14,7 @@ import javax.ws.rs.core.Response;
 import database.implementations.IndividualMappingsImpl;
 import domain.bo.mappings.IndividualMapping;
 import domain.to.IndividualMappingTO;
+import domain.to.wrappers.IndividualMappingTOWrapper;
 
 /**
  * This class implements a jax rs service layer
@@ -31,7 +31,7 @@ public class IndividualMappingManager {
 	/**
 	 * Creates a new IndividualMapping in the Database
 	 * @param individualMappingTO The individual Mapping transfer object
-	 * @return 200 if everything went well 500 if not
+	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/createIndividualMapping")
@@ -48,10 +48,15 @@ public class IndividualMappingManager {
 
 			/* Creates the Response */
 			response = Response.ok(individualMappingID).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* If any of the required fields in the IndividualMappingTO is null, it will trigger a NullPointerException. */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
 		}catch(Exception exception){
 			exception.printStackTrace();
-			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			/* Sends an Internal Server Error */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -65,18 +70,37 @@ public class IndividualMappingManager {
 	@POST
 	@Path("/getIndividualMapping")
 	@Produces(MediaType.APPLICATION_JSON)
-	public IndividualMappingTO getIndividualMapping(@FormParam("id") String individualMappingID){
+	public Response getIndividualMapping(@FormParam("id") String individualMappingID){
+		/* Initializes the variables */
+		IndividualMapping individualMapping;
+		IndividualMappingTO individualMappingTO;
+		Response response;
+		
+		try {
 		/* Gets the IndividualMapping Object from the database and then builds the transfer object */
-		IndividualMapping individualMapping = this.individualMappingsImpl.get(individualMappingID);
-		IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
+		individualMapping = this.individualMappingsImpl.get(individualMappingID);
+		individualMappingTO = individualMapping.createTransferObject();
 
-		return individualMappingTO;
+		response = Response.ok(individualMappingTO).build();
+		
+		/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+		
+		return response;
 	}
 	
 	/**
 	 * Replaces as existing IndividualMapping in the Database
 	 * @param individualMappingTO The individual Mapping transfer object
-	 * @return 200 if everything went well 500 if not
+	 * @return An appropriate status according to the execution
 	 */
 	@POST
 	@Path("/replaceIndividualMapping")
@@ -91,11 +115,17 @@ public class IndividualMappingManager {
 			this.individualMappingsImpl.replace(individualMappingTO.get_id(), individualMapping);
 
 			/* Creates the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+			
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
-			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -104,7 +134,7 @@ public class IndividualMappingManager {
 	/**
 	 * This method removes a list of IndividualMapping objects from the database
 	 * @param individualMappingIds The IndividualMapping id list. All ids are sepparated by ",".
-	 * @return 200 if everything went well, 500 if not.
+	 * @return An appropriate status according to the execution
 	 */
 	@POST
 	@Path("/removeIndividualMapping")
@@ -123,11 +153,17 @@ public class IndividualMappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+			
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
-			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -140,18 +176,29 @@ public class IndividualMappingManager {
 	@GET
 	@Path("/getAllIndividualMappings")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<IndividualMappingTO> getAllIndividualMappings(){
-		ArrayList<IndividualMappingTO> individualMappingTOs = new ArrayList<IndividualMappingTO>();
+	public Response getAllIndividualMappings(){
+		IndividualMappingTOWrapper individualMappingTOWrapper = new IndividualMappingTOWrapper();
+		Response response;
+		
+		try {
+			/* Get all IndividualMapping objects from the database */
+			List<IndividualMapping> individualMappings = this.individualMappingsImpl.getAll();
 
-		/* Get all IndividualMapping objects from the database */
-		List<IndividualMapping> individualMappings = this.individualMappingsImpl.getAll();
-
-		/* Runs the IndividualMapping objects and fills the IndividualMappingTO array  */
-		for(IndividualMapping individualMapping : individualMappings){
-			IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
-			individualMappingTOs.add(individualMappingTO);
+			/* Runs the IndividualMapping objects and fills the IndividualMappingTO array  */
+			for(IndividualMapping individualMapping : individualMappings){
+				IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
+				individualMappingTOWrapper.individualMappingsTO.add(individualMappingTO);
+			}
+			
+			/* Builds the response */
+			response = Response.ok(individualMappingTOWrapper).build();
+			
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			exception.printStackTrace();
 		}
 
-		return individualMappingTOs;
+		return response;
+
 	}
 }

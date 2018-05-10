@@ -1,6 +1,5 @@
 package services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
@@ -8,8 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import utils.TransferObjectUtils;
 import database.implementations.DataFileImpl;
 import database.implementations.IndividualMappingsImpl;
 import database.implementations.NodeImpl;
@@ -18,6 +17,9 @@ import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
 import domain.to.IndividualMappingTO;
 import domain.to.NodeTO;
+import domain.to.wrappers.IndividualMappingTOWrapper;
+import domain.to.wrappers.NodeTOWrapper;
+import utils.TransferObjectUtils;
 
 /**
  * This class implements a jax rs service layer
@@ -45,15 +47,36 @@ public class NodeManager {
 	@POST
 	@Path("/getAllNodesFromDataFile")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<NodeTO> getAllNodesFromDataFile(@FormParam("id") String dataFileId){
-		/* Gets the DataFile */
-		DataFile dataFile = this.dataFileImpl.get(dataFileId);
+	public Response getAllNodesFromDataFile(@FormParam("id") String dataFileId){
+		/* Initializes the objects */
+		NodeTOWrapper nodeTOWrapper = new NodeTOWrapper();
+		DataFile dataFile;
+		Response response;
 
-		/* Gets the root Node id and gets all the NodeTO objects */
-		String rootNodeId = dataFile.getNodeID().toString();
-		ArrayList<NodeTO> nodeTOList = TransferObjectUtils.getAllNodesTOFromNode(rootNodeId);
+		try {
 
-		return nodeTOList;
+			/* Gets the DataFile */
+			dataFile = this.dataFileImpl.get(dataFileId);
+
+			/* Gets the root Node id and gets all the NodeTO objects */
+			String rootNodeId = dataFile.getNodeID().toString();
+			nodeTOWrapper.nodesTO = TransferObjectUtils.getAllNodesTOFromNode(rootNodeId);
+
+			/* Builds the response */
+			response = Response.ok(nodeTOWrapper).build();
+
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception){
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return response;
 	}
 
 	/**
@@ -64,12 +87,33 @@ public class NodeManager {
 	@POST
 	@Path("/getNode")
 	@Produces(MediaType.APPLICATION_JSON)
-	public NodeTO getNode(@FormParam("id") String nodeId){
-		/* Gets the Node Object from the database and then builds the transfer object */
-		Node node = this.nodeImpl.get(nodeId);
-		NodeTO nodeTO = node.createTransferObject();
+	public Response getNode(@FormParam("id") String nodeId){
+		/* Initializes the objects */
+		Node node;
+		NodeTO nodeTO;
+		Response response;
 
-		return nodeTO;
+		try {
+
+			/* Gets the Node Object from the database and then builds the transfer object */
+			node = this.nodeImpl.get(nodeId);
+			nodeTO = node.createTransferObject();
+
+			/* Builds the response with a filled DataFileTO */
+			response = Response.ok(nodeTO).build();
+
+			/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return response;
 	}
 
 	/**
@@ -80,22 +124,43 @@ public class NodeManager {
 	@POST
 	@Path("/getSuggestedIndividualMappings")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<IndividualMappingTO> getSuggestedIndividualMappings(@FormParam("nodeId") String nodeId){
-		ArrayList<IndividualMappingTO> individualMappingTOList = new ArrayList<IndividualMappingTO>();
+	public Response getSuggestedIndividualMappings(@FormParam("nodeId") String nodeId){
+		/* Initializes the variables */
+		Node node;
+		String tag;
+		IndividualMappingTOWrapper individualMappingTOWrapper = new IndividualMappingTOWrapper();
+		Response response;
 
-		/* Gets the Node and its tag */
-		Node node = this.nodeImpl.get(nodeId);
-		String tag = node.getTag();
+		try {
 
-		/* Gets all IndividualMapping objects that match the Node's tag */
-		List<IndividualMapping> matchingIndividualMappings = this.individualMappingsImpl.getBy("tag", tag);
+			/* Gets the Node and its tag */
+			node = this.nodeImpl.get(nodeId);
+			tag = node.getTag();
 
-		/* Builds the IndividualMappingTO List */
-		for(IndividualMapping individualMapping : matchingIndividualMappings){
-			IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
-			individualMappingTOList.add(individualMappingTO);
+			/* Gets all IndividualMapping objects that match the Node's tag */
+			List<IndividualMapping> matchingIndividualMappings = this.individualMappingsImpl.getBy("tag", tag);
+
+			/* Builds the IndividualMappingTO List */
+			for(IndividualMapping individualMapping : matchingIndividualMappings){
+				IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();
+				individualMappingTOWrapper.individualMappingsTO.add(individualMappingTO);
+			}
+
+			/* Builds the response */
+			response = Response.ok(individualMappingTOWrapper).build();
+
+			/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			exception.printStackTrace();
 		}
 
-		return individualMappingTOList;
+		return response;
 	}
 }

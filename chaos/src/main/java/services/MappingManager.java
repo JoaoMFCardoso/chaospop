@@ -20,6 +20,8 @@ import domain.bo.mappings.Mapping;
 import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
 import domain.to.MappingTO;
+import domain.to.wrappers.DataFileTOWrapper;
+import domain.to.wrappers.MappingTOWrapper;
 
 /**
  * This class implements a jax rs service layer
@@ -44,14 +46,34 @@ public class MappingManager {
 	@POST
 	@Path("/getMapping")
 	@Produces(MediaType.APPLICATION_JSON)
-	public MappingTO getMapping(@FormParam("id") String mappingID){
-		/* Gets the IndividualMapping Object from the database and then builds the transfer object */
-		Mapping mapping = this.mappingImpl.get(mappingID);
-		MappingTO mappingTO = mapping.createTransferObject();
+	public Response getMapping(@FormParam("id") String mappingID){
+		/* Initializes the objects */
+		Mapping mapping;
+		MappingTO mappingTO;
+		Response response;
 
-		return mappingTO;
+		try {
+			/* Gets the IndividualMapping Object from the database and then builds the transfer object */
+			mapping = this.mappingImpl.get(mappingID);
+			mappingTO = mapping.createTransferObject();
+
+			/* Builds the response with a filled DataFileTO */
+			response = Response.ok(mappingTO).build();
+
+			/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return response;
 	}
-	
+
 	/**
 	 * This method returns all the Mappings stored in the database
 	 * @return An ArrayList with all Mappings transfer objects
@@ -59,26 +81,37 @@ public class MappingManager {
 	@GET
 	@Path("/getAllMappings")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<MappingTO> getAllMappings(){
-		ArrayList<MappingTO> mappingTOs = new ArrayList<MappingTO>();
+	public Response getAllMappings(){
+		/* Initializes the objects */
+		MappingTOWrapper mappingTOWrapper = new MappingTOWrapper();
+		Response response;
 
-		/* Get all Mapping objects from the database */
-		List<Mapping> mappings = this.mappingImpl.getAll();
+		try {
+			/* Get all Mapping objects from the database */
+			List<Mapping> mappings = this.mappingImpl.getAll();
 
-		/* Runs the Mapping objects and fills the MappingTO array  */
-		for(Mapping mapping : mappings){
-			MappingTO mappingTO = mapping.createTransferObject();
-			mappingTOs.add(mappingTO);
+			/* Runs the Mapping objects and fills the MappingTO array  */
+			for(Mapping mapping : mappings){
+				MappingTO mappingTO = mapping.createTransferObject();
+				mappingTOWrapper.mappingsTO.add(mappingTO);
+			}
+
+			/* Builds the response */
+			response = Response.ok(mappingTOWrapper).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			exception.printStackTrace();
 		}
 
-		return mappingTOs;
+		return response;
 	}
 
 	/**
 	 * This method creates a new Mapping object in the database based
 	 * on the transfer object created in the client application.
 	 * @param mappingTO The client provided MappingTO transfer object
-	 * @return 200 if everything went well, 500 if not.
+	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/createMapping")
@@ -95,10 +128,15 @@ public class MappingManager {
 
 			/* Creates the Response */
 			response = Response.ok(id).build();
+
+		}catch(NullPointerException nullPointerException){
+			/* If any of the required fields in the IndividualMappingTO is null, it will trigger a NullPointerException. */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			exception.printStackTrace();
-			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			/* Sends an Internal Server Error */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -107,7 +145,7 @@ public class MappingManager {
 	/**
 	 * This method removes a list of Mapping objects from the database
 	 * @param mappingIds The Mapping id list. All ids are sepparated by ",".
-	 * @return 200 if everything went well, 500 if not.
+	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/removeMapping")
@@ -126,11 +164,17 @@ public class MappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
-			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -144,28 +188,39 @@ public class MappingManager {
 	@POST
 	@Path("/getAllMappingsFromMapping")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<DataFileTO> getAllDataFilesFromMapping(@FormParam("mappingId") String mappingId){
-		ArrayList<DataFileTO> dataFileTOList = new ArrayList<DataFileTO>();
+	public Response getAllDataFilesFromMapping(@FormParam("mappingId") String mappingId){
+		/* Initializes the objects */
+		DataFileTOWrapper dataFileTOWrapper = new DataFileTOWrapper();
+		Response response;
 
-		/* Gets the Mapping and its DataFile List */
-		Mapping mapping = this.mappingImpl.get(mappingId);
-		ArrayList<ObjectId> fileList = mapping.getFileList();
+		try {
+			/* Gets the Mapping and its DataFile List */
+			Mapping mapping = this.mappingImpl.get(mappingId);
+			ArrayList<ObjectId> fileList = mapping.getFileList();
 
-		/* Runs the DataFile list and creates DataFileTO objects */
-		for(ObjectId dataFileId : fileList){
-			DataFile dataFile = this.dataFileImpl.get(dataFileId.toString());
-			DataFileTO dataFileTO = dataFile.createTransferObject();
-			dataFileTOList.add(dataFileTO);
+			/* Runs the DataFile list and creates DataFileTO objects */
+			for(ObjectId dataFileId : fileList){
+				DataFile dataFile = this.dataFileImpl.get(dataFileId.toString());
+				DataFileTO dataFileTO = dataFile.createTransferObject();
+				dataFileTOWrapper.dataFilesTO.add(dataFileTO);
+			}
+			/* Builds the response */
+			response = Response.ok(dataFileTOWrapper).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			exception.printStackTrace();
 		}
 
-		return dataFileTOList;
+		return response;
+
 	}
 
 	/**
 	 * This method adds a DataFile to an existing Mapping
 	 * @param mappingId The Mapping id
 	 * @param dataFileId The DataFile id
-	 * @return 200 if everything went well, 500 if not.
+	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/addDataFileToMapping")
@@ -180,7 +235,7 @@ public class MappingManager {
 			ObjectId newFileId = new ObjectId(dataFileId);
 
 			if(fileList.contains(newFileId)){
-				throw new Exception("DataFile has already been added to the Mapping");
+				throw new IllegalArgumentException("DataFile has already been added to the Mapping");
 			}else{
 				/* The Mapping is updated with the new fileList.
 				 * And the Database object is updated with the new Mapping*/
@@ -191,11 +246,17 @@ public class MappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+			
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
-			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -205,7 +266,7 @@ public class MappingManager {
 	 * This method removes a DataFile to an existing Mapping
 	 * @param mappingId The Mapping id
 	 * @param dataFileId The DataFile id
-	 * @return 200 if everything went well, 500 if not.
+	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/removeDataFileFromMapping")
@@ -227,15 +288,21 @@ public class MappingManager {
 
 				this.mappingImpl.replace(mappingId, mapping);
 			}else{
-				throw new Exception("DataFile does not exist in the Mapping");
+				throw new IllegalArgumentException("DataFile does not exist in the Mapping");
 			}
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+			
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
-			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;

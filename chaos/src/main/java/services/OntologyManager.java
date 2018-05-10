@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
 import domain.to.OntologyFileTO;
+import domain.to.wrappers.OntologyFileTOWrapper;
 import file.sftp.SFTPServerConnectionManager;
 import ontologies.extractor.OntologyOperations;
 import properties.PropertiesHandler;
@@ -42,6 +43,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addOntologyFromNamespace(@FormParam("namespace") String namespace){
 		Response response;
+
 		try{
 			/* Creates a new OntologyFile element */
 			OntologyFile ontologyFile = new OntologyFile();
@@ -56,10 +58,16 @@ public class OntologyManager {
 
 			/* Gets the Response */
 			response = Response.ok(id).build();
+
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
-			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -67,26 +75,37 @@ public class OntologyManager {
 
 	/**
 	 * This method returns all the OntologyFiles stored in the database
-	 * @return An ArrayList with all DataFiles
+	 * @return An ArrayList with all OntologyFiles
 	 */
 	@GET
 	@Path("/listOntologyFiles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<OntologyFileTO> listOntologyFiles(){
-		ArrayList<OntologyFileTO> ontologyFilesTO = new ArrayList<OntologyFileTO>();
+	public Response listOntologyFiles(){
+		OntologyFileTOWrapper ontologyFileTOWrapper = new OntologyFileTOWrapper();
+		Response response;
 
-		/* Get all OntologyFile objects from the database */
-		List<OntologyFile> dataFiles = this.ontologyFileImpl.getAll();
+		try {
 
-		/* Runs the DataFile objects and fills the DataFileTO array  */
-		for(OntologyFile ontologyFile : dataFiles){
-			OntologyFileTO ontologyFileTO = ontologyFile.createTransferObject();
-			ontologyFilesTO.add(ontologyFileTO);
+			/* Get all OntologyFile objects from the database */
+			List<OntologyFile> dataFiles = this.ontologyFileImpl.getAll();
+
+			/* Runs the DataFile objects and fills the DataFileTO array  */
+			for(OntologyFile ontologyFile : dataFiles){
+				OntologyFileTO ontologyFileTO = ontologyFile.createTransferObject();
+				ontologyFileTOWrapper.ontologyFilesTO.add(ontologyFileTO);
+			}
+
+			/* Builds the response */
+			response = Response.ok(ontologyFileTOWrapper).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			exception.printStackTrace();
 		}
 
-		return ontologyFilesTO;
+		return response;
 	}
-	
+
 	/**
 	 * This method gets a OntologyFile object when given its id
 	 * @param ontologyFileId The OntologyFile id
@@ -95,14 +114,35 @@ public class OntologyManager {
 	@POST
 	@Path("/getOntologyFile")
 	@Produces(MediaType.APPLICATION_JSON)
-	public OntologyFileTO getOntologyFile(@FormParam("id") String ontologyFileId){
-		/* Gets the OntologyFile object from the database and builds the transfer object */
-		OntologyFile ontologyFile = this.ontologyFileImpl.get(ontologyFileId);
-		OntologyFileTO ontologyFileTO = ontologyFile.createTransferObject();
+	public Response getOntologyFile(@FormParam("id") String ontologyFileId){
+		/* Gets the DataFile object from the database and builds the transfer object */
+		OntologyFile ontologyFile;
+		OntologyFileTO ontologyFileTO;
+		Response response;
 
-		return ontologyFileTO;
+		try {
+
+			/* Gets the OntologyFile object from the database and builds the transfer object */
+			ontologyFile = this.ontologyFileImpl.get(ontologyFileId);
+			ontologyFileTO = ontologyFile.createTransferObject();
+
+			/* Builds the response with a filled DataFileTO */
+			response = Response.ok(ontologyFileTO).build();
+
+			/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
+		}catch(Exception exception) {
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return response;
 	}
-	
+
 	/**
 	 * This method removes a list of OntologyFile objects from the database
 	 * @param ontologyIds The OntologyFile id list. All ids are separated by ",".
@@ -112,6 +152,7 @@ public class OntologyManager {
 	@Path("/removeOntologyFiles")
 	public Response removeOntologyFiles(@FormParam("ontologyIds") String ontologyIds){
 		Response response;
+		
 		try{
 			/* Gets the OntologyFile id's from the ontologyIds string
 			 * The id's are sepparated by ","
@@ -136,11 +177,20 @@ public class OntologyManager {
 			}
 
 			/* Gets the Response */
-			response = Response.status(200).build();
+			response = Response.ok().build();
+			
+		}catch(NullPointerException nullPointerException){
+			nullPointerException.printStackTrace();
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			exception.printStackTrace();
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -155,6 +205,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSFTPDefaultNamespace(){
 		Response response;
+		
 		try{
 			/* Gets the Namespace from the properties */
 			PropertiesHandler.propertiesLoader();
@@ -162,10 +213,11 @@ public class OntologyManager {
 			String defaultNamespace = PropertiesHandler.configProperties.getProperty("sftp.namespace");
 
 			/* Gets the Response */
-			response = Response.ok(defaultNamespace, MediaType.APPLICATION_JSON).build();
+			response = Response.ok(defaultNamespace).build();
+			
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -181,6 +233,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOWLClasses(@FormParam("ontologyId") String ontologyFileId){
 		Response response;
+		
 		try{
 			/* Get the owl classes for the given ontology */
 			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
@@ -194,10 +247,18 @@ public class OntologyManager {
 			String jsonResponse = gson.toJson(owlClassesStringArray);
 
 			/* Gets the Response */
-			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+			response = Response.ok(jsonResponse).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -213,6 +274,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getObjectProperties(@FormParam("ontologyId") String ontologyFileId){
 		Response response;
+		
 		try{
 			/* Get the Object properties */
 			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
@@ -226,10 +288,18 @@ public class OntologyManager {
 			String jsonResponse = gson.toJson(objectPropertiesStringArray);
 
 			/* Gets the Response */
-			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+			response = Response.ok(jsonResponse).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -246,6 +316,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getObjectPropertiesForClass(@FormParam("ontologyId") String ontologyFileId, @FormParam("owlClass") String owlClass){
 		Response response;
+		
 		try{
 			/* Get the Object properties for the given class */
 			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
@@ -260,10 +331,18 @@ public class OntologyManager {
 			String jsonResponse = gson.toJson(objectPropertiesStringArray);
 
 			/* Gets the Response */
-			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+			response = Response.ok(jsonResponse).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -279,6 +358,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDataProperties(@FormParam("ontologyId") String ontologyFileId){
 		Response response;
+		
 		try{
 			/* Get the Data properties */
 			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
@@ -292,10 +372,18 @@ public class OntologyManager {
 			String jsonResponse = gson.toJson(dataPropertiesStringArray);
 
 			/* Gets the Response */
-			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+			response = Response.ok(jsonResponse).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -312,6 +400,7 @@ public class OntologyManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDataPropertiesForClass(@FormParam("ontologyId") String ontologyFileId, @FormParam("owlClass") String owlClass){
 		Response response;
+		
 		try{
 			/* Get the Data properties for the given class */
 			OntologyOperations ontologyExtractionOperations = new OntologyOperations(ontologyFileId);
@@ -326,10 +415,18 @@ public class OntologyManager {
 			String jsonResponse = gson.toJson(dataPropertiesStringArray);
 
 			/* Gets the Response */
-			response = Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+			response = Response.ok(jsonResponse).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* Sends a response that is not ok */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(IllegalArgumentException illegalArgumentException) {
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+
 		}catch(Exception exception){
 			/* Sends a response that is not ok */
-			response = Response.status(500).build();
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
