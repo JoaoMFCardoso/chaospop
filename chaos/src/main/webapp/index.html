@@ -59,6 +59,12 @@
 		<input type="submit" value="Get Suggested Individual Mappings" />
 	</form>
 
+	<p>Get Mapping</p>
+	<form action="wsapi/mappingManager/getMapping" method="post">
+		<p>File ID : <input type="text" name="id" /></p>
+		<input type="submit" value="Get Mapping" />
+	</form>
+
 	<p><a href="wsapi/mappingManager/getAllMappings">Get All Mappings</a></p>
 
 	<p>Remove Mapping</p>
@@ -137,6 +143,12 @@
 		<input type="text" name="owlClass" />
 		</p>
 		<input type="submit" value="Get data Properties" />
+	</form>
+
+	<p>Get Individual Mapping</p>
+	<form action="wsapi/individualMappingManager/getIndividualMapping" method="post">
+		<p>File ID : <input type="text" name="id" /></p>
+		<input type="submit" value="Get Individual Mapping" />
 	</form>
 
 </body>
