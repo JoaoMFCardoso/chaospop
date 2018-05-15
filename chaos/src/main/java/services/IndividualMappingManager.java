@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.Gson;
+
 import database.implementations.IndividualMappingsImpl;
 import domain.bo.mappings.IndividualMapping;
 import domain.to.IndividualMappingTO;
@@ -37,9 +39,12 @@ public class IndividualMappingManager {
 	@Path("/createIndividualMapping")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createIndividualMapping(IndividualMappingTO individualMappingTO){
+	public Response createIndividualMapping(String jsonResponse){
 		Response response;
 		try{
+			Gson gson = new Gson();
+			IndividualMappingTO individualMappingTO = gson.fromJson(jsonResponse, IndividualMappingTO.class);
+			
 			/* Creates the individual mapping from the individual mapping transfer object */
 			IndividualMapping individualMapping = new IndividualMapping(individualMappingTO);
 
@@ -81,7 +86,10 @@ public class IndividualMappingManager {
 		individualMapping = this.individualMappingsImpl.get(individualMappingID);
 		individualMappingTO = individualMapping.createTransferObject();
 
-		response = Response.ok(individualMappingTO).build();
+		Gson gson = new Gson();
+		String jsonResponse = gson.toJson(individualMappingTO);
+		
+		response = Response.ok(jsonResponse).build();
 		
 		/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
@@ -105,10 +113,13 @@ public class IndividualMappingManager {
 	@POST
 	@Path("/replaceIndividualMapping")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response replaceIndividualMapping(IndividualMappingTO individualMappingTO){
+	public Response replaceIndividualMapping(String jsonResponse){
 		Response response;
 		try{
 			/* Creates the individual mapping from the individual mapping transfer object */
+			Gson gson = new Gson();
+			IndividualMappingTO individualMappingTO = gson.fromJson(jsonResponse, IndividualMappingTO.class);
+			
 			IndividualMapping individualMapping = new IndividualMapping(individualMappingTO);
 
 			/* Stores the new individual mapping in the database */

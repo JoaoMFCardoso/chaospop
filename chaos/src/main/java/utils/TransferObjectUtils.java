@@ -79,16 +79,17 @@ public class TransferObjectUtils {
 	}
 
 	/**
-	 * Converts a HashMap with IRI keys and Pair<String, String> values into a HashMap with String keys and Pair<String, String> values
+	 * Converts a HashMap with IRI keys and Pair<String, String> values into a HashMap with String keys and String[] values
 	 * @param map A HashMap with IRI keys and Pair<String, String> values
-	 * @return A HashMap with String keys and Pair<String, String> values
+	 * @return A HashMap with String keys and String[] values
 	 */
-	public static HashMap<String, Pair<String, String>> convertHMIRIPToSP(HashMap<IRI, Pair<String, String>> map){
-		HashMap<String, Pair<String, String>> returnMap = new HashMap<String, Pair<String, String>>();
+	public static HashMap<String, String[]> convertHMIRIPToSP(HashMap<IRI, Pair<String, String>> map){
+		HashMap<String, String[]> returnMap = new HashMap<String, String[]>();
 
 		/* Runs the HashMap and converts the keys */
 		for(IRI key : map.keySet()){
-			returnMap.put(key.toString(), map.get(key));
+			String[] valueArray = {map.get(key).getValue0(), map.get(key).getValue1()};
+			returnMap.put(key.toString(), valueArray);
 		}
 
 		return returnMap;
@@ -111,16 +112,17 @@ public class TransferObjectUtils {
 	}
 
 	/**
-	 * This method converts a HashMap with String keys and Pair<String, String> values to a HashMap with IRI keys and Pair<String, String> values
-	 * @param map A HashMap with String keys and Pair<String, String> values
+	 * This method converts a HashMap with String keys and Pair<String, String> values to a HashMap with IRI keys and String[] values
+	 * @param map A HashMap with String keys and String[] values
 	 * @return A HashMap with IRI keys and Pair<String, String> values
 	 */
-	public static HashMap<IRI, Pair<String, String>> convertHMSPToIRIP(HashMap<String, Pair<String, String>> map){
+	public static HashMap<IRI, Pair<String, String>> convertHMSPToIRIP(HashMap<String, String[]> map){
 		HashMap<IRI, Pair<String, String>> returnMap = new HashMap<IRI, Pair<String, String>>();
 
 		/* Runs the HashMap and converts the keys */
 		for(String key : map.keySet()){
-			returnMap.put(IRI.create(key), map.get(key));
+			Pair<String, String> valuePair = new Pair<String, String>(map.get(key)[0], map.get(key)[1]);
+			returnMap.put(IRI.create(key), valuePair);
 		}
 
 		return returnMap;

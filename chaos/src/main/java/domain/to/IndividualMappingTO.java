@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.javatuples.Pair;
-
 /**
  * The IndividualMapping class transfer object
  * See IndividualMapping for more info
@@ -76,7 +74,7 @@ public class IndividualMappingTO {
 	 */
 	@XmlElementWrapper(name = "dataProps")
 	@XmlElement(name = "dataProp")
-	private HashMap<String, Pair<String, String>> dataProperties;
+	private HashMap<String, String[]> dataProperties;
 
 	public IndividualMappingTO() {
 		this._id = null;
@@ -205,14 +203,14 @@ public class IndividualMappingTO {
 	/**
 	 * @return the dataProperties
 	 */
-	public HashMap<String, Pair<String,String>> getDataProperties() {
+	public HashMap<String, String[]> getDataProperties() {
 		return dataProperties;
 	}
-
+	
 	/**
 	 * @param dataProperties the dataProperties to set
 	 */
-	public void setDataProperties(HashMap<String, Pair<String,String>> dataProperties) {
+	public void setDataProperties(HashMap<String, String[]> dataProperties) {
 		this.dataProperties = dataProperties;
 	}
 }
