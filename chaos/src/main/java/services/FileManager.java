@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -102,8 +103,15 @@ public class FileManager {
 
 			/* Gets the Response */
 			response = Response.ok(processedFileID).build();
+			
+		}catch(FileExistsException exception){
+			/* Sends a response that is an internal server error */
+			exception.printStackTrace();
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
 		}catch(Exception exception){
 			/* Sends a response that is an internal server error */
+			exception.printStackTrace();
 			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}finally{
 

@@ -13,6 +13,10 @@ import properties.PropertiesHandler;
 
 import com.github.junrar.rarfile.FileHeader;
 
+import database.implementations.DataFileImpl;
+import domain.bo.parsers.DataFile;
+import domain.bo.parsers.Node;
+
 public class FileOperationsUtils {
 
 	/**
@@ -212,6 +216,25 @@ public class FileOperationsUtils {
 			return returnPair;
 	}
 
+	/**
+	 * This method gets a DataFile object and stores it in the database
+	 * @param dataFileImpl The database implementation for data files
+	 * @param dataFile The DataFile Object
+	 * @param file The file
+	 * @param node The node
+	 * @return The ID of the DataFile
+	 */
+	public static String storeDataFile(DataFileImpl dataFileImpl, DataFile dataFile, File file, Node node){
+
+		/* Sets the DataFile object attributes */
+		dataFile.setName(file.getName());
+		dataFile.setNodeID(node.getID());
+
+		/* Saves the DataFile object */
+		String dataFileID = dataFileImpl.save(dataFile);
+		
+		return dataFileID;
+	}
 
 
 	/**

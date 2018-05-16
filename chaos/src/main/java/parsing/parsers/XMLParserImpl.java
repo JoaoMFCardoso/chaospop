@@ -12,11 +12,12 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import parsing.ParserInterface;
 import database.implementations.DataFileImpl;
 import database.implementations.NodeImpl;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import parsing.ParserInterface;
+import utils.FileOperationsUtils;
 
 public class XMLParserImpl implements ParserInterface {
 
@@ -88,7 +89,7 @@ public class XMLParserImpl implements ParserInterface {
 			}
 
 			/* Stores the DataFile in the database */
-			String dataFileID = storeDataFile(dataFile, file, node);
+			String dataFileID = FileOperationsUtils.storeDataFile(this.dataFileImpl, dataFile, file, node);
 			
 			return dataFileID;
 
@@ -165,24 +166,5 @@ public class XMLParserImpl implements ParserInterface {
 
 		/* Stores the parent Node */
 		this.nodeImpl.save(parentNode);
-	}
-
-	/**
-	 * This method gets a DataFile object and stores it in the database
-	 * @param dataFile The DataFile Object
-	 * @param file The file
-	 * @param node The node
-	 * @return The ID of the DataFile
-	 */
-	private String storeDataFile(DataFile dataFile, File file, Node node){
-
-		/* Sets the DataFile object attributes */
-		dataFile.setName(file.getName());
-		dataFile.setNodeID(node.getID());
-
-		/* Saves the DataFile object */
-		String dataFileID = this.dataFileImpl.save(dataFile);
-		
-		return dataFileID;
 	}
 }
