@@ -26,9 +26,13 @@ public class FileOperationsUtils {
 		File folder = new File(PropertiesHandler.configProperties.getProperty("uploaded.files.path"));
 		String filename = FilenameUtils.getBaseName(uploadedFileName);
 		String extension = FilenameUtils.getExtension(uploadedFileName);
-
+		File file;
+		
 		try{
-			File file = File.createTempFile(filename + "-", "." + extension, folder);
+			file = new File(folder + File.separator + filename + "." + extension);
+			/* Uncomment if you want to have temporary files created, with a temporary name
+			file = File.createTempFile(filename + "-", "." + extension, folder);
+			*/
 			OutputStream out = new FileOutputStream(file);
 			byte[] buf = new byte[1024];
 			int len;
@@ -37,12 +41,12 @@ public class FileOperationsUtils {
 			}
 			uploadedInputStream.close();
 			out.close();
-			//		    Files.copy(uploadedInputStream, file.toPath(), REPLACE_EXISTING);
-			return file;
+			
 		}catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
+		
+		return file;
 	}
 
 	/**
