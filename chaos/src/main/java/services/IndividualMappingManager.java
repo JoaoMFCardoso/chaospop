@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -215,5 +216,46 @@ public class IndividualMappingManager {
 
 		return response;
 
+	}
+	
+	/**
+	 * Compares a given IndividualMappingTO with an existing IndividualMapping
+	 * @param individualMappingID the ID of an existing IndividualMapping
+ 	 * @param jsonResponse An individual Mapping transfer object
+	 * @return An HTTP response according to the execution of the service.
+	 */
+	@POST
+	@Path("/compareIndividualMappings")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createIndividualMapping(@HeaderParam("id") String individualMappingID, String jsonResponse){
+		Response response;
+		try{
+			Gson gson = new Gson();
+			IndividualMappingTO individualMappingTO = gson.fromJson(jsonResponse, IndividualMappingTO.class);
+			
+			/* Creates the individual mapping from the individual mapping transfer object */
+			IndividualMapping newIndividualMapping = new IndividualMapping(individualMappingTO);
+
+			/* Gets the existing individual mapping from the database */
+			IndividualMapping existingIndividualMapping = this.individualMappingsImpl.get(individualMappingID);
+
+			/* Compares the new IndividualMapping with the existing to see if they are equal */
+			Boolean comparisonResult = existingIndividualMapping.compare(newIndividualMapping);
+			
+			/* Creates the Response */
+			response = Response.ok(gson.toJson(comparisonResult)).build();
+			
+		}catch(NullPointerException nullPointerException){
+			/* If any of the required fields in the IndividualMappingTO is null, it will trigger a NullPointerException. */
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			/* Sends an Internal Server Error */
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return response;
 	}
 }

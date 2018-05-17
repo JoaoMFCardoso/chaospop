@@ -285,4 +285,19 @@ public class MongoUtilities {
 
 		return returnList;
 	}
+	
+	/**
+	 * Converts a HashMap DBObject into a HashMap<String, String>
+	 * @param dbObjectMap the db object cast into a HashMap
+	 * @return A HashMap<String,String>
+	 */
+	public static HashMap<String,String> convertDBObjectToHashMap(HashMap<String, String> dbObjectMap){
+		HashMap<String, String> returnMap = new HashMap<String, String>();
+		
+		for(String key : dbObjectMap.keySet()) {
+			returnMap.put(key, dbObjectMap.get(key));
+		}
+		
+		return returnMap;
+	}
 }

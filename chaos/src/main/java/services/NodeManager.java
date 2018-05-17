@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.Gson;
+
 import database.implementations.DataFileImpl;
 import database.implementations.IndividualMappingsImpl;
 import database.implementations.NodeImpl;
@@ -146,8 +148,12 @@ public class NodeManager {
 				individualMappingTOWrapper.individualMappingsTO.add(individualMappingTO);
 			}
 
+
 			/* Builds the response */
-			response = Response.ok(individualMappingTOWrapper).build();
+			Gson gson = new Gson();
+			String jsonResponse = gson.toJson(individualMappingTOWrapper);
+			
+			response = Response.ok(jsonResponse).build();
 
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {

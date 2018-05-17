@@ -160,7 +160,7 @@ public class IndividualMappingsImpl implements MongoService<IndividualMapping> {
 				individualMapping.setSpecification((Boolean) persistent.get(key));
 				break;
 			case "annotationProperties":
-				HashMap<String, String> annotationPropertiesDBMap = (HashMap<String, String>) persistent.get(key);
+				HashMap<String, String> annotationPropertiesDBMap = MongoUtilities.convertDBObjectToHashMap((HashMap<String, String>) persistent.get(key));
 				individualMapping.setAnnotationProperties(annotationPropertiesDBMap);
 				break;
 			case "objectProperties":

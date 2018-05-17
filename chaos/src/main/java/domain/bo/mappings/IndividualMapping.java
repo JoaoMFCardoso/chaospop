@@ -55,7 +55,7 @@ public class IndividualMapping {
 	 * There must be at least one rdfs:label
 	 */
 	private HashMap<String, String> annotationProperties;
-	
+
 	/**
 	 * The object properties [PropertyIRI, IndividualIRI].
 	 * If individualIRI is .parent then the individual String is the xml parent for this tag.
@@ -107,7 +107,7 @@ public class IndividualMapping {
 		}else{
 			this.annotationProperties = individualMappingTO.getAnnotationProperties();
 		}
-		
+
 		if(null == individualMappingTO.getObjectProperties()){
 			this.objectProperties = null;
 		}else{
@@ -117,7 +117,7 @@ public class IndividualMapping {
 		if(null == individualMappingTO.getDataProperties()){
 			this.dataProperties = null;
 		}else{
-		this.dataProperties = TransferObjectUtils.convertHMSPToIRIP(individualMappingTO.getDataProperties());
+			this.dataProperties = TransferObjectUtils.convertHMSPToIRIP(individualMappingTO.getDataProperties());
 		}
 	}
 
@@ -140,20 +140,20 @@ public class IndividualMapping {
 		imto.setTag(this.tag);
 		imto.setIndividualName(this.individualName);
 		imto.setOwlClassIRI(this.owlClassIRI.toString());
-		
+
 		/* If the following elements are non existent in the database, they will be filled with null values */
 		if(null == this.annotationProperties){
 			imto.setAnnotationProperties(null);
 		}else {
 			imto.setAnnotationProperties(this.annotationProperties);
 		}
-		
+
 		if(null == this.annotationProperties){
 			imto.setObjectProperties(null);
 		}else {
 			imto.setObjectProperties(TransferObjectUtils.convertHMIRISToSS(this.objectProperties));
 		}
-		
+
 		if(null == this.annotationProperties){
 			imto.setDataProperties(null);
 		}else {
@@ -285,7 +285,7 @@ public class IndividualMapping {
 	public void setAnnotationProperties(HashMap<String, String> annotationProperties) {
 		this.annotationProperties = annotationProperties;
 	}
-	
+
 
 	/**
 	 * Gets the object properties.
@@ -323,5 +323,56 @@ public class IndividualMapping {
 	 */
 	public void setDataProperties(HashMap<IRI, Pair<String, String>> dataProperties) {
 		this.dataProperties = dataProperties;
+	}
+
+	/**
+	 * This method compares a gien IndividualMapping with the current object
+	 * @param individualMapping A given IndividualMapping Object
+	 * @return true if they hold the same information, false otherwise
+	 */
+	public Boolean compare(IndividualMapping individualMapping) {
+		/* Check tag */
+		if(!this.tag.equals(individualMapping.getTag())) {
+			return false;
+		}
+
+		/* Check individualName */
+		if(!this.individualName.equals(individualMapping.getIndividualName())) {
+			return false;
+		}
+
+		/* Check OwlClassIRI */
+		if(!this.owlClassIRI.equals(individualMapping.getOwlClassIRI())) {
+			return false;
+		}
+
+		/* Check Specification */
+		if(!this.specification.equals(individualMapping.getSpecification())) {
+			return false;
+		}
+
+		/* Check Annotation Properties */
+		if(null == this.annotationProperties && null != individualMapping.getAnnotationProperties() || null == this.annotationProperties && null == individualMapping.getAnnotationProperties()) {
+			return false;
+		}else if(!this.annotationProperties.equals(individualMapping.getAnnotationProperties())) {
+			return false;
+		}
+
+		/* Check Object Properties */
+		if(null == this.objectProperties && null != individualMapping.getObjectProperties() || null == this.objectProperties && null == individualMapping.getObjectProperties()) {
+			return false;
+		}else if(!this.objectProperties.equals(individualMapping.getObjectProperties())) {
+			return false;
+		}
+
+		/* Check Data Properties */
+		if(null == this.dataProperties && null != individualMapping.getDataProperties() || null == this.dataProperties && null == individualMapping.getDataProperties()) {
+			return false;
+		}else if(!this.dataProperties.equals(individualMapping.getDataProperties())) {
+			return false;
+		}
+
+
+		return true;
 	}
 }
