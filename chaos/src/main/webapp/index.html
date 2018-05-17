@@ -145,8 +145,16 @@
 		<input type="submit" value="Get data Properties" />
 	</form>
 
+	<p><a href="wsapi/individualMappingManager/getAllIndividualMappings">get All Individual Mappings</a></p>
+
 	<p>Get Individual Mapping</p>
 	<form action="wsapi/individualMappingManager/getIndividualMapping" method="post">
+		<p>File ID : <input type="text" name="id" /></p>
+		<input type="submit" value="Get Individual Mapping" />
+	</form>
+	
+	<p>Remove Individual Mapping</p>
+	<form action="wsapi/individualMappingManager/removeIndividualMapping" method="post">
 		<p>File ID : <input type="text" name="id" /></p>
 		<input type="submit" value="Get Individual Mapping" />
 	</form>

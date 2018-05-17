@@ -149,7 +149,7 @@ public class IndividualMappingManager {
 	 */
 	@POST
 	@Path("/removeIndividualMapping")
-	public Response removeFile(@FormParam("ids") String individualMappingIds){
+	public Response removeIndividualMapping(@FormParam("ids") String individualMappingIds){
 		Response response;
 		try{
 			/* Gets the IndividualMapping id's from the individualMappingIds string
@@ -202,7 +202,11 @@ public class IndividualMappingManager {
 			}
 			
 			/* Builds the response */
-			response = Response.ok(individualMappingTOWrapper).build();
+			Gson gson = new Gson();
+			String jsonResponse = gson.toJson(individualMappingTOWrapper);
+			
+			
+			response = Response.ok(jsonResponse).build();
 			
 		}catch(Exception exception) {
 			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

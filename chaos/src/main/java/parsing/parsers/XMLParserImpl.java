@@ -52,12 +52,12 @@ public class XMLParserImpl implements ParserInterface {
 			 * And creates the Node*/
 			Element xmlRoot = document.getRootElement();
 
-			Node node = new Node();
+			Node rootNode = new Node();
 
 			/* Set the DataFile id */
-			node.setDataFileId(dataFileId);
+			rootNode.setDataFileId(dataFileId);
 
-			node.setTag(xmlRoot.getName());
+			rootNode.setTag(xmlRoot.getName());
 
 			/* Gets the attributes if they exist */
 			if(!xmlRoot.getAttributes().isEmpty()){
@@ -69,27 +69,27 @@ public class XMLParserImpl implements ParserInterface {
 				}
 
 				/* Adds the attributeHashMap to the Node */
-				node.setAttributes(attributeHashMap);
+				rootNode.setAttributes(attributeHashMap);
 			}
 
 			if(xmlRoot.getChildren().isEmpty()){
 				/* Gets the value of the root, because it has no children */
 				String value = xmlRoot.getText().replaceAll("\\n+", "");
 				value = value.replaceAll("\\t+", "");
-				node.setValue(value);
+				rootNode.setValue(value);
 
 				/* Stores the Node */
-				this.nodeImpl.save(node);
+				this.nodeImpl.save(rootNode);
 			}else{
 				/* Creates the children array */
-				node.initializeChildren();
+				rootNode.initializeChildren();
 
 				/* Recursively handles the rest of the elements */
-				XMLNodeFiller(dataFileId, xmlRoot, node);
+				XMLNodeFiller(dataFileId, xmlRoot, rootNode);
 			}
 
 			/* Stores the DataFile in the database */
-			String dataFileID = FileOperationsUtils.storeDataFile(this.dataFileImpl, dataFile, file, node);
+			String dataFileID = FileOperationsUtils.storeDataFile(this.dataFileImpl, dataFile, file, rootNode);
 			
 			return dataFileID;
 

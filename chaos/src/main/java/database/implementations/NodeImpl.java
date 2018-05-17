@@ -122,7 +122,7 @@ public class NodeImpl implements MongoService<Node> {
 				node.setID(dbID);
 				break;
 			case "dataFileId":
-				node.setDataFileId(dbID);
+				node.setDataFileId((ObjectId) persistent.get(key));
 				break;
 			case "parent":
 				node.setParent((ObjectId) persistent.get(key));
