@@ -140,9 +140,25 @@ public class IndividualMapping {
 		imto.setTag(this.tag);
 		imto.setIndividualName(this.individualName);
 		imto.setOwlClassIRI(this.owlClassIRI.toString());
-		imto.setAnnotationProperties(this.annotationProperties);
-		imto.setObjectProperties(TransferObjectUtils.convertHMIRISToSS(this.objectProperties));
-		imto.setDataProperties(TransferObjectUtils.convertHMIRIPToSP(this.dataProperties));
+		
+		/* If the following elements are non existent in the database, they will be filled with null values */
+		if(null == this.annotationProperties){
+			imto.setAnnotationProperties(null);
+		}else {
+			imto.setAnnotationProperties(this.annotationProperties);
+		}
+		
+		if(null == this.annotationProperties){
+			imto.setObjectProperties(null);
+		}else {
+			imto.setObjectProperties(TransferObjectUtils.convertHMIRISToSS(this.objectProperties));
+		}
+		
+		if(null == this.annotationProperties){
+			imto.setDataProperties(null);
+		}else {
+			imto.setDataProperties(TransferObjectUtils.convertHMIRIPToSP(this.dataProperties));
+		}
 
 		return imto;
 	}
