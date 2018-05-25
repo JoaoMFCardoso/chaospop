@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.javatuples.Pair;
 
 import parsing.ParserInterface;
+import parsing.parsers.CSVParserImpl;
 import parsing.parsers.JSONParserImpl;
 import parsing.parsers.OWLParserImpl;
 import parsing.parsers.XMLParserImpl;
@@ -68,6 +69,10 @@ public class FileOperations {
 			break;
 		case "json": /* It's an json file */
 			parserInterface = new JSONParserImpl();
+			dataFileID = parserInterface.parseFile(file);
+			break;
+		case "csv": /* It's an json file */
+			parserInterface = new CSVParserImpl();
 			dataFileID = parserInterface.parseFile(file);
 			break;
 		case "zip": /* It's an zip file */
