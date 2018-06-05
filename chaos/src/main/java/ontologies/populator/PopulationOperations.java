@@ -86,7 +86,9 @@ public class PopulationOperations {
 	 * Populates the Mappings within a given Batch
 	 * @param batch The batch to be populated
 	 */
-	public void processBatch(){
+	public ArrayList<String> processBatch(){
+		ArrayList<String> ontologyIds = new ArrayList<String>();
+		
 		/* Runs the Batch and populates each Mapping */
 		for(ObjectId mappingId : this.batch.getMappings()){
 			/* Gets the Mapping object from the database */
@@ -99,8 +101,12 @@ public class PopulationOperations {
 			populateOntology(mapping);
 
 			/* Saves the ontology */
-			saveOntology(mapping);
+			String ontologyId = saveOntology(mapping);
+			
+			ontologyIds.add(ontologyId);
 		}
+		
+		return ontologyIds;
 	}
 
 	/*******************************************************************************************************************
@@ -109,8 +115,11 @@ public class PopulationOperations {
 	/**
 	 * This method saves a created ontology both into a file and in the database
 	 * @param mapping The Mapping that generates the creation of this ontology
+	 * @return ontologyFileId The Id of the created ontology file.
 	 */
-	private void saveOntology(Mapping mapping){
+	private String saveOntology(Mapping mapping){
+		String ontologyFileId = null;
+		
 		try{
 			/* Creates the Ontology File */
 			String localOntologiesDir = PropertiesHandler.configProperties.getProperty("local.ontologies.path");
@@ -125,7 +134,7 @@ public class PopulationOperations {
 
 			/* Saves the OntologyFile in the database */
 			OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
-			ontologyFileImpl.save(dbOntologyFile);
+			ontologyFileId = ontologyFileImpl.save(dbOntologyFile);
 
 			/* Deletes existing ontologies with the same name */
 			if(ontologyFile.isFile()){
@@ -134,9 +143,12 @@ public class PopulationOperations {
 
 			/* Saves the new ontology */
 			this.manager.saveOntology(this.ontology, fileOutputStream);
+			
 		} catch (OWLOntologyStorageException | FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		return ontologyFileId;
 	}
 
 	/**

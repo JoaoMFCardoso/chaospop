@@ -20,6 +20,8 @@ import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
 import domain.to.OntologyFileTO;
 import domain.to.wrappers.OntologyFileTOWrapper;
+import exceptions.ErrorMessage;
+import exceptions.ErrorMessageHandler;
 import file.sftp.SFTPServerConnectionManager;
 import ontologies.extractor.OntologyOperations;
 import properties.PropertiesHandler;
@@ -60,14 +62,27 @@ public class OntologyManager {
 			response = Response.ok(id).build();
 
 		}catch(NullPointerException nullPointerException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
-
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullNamespace = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullNamespace);
+			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentNamespace = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentNamespace);
 
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -99,7 +114,12 @@ public class OntologyManager {
 			response = Response.ok(ontologyFileTOWrapper).build();
 
 		}catch(Exception exception) {
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
 			exception.printStackTrace();
 		}
 
@@ -131,13 +151,27 @@ public class OntologyManager {
 
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception) {
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -180,17 +214,28 @@ public class OntologyManager {
 			response = Response.ok().build();
 			
 		}catch(NullPointerException nullPointerException){
-			nullPointerException.printStackTrace();
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+
 
 		}catch(Exception exception){
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
 			exception.printStackTrace();
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 
 		return response;
@@ -216,8 +261,13 @@ public class OntologyManager {
 			response = Response.ok(defaultNamespace).build();
 			
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -250,15 +300,27 @@ public class OntologyManager {
 			response = Response.ok(jsonResponse).build();
 			
 		}catch(NullPointerException nullPointerException){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -291,15 +353,27 @@ public class OntologyManager {
 			response = Response.ok(jsonResponse).build();
 			
 		}catch(NullPointerException nullPointerException){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -334,15 +408,27 @@ public class OntologyManager {
 			response = Response.ok(jsonResponse).build();
 			
 		}catch(NullPointerException nullPointerException){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
-
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+			
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -375,15 +461,27 @@ public class OntologyManager {
 			response = Response.ok(jsonResponse).build();
 			
 		}catch(NullPointerException nullPointerException){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
-
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+			
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
@@ -418,15 +516,27 @@ public class OntologyManager {
 			response = Response.ok(jsonResponse).build();
 			
 		}catch(NullPointerException nullPointerException){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.BAD_REQUEST).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
-
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+			
 		}catch(Exception exception){
-			/* Sends a response that is not ok */
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "ontologymanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
 		}
 
 		return response;
