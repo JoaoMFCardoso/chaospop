@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -18,6 +20,8 @@ import database.implementations.DataFileImpl;
 import database.implementations.NodeImpl;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
 import parsing.ParserInterface;
 import utils.FileOperationsUtils;
 
@@ -43,7 +47,7 @@ public class CSVParserImpl implements ParserInterface {
 	}
 	
 	@Override
-	public String parseFile(File file) throws Exception {
+	public String parseFile(File file) throws ChaosPopException {
 		/* Creates the Data File */
 		DataFile dataFile = new DataFile();
 		Node rootNode = new Node();
@@ -96,8 +100,14 @@ public class CSVParserImpl implements ParserInterface {
 			dataFileId = FileOperationsUtils.storeDataFile(this.dataFileImpl,dataFile, file, rootNode);
 			
 		}catch(IOException ioException) {
+			ErrorMessage ioError = new ErrorMessage();
+			ioError.setMessage(ioException.getMessage());
+			ioError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 			
-			return null;
+			ChaosPopException chaosPopException = new ChaosPopException(ioException.getMessage());
+			chaosPopException.setErrormessage(ioError);
+			
+			throw chaosPopException;
 		}
 		
 		return dataFileId;

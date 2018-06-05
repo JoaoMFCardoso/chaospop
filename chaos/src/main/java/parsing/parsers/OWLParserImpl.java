@@ -2,10 +2,14 @@ package parsing.parsers;
 
 import java.io.File;
 
-import ontologies.extractor.OntologyOperations;
-import parsing.ParserInterface;
+import javax.ws.rs.core.Response;
+
 import database.implementations.OntologyFileImpl;
 import domain.bo.ontologies.OntologyFile;
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
+import ontologies.extractor.OntologyOperations;
+import parsing.ParserInterface;
 
 public class OWLParserImpl implements ParserInterface {
 
@@ -20,9 +24,12 @@ public class OWLParserImpl implements ParserInterface {
 	}
 
 	@Override
-	public String parseFile(File file) throws Exception {
+	public String parseFile(File file) throws ChaosPopException {
 		OntologyFile ontologyFile = new OntologyFile();
-
+		String ontologyFileID = null;
+		
+		try {
+		
 		/* Sets the path */
 		ontologyFile.setPath(file.getAbsolutePath());
 
@@ -33,8 +40,19 @@ public class OWLParserImpl implements ParserInterface {
 		ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 		/* Saves the OntologyFile */
-		String ontologyFileID = this.ontologyFileImpl.save(ontologyFile);
+		ontologyFileID = this.ontologyFileImpl.save(ontologyFile);
 
+		}catch(Exception exception) {
+			ErrorMessage owlOntologyCreatioError = new ErrorMessage();
+			owlOntologyCreatioError.setMessage(exception.getMessage());
+			owlOntologyCreatioError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+			
+			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			chaosPopException.setErrormessage(owlOntologyCreatioError);
+			
+			throw chaosPopException;
+		}
+		
 		return ontologyFileID;
 	}
 

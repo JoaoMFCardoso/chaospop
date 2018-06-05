@@ -1,19 +1,25 @@
 package parsing.parsers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import javax.ws.rs.core.Response;
+
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import parsing.ParserInterface;
 import database.implementations.DataFileImpl;
 import database.implementations.NodeImpl;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
+import parsing.ParserInterface;
 
 public class JSONParserImpl implements ParserInterface {
 
@@ -35,7 +41,7 @@ public class JSONParserImpl implements ParserInterface {
 	}
 
 	@Override
-	public String parseFile(File jsonFile) throws Exception {
+	public String parseFile(File jsonFile) throws ChaosPopException {
 		DataFile dataFile = new DataFile();
 		ObjectId dataFileId = dataFile.getID();
 
@@ -62,9 +68,25 @@ public class JSONParserImpl implements ParserInterface {
 
 			return dataFileID; 
 			
-		}catch(Exception exception){
-			exception.printStackTrace();
-			throw exception;
+		}catch(JSONException jsonException) {
+			ErrorMessage jsonError = new ErrorMessage();
+			jsonError.setMessage(jsonException.getMessage());
+			jsonError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+			
+			ChaosPopException chaosPopException = new ChaosPopException(jsonException.getMessage());
+			chaosPopException.setErrormessage(jsonError);
+			
+			throw chaosPopException;
+			
+		}catch(FileNotFoundException exception) {
+			ErrorMessage genericError = new ErrorMessage();
+			genericError.setMessage(exception.getMessage());
+			genericError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+			
+			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			chaosPopException.setErrormessage(genericError);
+			
+			throw chaosPopException;
 		}
 	}
 

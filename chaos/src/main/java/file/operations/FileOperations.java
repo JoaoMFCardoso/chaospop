@@ -1,12 +1,17 @@
 package file.operations;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.javatuples.Pair;
 
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
 import parsing.ParserInterface;
 import parsing.parsers.CSVParserImpl;
 import parsing.parsers.JSONParserImpl;
@@ -25,8 +30,9 @@ public class FileOperations {
 	 * May it be calling a parser or other pre processing that is necessary before parsing
 	 * @param file The file to be processed
 	 * @return The sorted file
+	 * @throws ChaosPopException 
 	 */
-	public static Pair<File, String> fileProcessor(File unsortedFile) throws Exception{
+	public static Pair<File, String> fileProcessor(File unsortedFile) throws ChaosPopException{
 		/* Gets the extension */
 		String extension = FilenameUtils.getExtension(unsortedFile.getName());
 		ParserInterface parserInterface;
@@ -35,13 +41,24 @@ public class FileOperations {
 		File directory = FileOperationsUtils.getCorrectDirectoryForFile(unsortedFile.getName());
 
 		File file;
-		if(!unsortedFile.getParent().equals(directory.getAbsolutePath())){
-			FileUtils.moveFileToDirectory(unsortedFile, directory, false);
+		try {
+			if(!unsortedFile.getParent().equals(directory.getAbsolutePath())){
+				FileUtils.moveFileToDirectory(unsortedFile, directory, false);
 
-			String filePath = directory.getAbsolutePath() + File.separator + unsortedFile.getName();
-			file = new File(filePath);
-		}else{
-			file = unsortedFile;
+				String filePath = directory.getAbsolutePath() + File.separator + unsortedFile.getName();
+				file = new File(filePath);
+			}else{
+				file = unsortedFile;
+			}
+		}catch(IOException ioException) {
+			ErrorMessage ioError = new ErrorMessage();
+			ioError.setMessage(ioException.getMessage());
+			ioError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+			
+			ChaosPopException chaosPopException = new ChaosPopException(ioException.getMessage());
+			chaosPopException.setErrormessage(ioError);
+			
+			throw chaosPopException;
 		}
 
 		/* Deletes any directory structure if the file is not under the resource directory

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.bson.types.ObjectId;
 import org.jdom.Attribute;
 import org.jdom.Document;
@@ -16,6 +18,8 @@ import database.implementations.DataFileImpl;
 import database.implementations.NodeImpl;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
 import parsing.ParserInterface;
 import utils.FileOperationsUtils;
 
@@ -40,7 +44,7 @@ public class XMLParserImpl implements ParserInterface {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String parseFile(File file) throws Exception{
+	public String parseFile(File file) throws ChaosPopException{
 		SAXBuilder builder = new SAXBuilder();
 		DataFile dataFile = new DataFile();
 		ObjectId dataFileId = dataFile.getID();
@@ -93,12 +97,15 @@ public class XMLParserImpl implements ParserInterface {
 			
 			return dataFileID;
 
-		} catch (IOException io) {
-			System.out.println(io.getMessage());
-			throw io;
-		} catch (JDOMException jdomex) {
-			System.out.println(jdomex.getMessage());
-			throw jdomex;
+		}catch (JDOMException|IOException exception) {
+			ErrorMessage genericError = new ErrorMessage();
+			genericError.setMessage(exception.getMessage());
+			genericError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+			
+			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			chaosPopException.setErrormessage(genericError);
+			
+			throw chaosPopException;
 		}
 	}
 

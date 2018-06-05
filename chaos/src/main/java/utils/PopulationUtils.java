@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.ws.rs.core.Response;
+
 import org.bson.types.ObjectId;
 import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
@@ -21,6 +23,8 @@ import database.implementations.NodeImpl;
 import domain.bo.mappings.IndividualMapping;
 import domain.bo.mappings.Mapping;
 import domain.bo.parsers.Node;
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
 import ontologies.extractor.OntologyOperations;
 
 public class PopulationUtils {
@@ -82,8 +86,9 @@ public class PopulationUtils {
 	 * @param mapping The Mapping who sets the range to search
 	 * @param individualMapping The IndividualMapping whose tag is going to be the query attribute
 	 * @return A list of Nodes if there are any results, null otherwise
+	 * @throws ChaosPopException 
 	 */
-	public static ArrayList<Node> getIndividualMappingMatchingNode(Mapping mapping, IndividualMapping individualMapping){
+	public static ArrayList<Node> getIndividualMappingMatchingNode(Mapping mapping, IndividualMapping individualMapping) throws ChaosPopException{
 		NodeImpl nodeImpl = new NodeImpl();
 		String individualMappingTag = individualMapping.getTag();
 
@@ -95,6 +100,16 @@ public class PopulationUtils {
 			/* Checks if there are any results for the query. If there are it returns the Node */
 			if(!queryResults.isEmpty()){
 				nodeList.addAll(queryResults);
+			}else {
+				/* Creates an ErrorMessage and throws a ChaosPopException */
+				ErrorMessage errorMessage = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "populationmanager");
+				String addedMessage = errorMessage.getMessage() + "/nMapping:" + mapping.getID() + "/nIndividual Mapping:" + individualMapping.getID();
+				errorMessage.setMessage(addedMessage);
+				
+				/* Throws the ChaosPop Exception */
+				ChaosPopException chaosPopException = new ChaosPopException(addedMessage);
+				chaosPopException.setErrormessage(errorMessage);
+				throw chaosPopException;
 			}
 		}
 

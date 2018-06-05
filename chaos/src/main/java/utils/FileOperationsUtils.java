@@ -9,13 +9,12 @@ import java.io.OutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.javatuples.Pair;
 
-import properties.PropertiesHandler;
-
 import com.github.junrar.rarfile.FileHeader;
 
 import database.implementations.DataFileImpl;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
+import properties.PropertiesHandler;
 
 public class FileOperationsUtils {
 
@@ -24,32 +23,29 @@ public class FileOperationsUtils {
 	 * @param uploadedInputStream
 	 * @param uploadedFileName
 	 * @return
+	 * @throws IOException 
 	 */
-	public static File writeToFile(InputStream uploadedInputStream, String uploadedFileName) {
+	public static File writeToFile(InputStream uploadedInputStream, String uploadedFileName) throws IOException {
 
 		File folder = new File(PropertiesHandler.configProperties.getProperty("uploaded.files.path"));
 		String filename = FilenameUtils.getBaseName(uploadedFileName);
 		String extension = FilenameUtils.getExtension(uploadedFileName);
 		File file;
-		
-		try{
-			file = new File(folder + File.separator + filename + "." + extension);
-			/* Uncomment if you want to have temporary files created, with a temporary name
+
+		file = new File(folder + File.separator + filename + "." + extension);
+		/* Uncomment if you want to have temporary files created, with a temporary name
 			file = File.createTempFile(filename + "-", "." + extension, folder);
-			*/
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = uploadedInputStream.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			uploadedInputStream.close();
-			out.close();
-			
-		}catch (IOException e) {
-			return null;
+		 */
+		OutputStream out = new FileOutputStream(file);
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = uploadedInputStream.read(buf)) > 0) {
+			out.write(buf, 0, len);
 		}
-		
+		uploadedInputStream.close();
+		out.close();
+
+
 		return file;
 	}
 
@@ -81,6 +77,28 @@ public class FileOperationsUtils {
 		return directory;
 	}
 
+	/**
+	 * This method deletes a file and its structure (if possible) because this file has a problem and let to an Exception being thrown.
+	 * @param errorFile The Error File
+	 */
+	public static void deleteErrorFile(File errorFile) {
+		/* Creates the correct directory to place the file and moves it there*/
+		File directory = FileOperationsUtils.getCorrectDirectoryForFile(errorFile.getName());
+
+		File file;
+			if(!errorFile.getParent().equals(directory.getAbsolutePath())){
+				String filePath = directory.getAbsolutePath() + File.separator + errorFile.getName();
+				file = new File(filePath);
+			}else{
+				file = errorFile;
+			}
+		
+		file.delete();
+		FileOperationsUtils.deleteDirectoryStructure(file);
+		
+		return;
+	}
+	
 	/**
 	 * This method deletes a directory structure up to the properties specified resource directory
 	 * But only if that directory is empty
@@ -122,7 +140,7 @@ public class FileOperationsUtils {
 	 * @return Returns the created File
 	 * @throws Exception
 	 */
-	public static File createFile(FileHeader fh, File destination) throws Exception{
+	public static File createFile(FileHeader fh, File destination) throws IOException{
 		File f = null;
 		String name = null;
 		if (fh.isFileHeader() && fh.isUnicode()) {
@@ -132,12 +150,7 @@ public class FileOperationsUtils {
 		}
 		f = new File(destination, name);
 		if (!f.exists()) {
-			try {
-				f = makeFile(destination, name);
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw e;
-			}
+			f = makeFile(destination, name);
 		}
 		return f;
 	}
@@ -199,21 +212,21 @@ public class FileOperationsUtils {
 		 * sftpNamespace = http://dev.sysresearch.org/chaos_pop/Ontologies/
 		 * namespace = http://dev.sysresearch.org/chaos_pop/Ontologies/directory/ontology.owl
 		 * result = directory/ontology.owl */
-			namespace = namespace.replace(sftpNamespace, "");
+		namespace = namespace.replace(sftpNamespace, "");
 
-			/* Get the Array with the directories */
-			String[] directories = namespace.split("/");
+		/* Get the Array with the directories */
+		String[] directories = namespace.split("/");
 
-			/* Create the directories path */
-			String directoriesPath = "/";
-			int lastPosition = directories.length - 1;
-			for (int i = 0; i < lastPosition; i++) {
-				directoriesPath += directories[i];
-			}
+		/* Create the directories path */
+		String directoriesPath = "/";
+		int lastPosition = directories.length - 1;
+		for (int i = 0; i < lastPosition; i++) {
+			directoriesPath += directories[i];
+		}
 
-			Pair<String, String> returnPair = new Pair<String, String>(directoriesPath, directories[lastPosition]);
+		Pair<String, String> returnPair = new Pair<String, String>(directoriesPath, directories[lastPosition]);
 
-			return returnPair;
+		return returnPair;
 	}
 
 	/**
@@ -232,7 +245,7 @@ public class FileOperationsUtils {
 
 		/* Saves the DataFile object */
 		String dataFileID = dataFileImpl.save(dataFile);
-		
+
 		return dataFileID;
 	}
 

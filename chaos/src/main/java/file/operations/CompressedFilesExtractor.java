@@ -9,11 +9,15 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import utils.FileOperationsUtils;
+import javax.ws.rs.core.Response;
 
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
 import com.github.junrar.rarfile.FileHeader;
+
+import exceptions.ChaosPopException;
+import exceptions.ErrorMessage;
+import utils.FileOperationsUtils;
 
 public class CompressedFilesExtractor {
 
@@ -27,7 +31,7 @@ public class CompressedFilesExtractor {
 	 * @return An array with all the extracted files and dirs
 	 * @throws An IOException
 	 */
-	public ArrayList<File> unZipFile(File zipFile) throws Exception{
+	public ArrayList<File> unZipFile(File zipFile) throws ChaosPopException{
 		byte[] buffer = new byte[1024];
 		ArrayList<File> extractedFiles = new ArrayList<File>();
 
@@ -71,36 +75,43 @@ public class CompressedFilesExtractor {
 			zis.closeEntry();
 			zis.close();
 
-		}catch(IOException ex){
-			ex.printStackTrace();
-			throw ex;
+		}catch(IOException ioException){
+			ErrorMessage ioError = new ErrorMessage();
+			ioError.setMessage(ioException.getMessage());
+			ioError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+
+			ChaosPopException chaosPopException = new ChaosPopException(ioException.getMessage());
+			chaosPopException.setErrormessage(ioError);
+
+			throw chaosPopException;
 		}
 
 		return extractedFiles;
 	}
 
 
-	public ArrayList<File> unRarFile(File rarFile) throws Exception {
+	public ArrayList<File> unRarFile(File rarFile) throws ChaosPopException {
 		ArrayList<File> extractedFiles = new ArrayList<File>();
 		Archive arch = null;
 
 		/* Creates the Archive object */
 		try {
 			arch = new Archive(rarFile);
-		} catch (RarException e) {
-			e.printStackTrace();
-			throw e;
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			throw e1;
-		}
 
-		/* Extracts the files from the Archive object */
-		if (arch != null) {
-			/* The rar file is encrypted and thus cannot be opened */
-			if (arch.isEncrypted()) {
-				arch.close();
-				return null;
+
+			/* Extracts the files from the Archive object */
+			if (arch != null) {
+				/* The rar file is encrypted and thus cannot be opened */
+				if (arch.isEncrypted()) {
+					arch.close();
+
+					ErrorMessage genericError = new ErrorMessage(Response.Status.BAD_REQUEST, "9", "filemanager");
+
+					ChaosPopException chaosPopException = new ChaosPopException(genericError.getMessage());
+
+					throw chaosPopException;
+				}
+
 			}
 
 			FileHeader fh = null;
@@ -118,32 +129,32 @@ public class CompressedFilesExtractor {
 				}
 
 				/* Extracts the file */
-				try {
-					if (!fh.isDirectory()) {
 
-						/* gets correct destination */
-						File destination = FileOperationsUtils.getCorrectDirectoryForFile(fh.getFileNameString());
+				if (!fh.isDirectory()) {
 
-						File f = FileOperationsUtils.createFile(fh, destination);
-						OutputStream stream = new FileOutputStream(f);
-						arch.extractFile(fh, stream);
-						stream.close();
+					/* gets correct destination */
+					File destination = FileOperationsUtils.getCorrectDirectoryForFile(fh.getFileNameString());
 
-						/* Adds the file to the extracted files list */
-						extractedFiles.add(f);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					arch.close();
-					throw e;
-				} catch (RarException e) {
-					e.printStackTrace();
-					arch.close();
-					throw e;
+					File f = FileOperationsUtils.createFile(fh, destination);
+					OutputStream stream = new FileOutputStream(f);
+					arch.extractFile(fh, stream);
+					stream.close();
+
+					/* Adds the file to the extracted files list */
+					extractedFiles.add(f);
 				}
 			}
 
 			arch.close();
+		}catch (RarException |IOException exception) {
+			ErrorMessage genericError = new ErrorMessage();
+			genericError.setMessage(exception.getMessage());
+			genericError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+
+			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			chaosPopException.setErrormessage(genericError);
+
+			throw chaosPopException;
 		}
 
 		return extractedFiles;
