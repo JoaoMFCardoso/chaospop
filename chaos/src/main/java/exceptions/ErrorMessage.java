@@ -30,13 +30,13 @@ public class ErrorMessage extends Exception {
 		this.message = null;
 	}
 	
-	public ErrorMessage(Response.Status status, String messageCode, String baseName) {
+	public ErrorMessage(Response.Status status, String message, String baseName) {
 		this.status = status.getStatusCode();
 		
 		/* Gets the correct message based on its code */
 		String language = PropertiesHandler.configProperties.getProperty("language");
 		ResourceBundle resourceBundle = PropertiesHandler.getMessages(baseName, language);
-		this.message = resourceBundle.getString(messageCode);
+		this.message = resourceBundle.getString(message);
 	}
 	
 	public int getStatus() {

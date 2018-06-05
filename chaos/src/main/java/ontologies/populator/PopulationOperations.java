@@ -30,6 +30,7 @@ import domain.bo.mappings.Mapping;
 import domain.bo.ontologies.OntologyFile;
 import domain.bo.parsers.Node;
 import domain.bo.population.Batch;
+import exceptions.ChaosPopException;
 
 public class PopulationOperations {
 
@@ -88,8 +89,9 @@ public class PopulationOperations {
 	 * @throws OWLOntologyCreationException 
 	 * @throws FileNotFoundException 
 	 * @throws OWLOntologyStorageException 
+	 * @throws ChaosPopException 
 	 */
-	public ArrayList<String> processBatch() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
+	public ArrayList<String> processBatch() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException, ChaosPopException{
 		ArrayList<String> ontologyIds = new ArrayList<String>();
 
 		/* Runs the Batch and populates each Mapping */
@@ -185,8 +187,9 @@ public class PopulationOperations {
 	/**
 	 * Populates an Ontology given a mapping
 	 * @param mapping The Mapping object that holds all necessary mapping data to populate an ontology based on DataFiles
+	 * @throws ChaosPopException 
 	 */
-	private void populateOntology(Mapping mapping){
+	private void populateOntology(Mapping mapping) throws ChaosPopException{
 		/* Runs the individual Mappings */
 		for(ObjectId individualMappingId : mapping.getIndividualMappings()){
 			/* Gets the IndividualMapping from the database */

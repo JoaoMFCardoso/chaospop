@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 
 import database.implementations.BatchImpl;
 import domain.bo.population.Batch;
+import exceptions.ChaosPopException;
 import exceptions.ErrorMessage;
 import exceptions.ErrorMessageHandler;
 import ontologies.populator.PopulationOperations;
@@ -58,6 +59,11 @@ public class PopulationManager {
 			response = Response.ok(gson.toJson(ontologyIds)).build();
 
 			/* Any exception leads to an error */
+		}catch(ChaosPopException chaosPopException) {
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, chaosPopException.getErrormessage());
+			
 		}catch(FileNotFoundException fileNotFoundException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			ErrorMessage ontologyLocalFileNotFound = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "populationmanager"); 
