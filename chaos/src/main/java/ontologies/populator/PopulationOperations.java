@@ -85,10 +85,13 @@ public class PopulationOperations {
 	/**
 	 * Populates the Mappings within a given Batch
 	 * @param batch The batch to be populated
+	 * @throws OWLOntologyCreationException 
+	 * @throws FileNotFoundException 
+	 * @throws OWLOntologyStorageException 
 	 */
-	public ArrayList<String> processBatch(){
+	public ArrayList<String> processBatch() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
 		ArrayList<String> ontologyIds = new ArrayList<String>();
-		
+
 		/* Runs the Batch and populates each Mapping */
 		for(ObjectId mappingId : this.batch.getMappings()){
 			/* Gets the Mapping object from the database */
@@ -102,10 +105,10 @@ public class PopulationOperations {
 
 			/* Saves the ontology */
 			String ontologyId = saveOntology(mapping);
-			
+
 			ontologyIds.add(ontologyId);
 		}
-		
+
 		return ontologyIds;
 	}
 
@@ -116,73 +119,67 @@ public class PopulationOperations {
 	 * This method saves a created ontology both into a file and in the database
 	 * @param mapping The Mapping that generates the creation of this ontology
 	 * @return ontologyFileId The Id of the created ontology file.
+	 * @throws OWLOntologyStorageException 
+	 * @throws FileNotFoundException 
 	 */
-	private String saveOntology(Mapping mapping){
+	private String saveOntology(Mapping mapping) throws OWLOntologyStorageException, FileNotFoundException{
 		String ontologyFileId = null;
-		
-		try{
-			/* Creates the Ontology File */
-			String localOntologiesDir = PropertiesHandler.configProperties.getProperty("local.ontologies.path");
-			String ontologyFilePath = localOntologiesDir + File.separator + mapping.getOutputOntologyFileName() + ".owl";
-			File ontologyFile = new File(ontologyFilePath);
-			FileOutputStream fileOutputStream = new FileOutputStream(ontologyFile);
 
-			/* Creates the OntologyFile */
-			OntologyFile dbOntologyFile = new OntologyFile();
-			dbOntologyFile.setNamespace(mapping.getOutputOntologyNamespace());
-			dbOntologyFile.setPath(ontologyFilePath);
+		/* Creates the Ontology File */
+		String localOntologiesDir = PropertiesHandler.configProperties.getProperty("local.ontologies.path");
+		String ontologyFilePath = localOntologiesDir + File.separator + mapping.getOutputOntologyFileName() + ".owl";
+		File ontologyFile = new File(ontologyFilePath);
+		FileOutputStream fileOutputStream = new FileOutputStream(ontologyFile);
 
-			/* Saves the OntologyFile in the database */
-			OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
-			ontologyFileId = ontologyFileImpl.save(dbOntologyFile);
+		/* Creates the OntologyFile */
+		OntologyFile dbOntologyFile = new OntologyFile();
+		dbOntologyFile.setNamespace(mapping.getOutputOntologyNamespace());
+		dbOntologyFile.setPath(ontologyFilePath);
 
-			/* Deletes existing ontologies with the same name */
-			if(ontologyFile.isFile()){
-				ontologyFile.delete();
-			}
+		/* Saves the OntologyFile in the database */
+		OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
+		ontologyFileId = ontologyFileImpl.save(dbOntologyFile);
 
-			/* Saves the new ontology */
-			this.manager.saveOntology(this.ontology, fileOutputStream);
-			
-		} catch (OWLOntologyStorageException | FileNotFoundException e) {
-			e.printStackTrace();
+		/* Deletes existing ontologies with the same name */
+		if(ontologyFile.isFile()){
+			ontologyFile.delete();
 		}
-		
+
+		/* Saves the new ontology */
+		this.manager.saveOntology(this.ontology, fileOutputStream);
+
 		return ontologyFileId;
 	}
 
 	/**
 	 * Creates an Ontology simply and imports the base ontology and specific ontologies into the created ontology
 	 * @param mapping The Mapping that generates the creation of this ontology
+	 * @throws OWLOntologyCreationException 
 	 */
-	private void createOntology(Mapping mapping){
+	private void createOntology(Mapping mapping) throws OWLOntologyCreationException{
 		/* Loads the properties */
 		PropertiesHandler.propertiesLoader();
 
-		try{
-			/* Creates the ontology for this mapping */
-			this.ontologyNamespace = mapping.getOutputOntologyNamespace();
-			this.ontology = this.manager.createOntology(this.ontologyNamespace);
+		/* Creates the ontology for this mapping */
+		this.ontologyNamespace = mapping.getOutputOntologyNamespace();
+		this.ontology = this.manager.createOntology(this.ontologyNamespace);
 
-			/* Initializes an OntologyExtractionOperations Object in order to use its methods to
-			 * import the base ontology and specific ontologies */
-			this.reasoner = this.reasonerFactory.createNonBufferingReasoner(ontology);
-			this.ontologyOperations = new OntologyOperations(this.manager,
-					this.factory,
-					this.reasonerFactory,
-					this.ontology,
-					this.reasoner);
+		/* Initializes an OntologyExtractionOperations Object in order to use its methods to
+		 * import the base ontology and specific ontologies */
+		this.reasoner = this.reasonerFactory.createNonBufferingReasoner(ontology);
+		this.ontologyOperations = new OntologyOperations(this.manager,
+				this.factory,
+				this.reasonerFactory,
+				this.ontology,
+				this.reasoner);
 
-			/* Imports Ontologies.
-			 * It gather all the indirectly imported ontologies by each directly imported ontology
-			 * and then it creates a final list of directly imported ontologies, only importing those ontologies that
-			 * are not indirectly imported by others.
-			 */
-			PopulationUtils.importOntologies(mapping.getDirectOntologyImports(), this.ontologyOperations);
+		/* Imports Ontologies.
+		 * It gather all the indirectly imported ontologies by each directly imported ontology
+		 * and then it creates a final list of directly imported ontologies, only importing those ontologies that
+		 * are not indirectly imported by others.
+		 */
+		PopulationUtils.importOntologies(mapping.getDirectOntologyImports(), this.ontologyOperations);
 
-		} catch (OWLOntologyCreationException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -253,12 +250,12 @@ public class PopulationOperations {
 		/*****************************************************************************************************************
 		 * ANNOTATION PROPERTIES CREATION
 		 *****************************************************************************************************************/
-		
+
 		/* Checks if the Individual Mapping implies the creation of Annotation Properties for this individual */
 		if(!individualMapping.getAnnotationProperties().isEmpty()){
 			this.ontologyOperations.handleAnnotationPropertyCreation(this.ontologyNamespace.toString(), node, mapping, individualMapping, individual);
 		}
-		
+
 		/*****************************************************************************************************************
 		 * OBJECT PROPERTIES CREATION
 		 *****************************************************************************************************************/
