@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -320,18 +321,38 @@ public class FileManager {
 	 */
 	@POST
 	@Path("/downloadFile")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
 	public Response downloadFile(@FormParam("fileName") String fileName) {
 		File file = null;
 		Response response;
 		Boolean downloaded = false;
 		try{
-
-			/* Gets the file from the SFTP server */
+			/* Connects to the SFTP Server */
 			SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
+			
+			/* Checks that the file is in the SFTP Server */
+			if(!sftpManager.isFileInSFTPServer(fileName, "")) {
+				/* The file is does not exist in the SFTP Server.
+				 * The user should be notified, because it might be a typo. */
+				
+				/* Closes the connection */
+				sftpManager.disconnect();
+				
+				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+				ErrorMessage fileExists = new ErrorMessage(Response.Status.BAD_REQUEST, "12", "filemanager"); 
+
+				/* Builds a Response object */
+				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, fileExists);
+				
+				return response;
+			}
+			
+			/* Gets the file from the SFTP server */
 			String localPath = sftpManager.downloadSFTPFile(fileName);
 			downloaded = true;
 			file = new File(localPath);
+			
+			/* Closes the connection */
 			sftpManager.disconnect();
 
 			/* Gets the Response */
@@ -339,10 +360,10 @@ public class FileManager {
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage fileExists = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "4", "filemanager"); 
+			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "filemanager"); 
 
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, fileExists);
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, genericError);
 
 			exception.printStackTrace();
 		}finally{
@@ -450,6 +471,7 @@ public class FileManager {
 	 */
 	@POST
 	@Path("/removeFile")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeFile(@FormParam("ids") String dataFileIds){
 		Response response;
 
@@ -466,6 +488,19 @@ public class FileManager {
 			}
 
 			/* Gets the Response */
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("filemanager", language);
+			
+			String message = resourceBundle.getString("13") + " " + dataFileIds + " " + resourceBundle.getString("14");
+			
+			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			corectlyRemoved.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
+			
 			response = Response.ok().build();
 
 		}catch(NullPointerException nullPointerException){
