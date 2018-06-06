@@ -102,9 +102,9 @@ public class XMLParserImpl implements ParserInterface {
 			genericError.setMessage(exception.getMessage());
 			genericError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 			
-			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			ChaosPopException chaosPopException = new ChaosPopException(file.getAbsolutePath());
 			chaosPopException.setErrormessage(genericError);
-			
+		
 			throw chaosPopException;
 		}
 	}

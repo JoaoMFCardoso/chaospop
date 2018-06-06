@@ -73,7 +73,7 @@ public class JSONParserImpl implements ParserInterface {
 			jsonError.setMessage(jsonException.getMessage());
 			jsonError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 			
-			ChaosPopException chaosPopException = new ChaosPopException(jsonException.getMessage());
+			ChaosPopException chaosPopException = new ChaosPopException(jsonFile.getAbsolutePath());
 			chaosPopException.setErrormessage(jsonError);
 			
 			throw chaosPopException;
@@ -83,7 +83,7 @@ public class JSONParserImpl implements ParserInterface {
 			genericError.setMessage(exception.getMessage());
 			genericError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 			
-			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			ChaosPopException chaosPopException = new ChaosPopException(jsonFile.getAbsolutePath());
 			chaosPopException.setErrormessage(genericError);
 			
 			throw chaosPopException;

@@ -67,6 +67,32 @@ public class SFTPServerConnectionManager {
 	}
 
 	/**
+	 * This method checks if a given fileName is in the SFTP server. Precisely in the directory pointed by its namespace.
+	 * @param fileName The file Name to be searched
+	 * @param namespace The namespace to search
+	 * @return True if its present, false otherwise
+	 * @throws SftpException
+	 */
+	public boolean isFileInSFTPServer(String fileName, String namespace) throws SftpException {
+		/* Initializes the channelSFTP with the base namespace for the SFTP Server */
+		this.channelSftp.cd(this.sftpDirectory);
+		
+		/* Gets the directories path for the given namespace */
+		String directoriesPath = FileOperationsUtils.getNamespaceDirectories(this.sftpNamespace, namespace).getValue0();
+		
+		/* Lists files in the directory */
+		ArrayList<String> files = listSFTPFiles(this.sftpDirectory + directoriesPath);
+		
+		/* See if the file is in the namespace pointed directory */
+		if(files.contains(fileName)) {
+			return true;
+		}
+		
+		/* The file can still be elsewhere in the server directory structure */
+		return false;
+	}
+	
+	/**
 	 * This method uploads a given file into the SFTP server that has been initialised
 	 * @param filePath The path to the file that is being uploaded
 	 * @return boolean indicating whether the operation was successful

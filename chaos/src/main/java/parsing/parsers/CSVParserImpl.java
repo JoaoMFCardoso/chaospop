@@ -104,7 +104,7 @@ public class CSVParserImpl implements ParserInterface {
 			ioError.setMessage(ioException.getMessage());
 			ioError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 			
-			ChaosPopException chaosPopException = new ChaosPopException(ioException.getMessage());
+			ChaosPopException chaosPopException = new ChaosPopException(file.getAbsolutePath());
 			chaosPopException.setErrormessage(ioError);
 			
 			throw chaosPopException;

@@ -47,9 +47,9 @@ public class OWLParserImpl implements ParserInterface {
 			owlOntologyCreatioError.setMessage(exception.getMessage());
 			owlOntologyCreatioError.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 			
-			ChaosPopException chaosPopException = new ChaosPopException(exception.getMessage());
+			ChaosPopException chaosPopException = new ChaosPopException(file.getAbsolutePath());
 			chaosPopException.setErrormessage(owlOntologyCreatioError);
-			
+		
 			throw chaosPopException;
 		}
 		
