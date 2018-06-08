@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
 
+import com.google.gson.Gson;
+
 import database.implementations.BatchImpl;
 import database.implementations.MappingImpl;
 import domain.bo.mappings.Mapping;
@@ -50,10 +52,12 @@ public class BatchManager {
 	@Path("/createBatch")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createMapping(BatchTO batchTO){
+	public Response createMapping(String jsonBatch){
 		Response response;
 		try{
 			/* Creates the Batch from the BatchTO */
+			Gson gson = new Gson();
+			BatchTO batchTO = gson.fromJson(jsonBatch, BatchTO.class);
 			Batch batch = new Batch(batchTO);
 
 			/* Stores the new Batch in the database */
