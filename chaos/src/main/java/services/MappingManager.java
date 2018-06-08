@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
 
+import com.google.gson.Gson;
+
 import database.implementations.DataFileImpl;
 import database.implementations.MappingImpl;
 import domain.bo.mappings.Mapping;
@@ -138,10 +140,12 @@ public class MappingManager {
 	@Path("/createMapping")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createMapping(MappingTO mappingTO){
+	public Response createMapping(String jsonMappingTO){
 		Response response;
 		try{
 			/* Creates the Mapping from the MappingTO */
+			Gson gson = new Gson();
+			MappingTO mappingTO = gson.fromJson(jsonMappingTO, MappingTO.class);
 			Mapping mapping = new Mapping(mappingTO);
 
 			/* Stores the new mapping in the database */
