@@ -2,8 +2,8 @@ package testclasses;
 
 import java.io.File;
 
-import properties.PropertiesHandler;
 import file.sftp.SFTPServerConnectionManager;
+import properties.PropertiesHandler;
 
 public class SFTPTester {
 

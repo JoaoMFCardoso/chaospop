@@ -1,5 +1,6 @@
 package testclasses;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.javatuples.Pair;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 import database.implementations.BatchImpl;
 import database.implementations.DataFileImpl;
@@ -21,6 +24,7 @@ import domain.bo.ontologies.OntologyFile;
 import domain.bo.parsers.DataFile;
 import domain.bo.parsers.Node;
 import domain.bo.population.Batch;
+import exceptions.ChaosPopException;
 import ontologies.populator.PopulationOperations;
 
 public class FamilyTest {
@@ -890,9 +894,12 @@ public class FamilyTest {
 		bimpl.save(b);
 		
 		/* Population Operations */
-		
+		try {
 		PopulationOperations pop = new PopulationOperations(b);
 		pop.processBatch();
+		}catch(FileNotFoundException | OWLOntologyStorageException | OWLOntologyCreationException | ChaosPopException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 
