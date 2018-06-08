@@ -102,7 +102,7 @@ public class PopulationUtils {
 				nodeList.addAll(queryResults);
 			}else {
 				/* Creates an ErrorMessage and throws a ChaosPopException */
-				ErrorMessage errorMessage = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "populationmanager");
+				ErrorMessage errorMessage = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/populationmanager");
 				String addedMessage = errorMessage.getMessage() + "/nMapping:" + mapping.getID() + "/nIndividual Mapping:" + individualMapping.getID();
 				errorMessage.setMessage(addedMessage);
 				

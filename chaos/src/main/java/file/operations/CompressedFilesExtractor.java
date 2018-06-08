@@ -105,7 +105,7 @@ public class CompressedFilesExtractor {
 				if (arch.isEncrypted()) {
 					arch.close();
 
-					ErrorMessage genericError = new ErrorMessage(Response.Status.BAD_REQUEST, "9", "filemanager");
+					ErrorMessage genericError = new ErrorMessage(Response.Status.BAD_REQUEST, "9", "mesages/filemanager");
 
 					ChaosPopException chaosPopException = new ChaosPopException(genericError.getMessage());
 
