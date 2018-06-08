@@ -2,6 +2,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -26,6 +27,7 @@ import domain.to.wrappers.BatchTOWrapper;
 import domain.to.wrappers.MappingTOWrapper;
 import exceptions.ErrorMessage;
 import exceptions.ErrorMessageHandler;
+import properties.PropertiesHandler;
 
 /**
  * This class implements a jax rs service layer
@@ -51,7 +53,7 @@ public class BatchManager {
 	@POST
 	@Path("/createBatch")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MediaType.APPLICATION_JSON})
 	public Response createMapping(String jsonBatch){
 		Response response;
 		try{
@@ -61,19 +63,26 @@ public class BatchManager {
 			Batch batch = new Batch(batchTO);
 
 			/* Stores the new Batch in the database */
-			String id = this.batchImpl.save(batch);
+			String batchId = this.batchImpl.save(batch);
 
 			/* Creates the Response */
-			response = Response.ok(id).build();
+			response = Response.ok(gson.toJson(batchId)).build();
 
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullfield = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/batchmanager"); 
+			ErrorMessage noBatchInputed = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages/batchmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullfield);
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, noBatchInputed);
 			
-		}catch(Exception exception){
+		}catch(IllegalArgumentException illegalArgumentException){
+		/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+		ErrorMessage badBatchJson = new ErrorMessage(Response.Status.BAD_REQUEST, "9", "messages/batchmanager"); 
+		
+		/* Builds a Response object */
+		response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, badBatchJson);
+		
+	}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
 			
@@ -103,6 +112,18 @@ public class BatchManager {
 		try {
 			/* Gets the Batch Object from the database and then builds the transfer object */
 			batch = this.batchImpl.get(batchID);
+			
+			/* Checks if the Ontology File was found based on the given ID */
+			if(batch == null) {
+				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+				ErrorMessage batchNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "10", "messages/batchmanager"); 
+
+				/* Builds a Response object */
+				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, batchNotFound);
+
+				return response;
+			}
+			
 			batchTO = batch.createTransferObject();
 
 			/* Builds the response with a filled DataFileTO */
@@ -111,10 +132,10 @@ public class BatchManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/batchmanager"); 
+			ErrorMessage noBatchId = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/batchmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, noBatchId);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -181,13 +202,15 @@ public class BatchManager {
 	 */
 	@POST
 	@Path("/removeBatch")
-	public Response removeBatch(@FormParam("ids") String batchIds){
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response removeBatch(String batchIds){
 		Response response;
 		try{
-			/* Gets the Batch id's from the batchIds string
-			 * The id's are sepparated by ","
-			 * e.g. 123,2344,455 */
-			String[] ids = batchIds.split(",");
+			/* Gets the DataFile id's from the dataFileIds string
+			 * The id's are a json array [123,456,789] */
+			Gson gson = new Gson();
+			String[] ids = gson.fromJson(batchIds, String[].class);
 
 			/* Runs all ids and fetches the Batch object  */
 			for(String batchID : ids){
@@ -196,7 +219,18 @@ public class BatchManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/batchmanager", language);
+			
+			String message = resourceBundle.getString("11") + " " + batchIds + " " + resourceBundle.getString("12");
+			
+			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			corectlyRemoved.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
