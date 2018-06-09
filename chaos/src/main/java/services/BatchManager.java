@@ -267,15 +267,16 @@ public class BatchManager {
 	 */
 	@POST
 	@Path("/addMappingToBatch")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addMappingToBatch(@FormParam("mappingId") String mappingId, @FormParam("batchId") String batchId){
 		Response response;
 		try{
 			/* Gets the Batch from the given id */
-			Batch batch = this.batchImpl.get(batchId);
-
-			/* Gets the Batche's Mapping list and adds a new id to the list if it doesn't exist already */
+			Batch batch = this.batchImpl.get(batchId);	
+			
+			/* Gets the Batch's Mapping list and adds a new id to the list if it doesn't exist already */
 			ArrayList<ObjectId> mappingList = batch.getMappings();
-			ObjectId newMappingId = new ObjectId(batchId);
+			ObjectId newMappingId = new ObjectId(mappingId);
 
 			if(mappingList.contains(newMappingId)){
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -295,19 +296,31 @@ public class BatchManager {
 				this.batchImpl.replace(batchId, batch);
 			}
 
-			/* Gets the Response */
-			response = Response.ok().build();
+			
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/batchmanager", language);
+			
+			String message = resourceBundle.getString("13") + " " + mappingId + " " + resourceBundle.getString("14");
+			
+			ErrorMessage correctlyAdded = new ErrorMessage(); 
+			correctlyAdded.setStatus(Response.Status.OK.getStatusCode());
+			correctlyAdded.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, correctlyAdded);
+
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/batchmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.NOT_FOUND, "7", "messages/batchmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
+			response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages/batchmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/batchmanager"); 
 		
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
