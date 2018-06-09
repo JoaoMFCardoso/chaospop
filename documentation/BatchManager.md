@@ -158,16 +158,13 @@ Adds a Mapping to a Batch
 
 * **Data Params**
 
-  * `{"id" : "5b16987c8d9a117e67abee81"}`
+  * @FormParam("mappingId") String mappingId
+  * @FormParam("batchId") String batchId
 
 * **Success Response:**
   
  * **Code:** 200 OK <br />
-    **Content:** `{
-_id: "5b1268c214b49bd38a84e455",
-name: "family.xml",
-nodeId: "5b1268c214b49bd38a84e456"
-}`
+    **Content:** `{"status": 200, message": "The Mapping id 5b1268c214b49bd38a84e49f has been correctly added to the provided Batch."}`
  
 * **Error Response:**
 
@@ -175,14 +172,13 @@ nodeId: "5b1268c214b49bd38a84e456"
     **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
 
   * **Code:** 404 NOT FOUND<br />
-    **Content:** `{ "status": 404, message : "There are no Data files associated with the provided ID." }`
+    **Content:** `{ "status": 404, message : "Both a Batch id and a Mapping id must be provided." }`
     
   * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "You need to provide a Data File ID." }`
+    **Content:** `{ "status": 400, message : "The provided Mapping has already been added to the Batch." }`
   
   * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400,
-    message : "The provided Data File ID has an illegal argument." }`
+    **Content:** `{ "status": 400, message : "Either the Batch id or the Mapping id have an illegal argument." }`
 
 **Get All Mappings from Batch**
 ----
