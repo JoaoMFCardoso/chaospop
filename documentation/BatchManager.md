@@ -194,52 +194,40 @@ Gets all the Mappings from a Batch
 
 * **Data Params**
 
-  * `["5b1268c214b49bd38a84e455","5b1a958c32fa83d5ea219b11"]`
+  * @FormParam("batchId") String batchId
 
 * **Success Response:**
   
  * **Code:** 200 OK <br />
-    **Content:** `{
-    "status": 200,
-    "message": "The Data File(s) [\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"] has(have) been removed."
-}`
- 
-* **Error Response:**
-
-  * **Code:** 500 INTERNAL SERVER ERROR<br />
-    **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
-
-  * **Code:** 404 NOT FOUND<br />
-    **Content:** `{ "status": 404, message : "There are no Data files associated with the provided ID." }`
-    
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "You need to provide a Data File ID." }`
-  
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "The provided Data File ID has an illegal argument." }`
-    
-**Remove Mapping from Batch**
-----
-Removes a Mapping from a Batch
-
-* **URL**
-
-  /batchManager/removeMappingFromBatch
-
-* **Method:**
-  
- `POST`
-
-* **Data Params**
-
-  * `["5b1268c214b49bd38a84e455","5b1a958c32fa83d5ea219b11"]`
-
-* **Success Response:**
-  
- * **Code:** 200 OK <br />
-    **Content:** `{
-    "status": 200,
-    "message": "The Batch(es) [\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"] has(have) been removed."
+    **Content:** `{"mappingsTO": [{
+            "_id": "5b1268c214b49bd38a84e49e",
+            "directOntologyImports": [
+                "5b0d68d914b4e72380fa1502"
+            ],
+            "fileNames": [
+                "5b1268c214b49bd38a84e455"
+            ],
+            "individualMappings": [
+                "5b1268c214b49bd38a84e453"
+            ],
+            "outputOntologyFileName": "cardosofamily",
+            "outputOntologyNamespace": "http://sysresearch.org/ontologies/cardosofamily.owl#"
+        },
+        {
+            "_id": "5b1268c214b49bd38a84e49f",
+            "directOntologyImports": [
+                "5b0d68d914b4e72380fa1502"
+            ],
+            "fileNames": [
+                "5b1268c214b49bd38a84e455"
+            ],
+            "individualMappings": [
+                "5b1268c214b49bd38a84e453"
+            ],
+            "outputOntologyFileName": "cardosofamily",
+            "outputOntologyNamespace": "http://sysresearch.org/ontologies/cardosofamily.owl#"
+        }
+    ]
 }`
  
 * **Error Response:**
@@ -255,3 +243,42 @@ Removes a Mapping from a Batch
   
   * **Code:** 400 BAD REQUEST<br />
     **Content:** `{ "status": 400, message : "The provided Batch id has an illegal argument." }`
+    
+**Remove Mapping from Batch**
+----
+Removes a Mapping from a Batch
+
+* **URL**
+
+  /batchManager/removeMappingFromBatch
+
+* **Method:**
+  
+ `POST`
+
+* **Data Params**
+
+  * @FormParam("mappingId") String mappingId
+  * @FormParam("batchId") String batchId
+
+* **Success Response:**
+  
+ * **Code:** 200 OK <br />
+    **Content:** `{
+    "status": 200,
+    "message": "The Mapping [\"5b1268c214b49bd38a84e455\"] has(have) been removed."
+}`
+ 
+* **Error Response:**
+
+  * **Code:** 500 INTERNAL SERVER ERROR<br />
+    **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
+
+  * **Code:** 404 NOT FOUND<br />
+    **Content:** `{ "status": 404, message : "Both a Batch id and a Mapping id must be provided." }`
+    
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 400, message : "The provided Mapping has already been added to the Batch." }`
+  
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 400, message : "Either the Batch id or the Mapping id have an illegal argument." }
