@@ -34,7 +34,7 @@ import utils.TransferObjectUtils;
  * @author João Cardoso
  *
  */
-@Path("ontologManager")
+@Path("ontologyManager")
 public class OntologyManager {
 
 	/** The connection to the database for OntologyFile objects */
