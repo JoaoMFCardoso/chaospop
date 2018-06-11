@@ -102,10 +102,10 @@ public class OntologyManager {
 		try {
 
 			/* Get all OntologyFile objects from the database */
-			List<OntologyFile> dataFiles = this.ontologyFileImpl.getAll();
+			List<OntologyFile> ontologyFiles = this.ontologyFileImpl.getAll();
 
 			/* Runs the DataFile objects and fills the DataFileTO array  */
-			for(OntologyFile ontologyFile : dataFiles){
+			for(OntologyFile ontologyFile : ontologyFiles){
 				OntologyFileTO ontologyFileTO = ontologyFile.createTransferObject();
 				ontologyFileTOWrapper.ontologyFilesTO.add(ontologyFileTO);
 			}
