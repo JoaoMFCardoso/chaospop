@@ -428,7 +428,18 @@ public class BatchManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/batchmanager", language);
+			
+			String message = resourceBundle.getString("15") + " " + mappingId + " " + resourceBundle.getString("12");
+			
+			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			corectlyRemoved.setMessage(message);
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
