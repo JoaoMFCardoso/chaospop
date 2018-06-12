@@ -1,6 +1,7 @@
 package services;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -20,6 +21,7 @@ import domain.to.IndividualMappingTO;
 import domain.to.wrappers.IndividualMappingTOWrapper;
 import exceptions.ErrorMessage;
 import exceptions.ErrorMessageHandler;
+import properties.PropertiesHandler;
 
 /**
  * This class implements a jax rs service layer
@@ -55,7 +57,7 @@ public class IndividualMappingManager {
 			String individualMappingID = this.individualMappingsImpl.save(individualMapping);
 
 			/* Creates the Response */
-			response = Response.ok(individualMappingID).build();
+			response = Response.ok(gson.toJson(individualMappingID)).build();
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -94,6 +96,18 @@ public class IndividualMappingManager {
 		try {
 		/* Gets the IndividualMapping Object from the database and then builds the transfer object */
 		individualMapping = this.individualMappingsImpl.get(individualMappingID);
+		
+		/* Checks if the Individual Mapping was found based on the given ID */
+		if(individualMapping == null) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage individualMappingNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "9", "messages/individualmappingmanager"); 
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, individualMappingNotFound);
+
+			return response;
+		}
+		
 		individualMappingTO = individualMapping.createTransferObject();
 
 		Gson gson = new Gson();
@@ -137,6 +151,7 @@ public class IndividualMappingManager {
 	@POST
 	@Path("/replaceIndividualMapping")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response replaceIndividualMapping(String jsonResponse){
 		Response response;
 		try{
@@ -150,21 +165,32 @@ public class IndividualMappingManager {
 			this.individualMappingsImpl.replace(individualMappingTO.get_id(), individualMapping);
 
 			/* Creates the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/individualmappingmanager", language);
+			
+			String message = resourceBundle.getString("7") + " " + individualMappingTO.get_id() + " " + resourceBundle.getString("10");
+			
+			ErrorMessage corectlyReplaced = new ErrorMessage(); 
+			corectlyReplaced.setStatus(Response.Status.OK.getStatusCode());
+			corectlyReplaced.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyReplaced);
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/individualmappingmanager"); 
+			ErrorMessage individualMappingToNull = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/individualmappingmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, requiredFieldNull);
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, individualMappingToNull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/individualmappingmanager"); 
+			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/individualmappingmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, requiredFieldNull);
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgument);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -189,10 +215,10 @@ public class IndividualMappingManager {
 	public Response removeIndividualMapping(@FormParam("ids") String individualMappingIds){
 		Response response;
 		try{
-			/* Gets the IndividualMapping id's from the individualMappingIds string
-			 * The id's are sepparated by ","
-			 * e.g. 123,2344,455 */
-			String[] ids = individualMappingIds.split(",");
+			/* Gets the Individual Mapping id's from the individualMappingIds string
+			 * The id's are a json array [123,456,789] */
+			Gson gson = new Gson();
+			String[] ids = gson.fromJson(individualMappingIds, String[].class);
 
 			/* Runs all ids and fetches the IndividualMapping object  */
 			for(String individualMappingId : ids){
@@ -201,7 +227,18 @@ public class IndividualMappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/individualmappingmanager", language);
+			
+			String message = resourceBundle.getString("7") + " " + individualMappingIds + " " + resourceBundle.getString("8");
+			
+			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			corectlyRemoved.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
