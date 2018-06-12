@@ -16,16 +16,16 @@ Creates a new Individual Mapping object in the database based on the transfer ob
     "tag" : "member",
     "dataFileIds" : ["5af093d445193e040736e20f"],
     "individualName" : ".inspecificchild-name-given;.inspecificchild-name-surname",
-    "owlClassIRI" : "http://sysresearch.org/ontologies/family#Person",
+    "owlClassIRI" : "http://chaospop.sysresearch.org/ontologies/family#Person",
     "specification" : false,
     "annotationProperties" : {
         "label" : ".inspecificchild-name-nickname"
     },
     "objectProperties" : {
-        "http://sysresearch.org/ontologies/family.owl#hasBrother" : ".inspecificchild-siblings-brother"
+        "http://chaospop.sysresearch.org/ontologies/family.owl#hasBrother" : ".inspecificchild-siblings-brother"
     },
     "dataProperties" : {
-        "http://sysresearch.org/ontologies/family.owl#hasDeathYear" : [".inspecificchild-marriage-marriage_year", "Integer"]
+        "http://chaospop.sysresearch.org/ontologies/family.owl#hasDeathYear" : [".inspecificchild-marriage-marriage_year", "Integer"]
     }
 }`
 
@@ -56,61 +56,30 @@ gets a Individual Mapping object when given its id.
 
 * **Data Params**
 
-  * `{"id" : "5b16987c8d9a117e67abee81"}`
+  * @FormParam("id") individualMappingID
 
 * **Success Response:**
   
  * **Code:** 204 NO CONTENT <br />
-    **Content:** The server successfully uploaded the ontology file to the SFTP server.
- 
-* **Error Response:**
-
-  * **Code:** 500 INTERNAL SERVER ERROR<br />
-    **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
-
-  * **Code:** 404 NOT FOUND<br />
-    **Content:** `{ "status": 404, message : "There is no Batch associated with the provided id." }`
-    
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 404, message : "A Batch id must be provided." }`
-   
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "The Batch id has an illegal argument." }`
-    
-**Replace Individual Mapping**
-----
-Returns all the existing Batches in the database
-
-* **URL**
-
-  /individualMappingManager/replaceIndividualMapping
-
-* **Method:**
-  
- `GET`
-
-* **Data Params**
-
-  * 
-
-* **Success Response:**
-  
- * **Code:** 200 OK<br />
     **Content:** `{
-    "batchesTO": [
-        {
-            "_id": "5b1268c214b49bd38a84e49f",
-            "mappingIds": [
-                "5b1268c214b49bd38a84e49e"
-            ]
-        },
-        {
-            "_id": "5b1b02e5b94edfd6fd93a62e",
-            "mappingIds": [
-                "5b1268c214b49bd38a84e49e"
-            ]
-        }
-    ]
+    "_id": "5b1268c214b49bd38a84e453",
+    "tag": "member",
+    "individualName": ".inspecificchild-name-given;.inspecificchild-name-surname",
+    "owlClassIRI": "http://chaospop.sysresearch.org/ontologies/family#Person",
+    "annotationProperties": {
+        "comment": ".inspecificchild-name-given;.inspecificchild-name-surname;.inspecificchild-name-nickname",
+        "label": ".inspecificchild-name-nickname",
+        "seeAlso": ".inspecificchild-siblings-sister"
+    },
+    "objectProperties": {
+        "http://chaospop.sysresearch.org/ontologies/family.owl#hasBrother": ".inspecificchild-siblings-brother"
+    },
+    "dataProperties": {
+        "http://chaospop.sysresearch.org/ontologies/family.owl#hasFamilyName": [
+            ".inspecificchild-name-surname",
+            "String"
+        ]
+    }
 }`
  
 * **Error Response:**
@@ -118,9 +87,66 @@ Returns all the existing Batches in the database
   * **Code:** 500 INTERNAL SERVER ERROR<br />
     **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
 
+  * **Code:** 404 NOT FOUND<br />
+    **Content:** `{ "status": 404, message : "The Individual Mapping id provided is not associated with any Individual Mapping in the database." }`
+    
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 404, message : "An Individual Mapping id must be provided." }`
+   
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 400, message : "The Individual Mapping id has an illegal argument." }`
+    
+**Replace Individual Mapping**
+----
+Replaces as existing IndividualMapping in the Database
+
+* **URL**
+
+  /individualMappingManager/replaceIndividualMapping
+
+* **Method:**
+  
+ `POST`
+
+* **Data Params**
+
+  * `{
+    "_id" : "5b1fb541b94ee0828849c4a1",
+    "tag" : "replacedTag",
+    "dataFileIds" : ["5af093d445193e040736e20f"],
+    "individualName" : ".inspecificchild-name-given;.inspecificchild-name-surname",
+    "owlClassIRI" : "http://chaospop.sysresearch.org/ontologies/family#ReplacedClass",
+    "specification" : false,
+    "annotationProperties" : {
+        "label" : ".inspecificchild-name-nickname"
+    },
+    "objectProperties" : {
+        "http://sysresearch.org/ontologies/family.owl#hasBrother" : ".inspecificchild-siblings-brother"
+    },
+    "dataProperties" : {
+        "http://sysresearch.org/ontologies/family.owl#hasAge" : [".inspecificchild-age", "Integer"]
+    }
+}`
+
+* **Success Response:**
+  
+ * **Code:** 200 OK<br />
+    **Content:** `{"status": 200, "message": "The Individual Mapping(s) 5b1fb541b94ee0828849c4a1 has been successfully replaced."}`
+ 
+* **Error Response:**
+
+  * **Code:** 500 INTERNAL SERVER ERROR<br />
+    **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
+
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 404, message : "An Individual Mapping id must be provided." }`
+   
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 400, message : "The Individual Mapping id has an illegal argument." }`
+
 **Remove Individual Mapping**
 ----
-Removes a list of Batch objects from the database
+Removes a list of Individual Mapping objects from the database
 
 * **URL**
 
@@ -139,22 +165,19 @@ Removes a list of Batch objects from the database
  * **Code:** 200 OK <br />
     **Content:** `{
     "status": 200,
-    "message": "The Batch(es) [\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"] has(have) been removed."
+    "message": "The Individual Mapping(s) [\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"] has(have) been removed."
 }`
  
 * **Error Response:**
 
   * **Code:** 500 INTERNAL SERVER ERROR<br />
     **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
-
-  * **Code:** 404 NOT FOUND<br />
-    **Content:** `{ "status": 404, message : "There are no Batch files associated with the provided id." }`
     
   * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "You need to provide a Batch id." }`
+    **Content:** `{ "status": 400, message : "An Individual Mapping id must be provided." }`
   
   * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "The provided Batch id has an illegal argument." }`
+    **Content:** `{ "status": 400, message : "The Individual Mapping id has an illegal argument." }`
 
 **Get All Individual Mappings**
 ----
@@ -166,31 +189,40 @@ Adds a Mapping to a Batch
 
 * **Method:**
   
- `POST`
-
-* **Data Params**
-
-  * @FormParam("mappingId") String mappingId
-  * @FormParam("batchId") String batchId
+ `GET`
 
 * **Success Response:**
   
  * **Code:** 200 OK <br />
-    **Content:** `{"status": 200, message": "The Mapping id 5b1268c214b49bd38a84e49f has been correctly added to the provided Batch."}`
+    **Content:** `{
+    "individualMappingsTO": [
+        {
+            "_id": "5b1268c214b49bd38a84e453",
+            "tag": "member",
+            "individualName": ".inspecificchild-name-given;.inspecificchild-name-surname",
+            "owlClassIRI": "http://chaospop.sysresearch.org/ontologies/family#Person",
+            "annotationProperties": {
+                "comment": ".inspecificchild-name-given;.inspecificchild-name-surname;.inspecificchild-name-nickname",
+                "label": ".inspecificchild-name-nickname",
+                "seeAlso": ".inspecificchild-siblings-sister"
+            },
+            "objectProperties": {
+                "http://chaospop.sysresearch.org/ontologies/family.owl#hasBrother": ".inspecificchild-siblings-brother"
+            },
+            "dataProperties": {
+                "http://chaospop.sysresearch.org/ontologies/family.owl#hasFamilyName": [
+                    ".inspecificchild-name-surname",
+                    "String"
+                ]
+            }
+        }
+    ]
+}`
  
 * **Error Response:**
 
   * **Code:** 500 INTERNAL SERVER ERROR<br />
     **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
-
-  * **Code:** 404 NOT FOUND<br />
-    **Content:** `{ "status": 404, message : "Both a Batch id and a Mapping id must be provided." }`
-    
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "The provided Mapping has already been added to the Batch." }`
-  
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "Either the Batch id or the Mapping id have an illegal argument." }`
 
 **Compare Individual Mappings**
 ----
@@ -206,14 +238,30 @@ Gets all the Mappings from a Batch
 
 * **Data Params**
 
-  * `["5b1268c214b49bd38a84e455","5b1a958c32fa83d5ea219b11"]`
+  * @HeaderParam("id") individualMappingID
+  * `{
+    "tag" : "member",
+    "dataFileIds" : ["5af093d445193e040736e20f"],
+    "individualName" : ".inspecificchild-name-given;.inspecificchild-name-surname",
+    "owlClassIRI" : "http://chaospop.sysresearch.org/ontologies/family#Person",
+    "specification" : false,
+    "annotationProperties" : {
+        "label" : ".inspecificchild-name-nickname"
+    },
+    "objectProperties" : {
+        "http://chaospop.sysresearch.org/ontologies/family.owl#hasBrother" : ".inspecificchild-siblings-brother"
+    },
+    "dataProperties" : {
+        "http://chaospop.sysresearch.org/ontologies/family.owl#hasDeathYear" : [".inspecificchild-marriage-marriage_year", "Integer"]
+    }
+}`
 
 * **Success Response:**
   
  * **Code:** 200 OK <br />
     **Content:** `{
     "status": 200,
-    "message": "The Data File(s) [\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"] has(have) been removed."
+    "message": "True/False"
 }`
  
 * **Error Response:**
@@ -221,11 +269,8 @@ Gets all the Mappings from a Batch
   * **Code:** 500 INTERNAL SERVER ERROR<br />
     **Content:** `{ "status": 500, message : "An internal error has taken place. Please contact the ChaosPop administrator." }`
 
-  * **Code:** 404 NOT FOUND<br />
-    **Content:** `{ "status": 404, message : "There are no Data files associated with the provided ID." }`
+  * **Code:** 400 BAD REQUEST<br />
+    **Content:** `{ "status": 400, message : "An Individual Mapping id must be provided." }`
     
   * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "You need to provide a Data File ID." }`
-  
-  * **Code:** 400 BAD REQUEST<br />
-    **Content:** `{ "status": 400, message : "The provided Data File ID has an illegal argument." }`
+    **Content:** `{ "status": 400, message : "The Individual Mapping id has an illegal argument." }`
