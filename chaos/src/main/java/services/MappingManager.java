@@ -2,6 +2,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -26,6 +27,7 @@ import domain.to.wrappers.DataFileTOWrapper;
 import domain.to.wrappers.MappingTOWrapper;
 import exceptions.ErrorMessage;
 import exceptions.ErrorMessageHandler;
+import properties.PropertiesHandler;
 
 /**
  * This class implements a jax rs service layer
@@ -42,6 +44,50 @@ public class MappingManager {
 	/** The connection to the database for DataFile objects */
 	private DataFileImpl dataFileImpl = new DataFileImpl();
 
+	/**
+	 * This method creates a new Mapping object in the database based
+	 * on the transfer object created in the client application.
+	 * @param mappingTO The client provided MappingTO transfer object
+	 * @return An HTTP response according to the execution of the service.
+	 */
+	@POST
+	@Path("/createMapping")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createMapping(String jsonMappingTO){
+		Response response;
+		try{
+			/* Creates the Mapping from the MappingTO */
+			Gson gson = new Gson();
+			MappingTO mappingTO = gson.fromJson(jsonMappingTO, MappingTO.class);
+			Mapping mapping = new Mapping(mappingTO);
+
+			/* Stores the new mapping in the database */
+			String id = this.mappingImpl.save(mapping);
+
+			/* Creates the Response */
+			response = Response.ok(gson.toJson(id)).build();
+
+		}catch(NullPointerException nullPointerException){
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullfield = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/mappingmanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullfield);
+			
+		}catch(Exception exception){
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
+		}
+
+		return response;
+	}
+	
 	/**
 	 * This method gets a Mapping object when given its id
 	 * @param mappingID The Mapping id
@@ -131,63 +177,19 @@ public class MappingManager {
 	}
 
 	/**
-	 * This method creates a new Mapping object in the database based
-	 * on the transfer object created in the client application.
-	 * @param mappingTO The client provided MappingTO transfer object
-	 * @return An HTTP response according to the execution of the service.
-	 */
-	@POST
-	@Path("/createMapping")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response createMapping(String jsonMappingTO){
-		Response response;
-		try{
-			/* Creates the Mapping from the MappingTO */
-			Gson gson = new Gson();
-			MappingTO mappingTO = gson.fromJson(jsonMappingTO, MappingTO.class);
-			Mapping mapping = new Mapping(mappingTO);
-
-			/* Stores the new mapping in the database */
-			String id = this.mappingImpl.save(mapping);
-
-			/* Creates the Response */
-			response = Response.ok(id).build();
-
-		}catch(NullPointerException nullPointerException){
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullfield = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/mappingmanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullfield);
-			
-		}catch(Exception exception){
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
-			
-			exception.printStackTrace();
-		}
-
-		return response;
-	}
-
-	/**
 	 * This method removes a list of Mapping objects from the database
 	 * @param mappingIds The Mapping id list. All ids are sepparated by ",".
 	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/removeMapping")
-	public Response removeFile(@FormParam("ids") String mappingsIds){
+	public Response removeMapping(@FormParam("ids") String mappingsIds){
 		Response response;
 		try{
-			/* Gets the Mapping id's from the mappingsIds string
-			 * The id's are sepparated by ","
-			 * e.g. 123,2344,455 */
-			String[] ids = mappingsIds.split(",");
+			/* Gets the Mappings id's from the mappingsIds string
+			 * The id's are a json array [123,456,789] */
+			Gson gson = new Gson();
+			String[] ids = gson.fromJson(mappingsIds, String[].class);
 
 			/* Runs all ids and fetches the Mapping object  */
 			for(String mappingId : ids){
@@ -196,7 +198,19 @@ public class MappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Gets the Response */
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/mappingmanager", language);
+			
+			String message = resourceBundle.getString("8") + " " + mappingsIds + " " + resourceBundle.getString("10");
+			
+			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			corectlyRemoved.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -223,61 +237,6 @@ public class MappingManager {
 		}
 
 		return response;
-	}
-
-	/**
-	 * Gets all the DataFileTO transfer objects from a given Mapping
-	 * @param mappingId The Mapping id
-	 * @return An Array with all DataFileTO transfer objects that represent the DataFile objects assigned to the Mapping
-	 */
-	@POST
-	@Path("/getAllDataFilesFromMapping")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllDataFilesFromMapping(@FormParam("mappingId") String mappingId){
-		/* Initializes the objects */
-		DataFileTOWrapper dataFileTOWrapper = new DataFileTOWrapper();
-		Response response;
-
-		try {
-			/* Gets the Mapping and its DataFile List */
-			Mapping mapping = this.mappingImpl.get(mappingId);
-			ArrayList<ObjectId> fileList = mapping.getFileList();
-
-			/* Runs the DataFile list and creates DataFileTO objects */
-			for(ObjectId dataFileId : fileList){
-				DataFile dataFile = this.dataFileImpl.get(dataFileId.toString());
-				DataFileTO dataFileTO = dataFile.createTransferObject();
-				dataFileTOWrapper.dataFilesTO.add(dataFileTO);
-			}
-			/* Builds the response */
-			response = Response.ok(dataFileTOWrapper).build();
-
-		}catch(NullPointerException nullPointerException) {
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/mappingmanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
-
-		}catch(IllegalArgumentException illegalArgumentException) {
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/mappingmanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
-
-		}catch(Exception exception) {
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
-			
-			exception.printStackTrace();
-		}
-
-		return response;
-
 	}
 
 	/**
@@ -288,6 +247,7 @@ public class MappingManager {
 	 */
 	@POST
 	@Path("/addDataFileToMapping")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addDataFileToMapping(@FormParam("mappingId") String mappingId, @FormParam("dataFileId") String dataFileId){
 		Response response;
 		try{
@@ -317,7 +277,18 @@ public class MappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/mappingmanager", language);
+			
+			String message = resourceBundle.getString("11") + " " + dataFileId + " " + resourceBundle.getString("12");
+			
+			ErrorMessage correctlyAdded = new ErrorMessage(); 
+			correctlyAdded.setStatus(Response.Status.OK.getStatusCode());
+			correctlyAdded.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, correctlyAdded);
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -328,7 +299,7 @@ public class MappingManager {
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages/mappingmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/mappingmanager"); 
 		
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
@@ -345,16 +316,71 @@ public class MappingManager {
 
 		return response;
 	}
+	
+	/**
+	 * Gets all the DataFileTO transfer objects from a given Mapping
+	 * @param mappingId The Mapping id
+	 * @return An Array with all DataFileTO transfer objects that represent the DataFile objects assigned to the Mapping
+	 */
+	@POST
+	@Path("/getAllDataFilesFromMapping")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllDataFilesFromMapping(@FormParam("mappingId") String mappingId){
+		/* Initializes the objects */
+		DataFileTOWrapper dataFileTOWrapper = new DataFileTOWrapper();
+		Response response;
+
+		try {
+			/* Gets the Mapping and its DataFile List */
+			Mapping mapping = this.mappingImpl.get(mappingId);
+			ArrayList<ObjectId> fileList = mapping.getFileList();
+
+			/* Runs the DataFile list and creates DataFileTO objects */
+			for(ObjectId dataFileId : fileList){
+				DataFile dataFile = this.dataFileImpl.get(dataFileId.toString());
+				DataFileTO dataFileTO = dataFile.createTransferObject();
+				dataFileTOWrapper.dataFilesTO.add(dataFileTO);
+			}
+			/* Builds the response */
+			response = Response.ok(dataFileTOWrapper).build();
+
+		}catch(NullPointerException nullPointerException) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/mappingmanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/mappingmanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+
+		}catch(Exception exception) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
+		}
+
+		return response;
+
+	}
 
 	/**
-	 * This method removes a DataFile to an existing Mapping
+	 * This method removes a DataFile from an existing Mapping
 	 * @param mappingId The Mapping id
 	 * @param dataFileId The DataFile id
 	 * @return An HTTP response according to the execution of the service.
 	 */
 	@POST
 	@Path("/removeDataFileFromMapping")
-	public Response removeDataFileToMapping(@FormParam("mappingId") String mappingId, @FormParam("dataFileId") String dataFileId){
+	public Response removeDataFileFromMapping(@FormParam("mappingId") String mappingId, @FormParam("dataFileId") String dataFileId){
 		Response response;
 		try{
 			/* Gets the Mapping from the given id */
@@ -382,7 +408,18 @@ public class MappingManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/mappingmanager", language);
+			
+			String message = resourceBundle.getString("11") + " " + dataFileId + " " + resourceBundle.getString("10");
+			
+			ErrorMessage correctlyRemoved = new ErrorMessage(); 
+			correctlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			correctlyRemoved.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, correctlyRemoved);
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
