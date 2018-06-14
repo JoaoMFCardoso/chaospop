@@ -44,6 +44,68 @@ public class NodeManager {
 	private IndividualMappingsImpl individualMappingsImpl = new IndividualMappingsImpl();
 
 	/**
+	 * This method gets a Node object when given its id
+	 * @param nodeId The Node id
+	 * @return A Node transfer object
+	 */
+	@POST
+	@Path("/getNode")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNode(@FormParam("id") String nodeId){
+		/* Initializes the objects */
+		Node node;
+		NodeTO nodeTO;
+		Response response;
+
+		try {
+
+			/* Gets the Node Object from the database and then builds the transfer object */
+			node = this.nodeImpl.get(nodeId);
+			
+			/* Checks if the Node was found based on the given ID */
+			if(node == null) {
+				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+				ErrorMessage nodeNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "4", "messages/nodemanager"); 
+
+				/* Builds a Response object */
+				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, nodeNotFound);
+
+				return response;
+			}
+			
+			nodeTO = node.createTransferObject();
+
+			/* Builds the response with a filled DataFileTO */
+			response = Response.ok(nodeTO).build();
+
+			/* Any exception leads to an error */
+		}catch(NullPointerException nullPointerException) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/nodemanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
+
+		}catch(IllegalArgumentException illegalArgumentException) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage illegalArgumentError = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/nodemanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentError);
+		}catch(Exception exception) {
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/nodemanager"); 
+			
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			exception.printStackTrace();
+		}
+
+		return response;
+	}
+	
+	/**
 	 * This method gets all the Nodes in a DataFile Node tree and returns a transfer object array to the client
 	 * @param dataFileId The id of the DataFile
 	 * @return An ArrayList of Node transfer objects that represent all the Nodes in the DataFile's Node tree
@@ -71,66 +133,19 @@ public class NodeManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/nodemanager"); 
+			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/nodemanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/nodemanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/nodemanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/nodemanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
-			
-			exception.printStackTrace();
-		}
-
-		return response;
-	}
-
-	/**
-	 * This method gets a Node object when given its id
-	 * @param nodeId The Node id
-	 * @return A Node transfer object
-	 */
-	@POST
-	@Path("/getNode")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNode(@FormParam("id") String nodeId){
-		/* Initializes the objects */
-		Node node;
-		NodeTO nodeTO;
-		Response response;
-
-		try {
-
-			/* Gets the Node Object from the database and then builds the transfer object */
-			node = this.nodeImpl.get(nodeId);
-			nodeTO = node.createTransferObject();
-
-			/* Builds the response with a filled DataFileTO */
-			response = Response.ok(nodeTO).build();
-
-			/* Any exception leads to an error */
-		}catch(NullPointerException nullPointerException) {
-			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/nodemanager"); 
-			
-			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
-
-		}catch(IllegalArgumentException illegalArgumentException) {
-			response = Response.status(Response.Status.BAD_REQUEST).build();
-
-		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/nodemanager"); 
 			
@@ -167,6 +182,17 @@ public class NodeManager {
 			/* Gets all IndividualMapping objects that match the Node's tag */
 			List<IndividualMapping> matchingIndividualMappings = this.individualMappingsImpl.getBy("tag", tag);
 
+			/* Checks if the Batch was found based on the given ID */
+			if(matchingIndividualMappings.isEmpty()) {
+				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+				ErrorMessage noMatches = new ErrorMessage(Response.Status.NOT_FOUND, "7", "messages/nodemanager"); 
+
+				/* Builds a Response object */
+				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, noMatches);
+
+				return response;
+			}
+			
 			/* Builds the IndividualMappingTO List */
 			for(IndividualMapping individualMapping : matchingIndividualMappings){
 				IndividualMappingTO individualMappingTO = individualMapping.createTransferObject();

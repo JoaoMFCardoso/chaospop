@@ -113,7 +113,7 @@ public class BatchManager {
 			/* Gets the Batch Object from the database and then builds the transfer object */
 			batch = this.batchImpl.get(batchID);
 			
-			/* Checks if the Ontology File was found based on the given ID */
+			/* Checks if the Batch was found based on the given ID */
 			if(batch == null) {
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 				ErrorMessage batchNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "10", "messages/batchmanager"); 
