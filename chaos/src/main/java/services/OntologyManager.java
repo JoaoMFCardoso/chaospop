@@ -2,6 +2,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -40,6 +41,11 @@ public class OntologyManager {
 	/** The connection to the database for OntologyFile objects */
 	private OntologyFileImpl ontologyFileImpl = new OntologyFileImpl();
 
+	/**
+	 * This method creates an OntologyFile object in the database, by loading an Ontlogy through a given namespace.
+	 * @param namespace A given namespace
+	 * @return The OntologyFile ID
+	 */
 	@POST
 	@Path("/addOntologyNamespace")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -56,10 +62,11 @@ public class OntologyManager {
 			ontologyFile.setsGeneralOntologyFileAttributes(ontologyExtractionOperations);
 
 			/* Saves the OntologyFile */
+			Gson gson = new Gson();
 			String id = this.ontologyFileImpl.save(ontologyFile);
 
 			/* Gets the Response */
-			response = Response.ok(id).build();
+			response = Response.ok(gson.toJson(id)).build();
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -188,10 +195,10 @@ public class OntologyManager {
 		Response response;
 		
 		try{
-			/* Gets the OntologyFile id's from the ontologyIds string
-			 * The id's are sepparated by ","
-			 * e.g. 123,2344,455 */
-			String[] ids = ontologyIds.split(",");
+			/* Gets the OntologyFile id's from the dataFileIds string
+			 * The id's are a json array [123,456,789] */
+			Gson gson = new Gson();
+			String[] ids = gson.fromJson(ontologyIds, String[].class);
 
 			/* Runs all ids and fetches the OntologyFile object  */
 			for(String ontologyId : ids){
@@ -211,7 +218,18 @@ public class OntologyManager {
 			}
 
 			/* Gets the Response */
-			response = Response.ok().build();
+			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
+			String language = PropertiesHandler.configProperties.getProperty("language");
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/ontologymanager", language);
+			
+			String message = resourceBundle.getString("8") + " " + ontologyIds + " " + resourceBundle.getString("9");
+			
+			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+			corectlyRemoved.setMessage(message);
+
+			/* Builds a Response object */
+			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -256,9 +274,11 @@ public class OntologyManager {
 			PropertiesHandler.propertiesLoader();
 
 			String defaultNamespace = PropertiesHandler.configProperties.getProperty("sftp.namespace");
+			
+			Gson gson = new Gson();
 
 			/* Gets the Response */
-			response = Response.ok(defaultNamespace).build();
+			response = Response.ok(gson.toJson(defaultNamespace)).build();
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
