@@ -212,6 +212,7 @@ public class IndividualMappingManager {
 	 */
 	@POST
 	@Path("/removeIndividualMapping")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeIndividualMapping(@FormParam("ids") String individualMappingIds){
 		Response response;
 		try{

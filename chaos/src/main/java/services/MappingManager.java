@@ -183,6 +183,7 @@ public class MappingManager {
 	 */
 	@POST
 	@Path("/removeMapping")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeMapping(@FormParam("ids") String mappingsIds){
 		Response response;
 		try{
