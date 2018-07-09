@@ -1,0 +1,1444 @@
+{
+	"id": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+	"name": "ChaosPop",
+	"description": "",
+	"order": [],
+	"folders": [
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4030572255,
+			"folder": null,
+			"id": "8a6dfade-d524-2b05-23d1-1f454c1f88c1",
+			"name": "Batch Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"4be07d4b-af3d-f5a7-bede-b018e39e2f7a",
+				"7c0820dc-dbf6-3d5b-5d50-885822ceb7ba",
+				"988d140c-6c66-d385-3bf6-3786f057ddec",
+				"2aa6e609-87cb-00fb-8e60-9812da50144d",
+				"e0d1540e-d002-93c4-f877-a20d71e49585",
+				"4d255408-fae6-fad2-4f92-d206a94bf3cb"
+			],
+			"folders_order": []
+		},
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4020577171,
+			"folder": null,
+			"id": "793ce125-4a52-544f-45fa-ea6a0c132b4b",
+			"name": "File Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"860b28cd-8382-b3b4-f373-771fc985fd93",
+				"c5b6a989-df45-7378-2c8c-0f8855269063",
+				"746c6b30-6da7-2dad-8f9c-75324747a534",
+				"f4051979-6064-5366-eddd-023e7ec3735a"
+			],
+			"folders_order": []
+		},
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4020577210,
+			"folder": null,
+			"id": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"name": "Individual Mapping Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"153bd96c-5784-cf7b-936c-34900606e771",
+				"36644bc3-0b14-3197-28f4-a5566830bcdd",
+				"01a97778-0602-9c24-7d26-11992ad069f4",
+				"3f84182d-ab66-9864-8244-53ec896158ea",
+				"1aa08f60-3c43-edda-44ef-935a53b1617a",
+				"07bb63ec-250f-03ea-1da5-afe0ca806e5b"
+			],
+			"folders_order": [],
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7"
+		},
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4020577449,
+			"folder": null,
+			"id": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+			"name": "Mapping Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"d366c5b0-fd64-57f8-89b3-4d3728558c8a",
+				"f12e5e8c-3b16-fedf-92d3-32aea90d9804",
+				"56680cf6-23ce-352f-fe0f-82a3e0f3917f",
+				"770cee58-568e-2da3-e97b-200d0e5d8d98",
+				"3f075398-b9c9-cf97-6024-f97527bd8515",
+				"fcd261f9-557c-2118-ff20-05da0b6e76fc"
+			],
+			"folders_order": []
+		},
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4020577488,
+			"folder": null,
+			"id": "9c42d4e2-6a98-6681-624d-ecea3e645622",
+			"name": "Node Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"cf221e9d-188b-9263-a14c-91e5bbe99907",
+				"2dcc7c49-9088-c893-524a-f26a69539036",
+				"847c4590-5d83-d081-71b0-2ef80eedd731"
+			],
+			"folders_order": []
+		},
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4020577543,
+			"folder": null,
+			"id": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"name": "Ontology Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"f1dfb5b8-5212-28ef-eded-97495e7ee118",
+				"60a2ab1d-fab2-883b-679f-ce0a20d40e94",
+				"038b0827-790e-63d6-5d0a-78d53a303af1",
+				"1caf9257-0031-1771-2e9c-97f6b3b16446",
+				"2778022b-aea8-d024-9ce9-873440187032",
+				"be22b98f-0380-bbd7-b037-75e22568c3e8",
+				"b6e33df9-7e94-715c-e233-155968526b0f",
+				"d76d8898-51bb-c7cb-a554-cde5d93c40c5",
+				"acf5096d-9341-7116-fedc-f5b7407374bf"
+			],
+			"folders_order": []
+		},
+		{
+			"owner": "4368555",
+			"lastUpdatedBy": "4368555",
+			"lastRevision": 4020577625,
+			"folder": null,
+			"id": "ec53f976-7834-4c10-a589-9141574b1fcb",
+			"name": "Population Manager",
+			"description": "",
+			"variables": null,
+			"auth": null,
+			"events": null,
+			"order": [
+				"86732270-3793-7988-1f79-860352403338"
+			],
+			"folders_order": []
+		}
+	],
+	"folders_order": [
+		"8a6dfade-d524-2b05-23d1-1f454c1f88c1",
+		"793ce125-4a52-544f-45fa-ea6a0c132b4b",
+		"aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+		"7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+		"9c42d4e2-6a98-6681-624d-ecea3e645622",
+		"93b747a8-9dc9-fe12-2472-2688c5515943",
+		"ec53f976-7834-4c10-a589-9141574b1fcb"
+	],
+	"timestamp": 0,
+	"owner": "4368555",
+	"public": false,
+	"requests": [
+		{
+			"id": "01a97778-0602-9c24-7d26-11992ad069f4",
+			"headers": "Content-Type: application/json\nid: 5afda0cb60b5bc7369deb34c\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"enabled": true,
+					"description": ""
+				},
+				{
+					"key": "id",
+					"value": "5afda0cb60b5bc7369deb34c",
+					"enabled": true,
+					"description": ""
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/individualMappingManager/compareIndividualMappings",
+			"folder": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": null,
+			"helperAttributes": null,
+			"time": 1526575814305,
+			"name": "compareIndividualMappings",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": [],
+			"auth": null,
+			"events": null,
+			"descriptionFormat": "html",
+			"variables": null,
+			"rawModeData": "{\r\n    \"tag\" : \"member\",\r\n    \"dataFileIds\" : [\"5af093d445193e040736e20f\"],\r\n    \"individualName\" : \".inspecificchild-name-given;.inspecificchild-name-surname\",\r\n    \"owlClassIRI\" : \"http://sysresearch.org/ontologies/family#Person\",\r\n    \"specification\" : false,\r\n    \"annotationProperties\" : {\r\n        \"label\" : \".inspecificchild-name-nickname\"\r\n    },\r\n    \"objectProperties\" : {\r\n        \"http://sysresearch.org/ontologies/family.owl#hasBrother\" : \".inspecificchild-siblings-brother\",\r\n        \"http://sysresearch.org/ontologies/family.owl#hasSister\" : \".inspecificchild-siblings-sister\",\r\n        \"http://sysresearch.org/ontologies/family.owl#hasChild\" : \".inspecificchild-descendants-daughter\",\r\n        \"http://sysresearch.org/ontologies/family.owl#hasPartner\" : \".inspecificchild-marriage-partner_name\",\r\n        \"http://sysresearch.org/ontologies/family.owl#hasParent\" : \".inspecificchild-ancestors-mother\"\r\n    },\r\n    \"dataProperties\" : {\r\n        \"http://sysresearch.org/ontologies/family.owl#hasDeathYear\" : [\".inspecificchild-marriage-marriage_year\", \"Integer\"],\r\n        \"http://sysresearch.org/ontologies/family.owl#hasFirstGivenName\" :  [\".inspecificchild-name-given\",\"String\"],\r\n        \"http://sysresearch.org/ontologies/family.owl#alsoKnownAs\" : [\".inspecificchild-name-nickname\",\"String\"],\r\n        \"http://sysresearch.org/ontologies/family.owl#hasFamilyName\" : [\".inspecificchild-name-surname\",\"String\"],\r\n        \"http://sysresearch.org/ontologies/family.owl#hasBirthYear\" : [\".inspecificchild-death_year\",\"Integer\"]\r\n    }\r\n}"
+		},
+		{
+			"id": "038b0827-790e-63d6-5d0a-78d53a303af1",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getOntologyFile",
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1529062378306,
+			"name": "getOntologyFile",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "07bb63ec-250f-03ea-1da5-afe0ca806e5b",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/individualMappingManager/replaceIndividualMapping",
+			"folder": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528805118291,
+			"name": "replaceIndividualMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": [],
+			"rawModeData": "{\r\n    \"_id\" : \"5b1fb541b94ee0828849c4a1\",\r\n    \"tag\" : \"replacedTag\",\r\n    \"dataFileIds\" : [\"5af093d445193e040736e20f\"],\r\n    \"individualName\" : \".inspecificchild-name-given;.inspecificchild-name-surname\",\r\n    \"owlClassIRI\" : \"http://chaospop.sysresearch.org/ontologies/family#ReplacedClass\",\r\n    \"specification\" : false,\r\n    \"annotationProperties\" : {\r\n        \"label\" : \".inspecificchild-name-nickname\"\r\n    },\r\n    \"objectProperties\" : {\r\n        \"http://sysresearch.org/ontologies/family.owl#hasBrother\" : \".inspecificchild-siblings-brother\"\r\n    },\r\n    \"dataProperties\" : {\r\n        \"http://sysresearch.org/ontologies/family.owl#hasAge\" : [\".inspecificchild-age\", \"Integer\"]\r\n    }\r\n}\r\n"
+		},
+		{
+			"id": "153bd96c-5784-cf7b-936c-34900606e771",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/individualMappingManager/removeIndividualMapping",
+			"folder": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "ids",
+					"value": "[\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"]",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528811394283,
+			"name": "removeIndividualMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7"
+		},
+		{
+			"id": "1aa08f60-3c43-edda-44ef-935a53b1617a",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/individualMappingManager/getIndividualMapping",
+			"folder": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1268c214b49bd38a84e453",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528804241108,
+			"name": "getIndividualMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "1caf9257-0031-1771-2e9c-97f6b3b16446",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getSFTPDefaultNamespace",
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1529062845200,
+			"name": "getSFTPDefaultNamespace",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "2778022b-aea8-d024-9ce9-873440187032",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getOWLClasses",
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "ontologyId",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1529063143789,
+			"name": "getOWLClasses",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "2aa6e609-87cb-00fb-8e60-9812da50144d",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/batchManager/addMappingToBatch",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "mappingId",
+					"value": "5b1268c214b49bd38a84e49f",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "batchId",
+					"value": "5b1b02e5b94edfd6fd93a62e",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "addMappingToBatch",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1528540346119,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "8a6dfade-d524-2b05-23d1-1f454c1f88c1"
+		},
+		{
+			"id": "2dcc7c49-9088-c893-524a-f26a69539036",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/nodeManager/getAllNodesFromDataFile",
+			"folder": "9c42d4e2-6a98-6681-624d-ecea3e645622",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1a960f32fa86e9698b1065",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528991010719,
+			"name": "getAllNodesFromDataFile",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "36644bc3-0b14-3197-28f4-a5566830bcdd",
+			"name": "getAllIndividualMappings",
+			"url": "http://localhost:8080/chaos/wsapi/individualMappingManager/getAllIndividualMappings",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"headers": "",
+			"pathVariables": {},
+			"collection_id": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"preRequestScript": null,
+			"tests": null,
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"variables": null
+		},
+		{
+			"id": "3f075398-b9c9-cf97-6024-f97527bd8515",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/mappingManager/getAllDataFilesFromMapping",
+			"folder": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "mappingId",
+					"value": "5b1268c214b49bd38a84e49f",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528975761908,
+			"name": "getAllDataFilesFromMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "3f84182d-ab66-9864-8244-53ec896158ea",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/individualMappingManager/createIndividualMapping",
+			"folder": "aa44732f-37af-0075-2ffc-bfc08a91eb4e",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528804741324,
+			"name": "createIndividualMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": [],
+			"rawModeData": "{\r\n    \"tag\" : \"member\",\r\n    \"dataFileIds\" : [\"5af093d445193e040736e20f\"],\r\n    \"individualName\" : \".inspecificchild-name-given;.inspecificchild-name-surname\",\r\n    \"owlClassIRI\" : \"http://chaospop.sysresearch.org/ontologies/family#Person\",\r\n    \"specification\" : false,\r\n    \"annotationProperties\" : {\r\n        \"label\" : \".inspecificchild-name-nickname\"\r\n    },\r\n    \"objectProperties\" : {\r\n        \"http://sysresearch.org/ontologies/family.owl#hasBrother\" : \".inspecificchild-siblings-brother\"\r\n    },\r\n    \"dataProperties\" : {\r\n        \"http://sysresearch.org/ontologies/family.owl#hasDeathYear\" : [\".inspecificchild-marriage-marriage_year\", \"Integer\"]\r\n    }\r\n}\r\n"
+		},
+		{
+			"id": "4be07d4b-af3d-f5a7-bede-b018e39e2f7a",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/batchManager/createBatch",
+			"folder": "8a6dfade-d524-2b05-23d1-1f454c1f88c1",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528496584849,
+			"name": "createBatch",
+			"description": null,
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"rawModeData": "{\r\n    \"mappings\" : [ \r\n        {\r\n            \"mapping\" : \"5b1268c214b49bd38a84e49e\"\r\n        }\r\n    ]\r\n}"
+		},
+		{
+			"id": "4d255408-fae6-fad2-4f92-d206a94bf3cb",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/batchManager/removeMappingFromBatch",
+			"folder": "8a6dfade-d524-2b05-23d1-1f454c1f88c1",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "batchId",
+					"value": "5b1b02e5b94edfd6fd93a62e",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "mappingId",
+					"value": "5b1268c214b49bd38a84e49f",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528752968749,
+			"name": "removeMappingFromBatch",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "56680cf6-23ce-352f-fe0f-82a3e0f3917f",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/mappingManager/getAllMappings",
+			"folder": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1ff06fb94e434feda672f6",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528821090357,
+			"name": "getAllMappings",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "60a2ab1d-fab2-883b-679f-ce0a20d40e94",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/addOntologyNamespace",
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "namespace",
+					"value": "http://chaospop.sysresearch.org/ontologies/family.owl",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1529060142639,
+			"name": "addOntologyNamespace",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "746c6b30-6da7-2dad-8f9c-75324747a534",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/fileManager/removeFile",
+			"folder": "793ce125-4a52-544f-45fa-ea6a0c132b4b",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528494541830,
+			"name": "removeFile",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": [],
+			"rawModeData": "[\"5b1268c214b49bd38a84e455\",\"5b1a958c32fa83d5ea219b11\"]"
+		},
+		{
+			"id": "770cee58-568e-2da3-e97b-200d0e5d8d98",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/mappingManager/addDataFileToMapping",
+			"folder": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "mappingId",
+					"value": "5b1ff02eb94e897928b7bb2a",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "dataFileId",
+					"value": "5b1a960f32fa86e9698b1065",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528823836706,
+			"name": "addDataFileToMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "7c0820dc-dbf6-3d5b-5d50-885822ceb7ba",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/batchManager/getBatch",
+			"folder": "8a6dfade-d524-2b05-23d1-1f454c1f88c1",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1b07d1b94ec1f079bc6299",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528500033467,
+			"name": "createBatch",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "847c4590-5d83-d081-71b0-2ef80eedd731",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/nodeManager/getSuggestedIndividualMappings",
+			"folder": "9c42d4e2-6a98-6681-624d-ecea3e645622",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "nodeId",
+					"value": "5b1268c214b49bd38a84e457",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528991782918,
+			"name": "getSuggestedMappings",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"folder": "793ce125-4a52-544f-45fa-ea6a0c132b4b",
+			"id": "860b28cd-8382-b3b4-f373-771fc985fd93",
+			"name": "uploadFileSFTP",
+			"dataMode": "urlencoded",
+			"data": [
+				{
+					"key": "ontologyFileId",
+					"value": "5b16987c8d9a117e67abee81",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": null,
+			"variables": null,
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"method": "POST",
+			"pathVariables": {},
+			"url": "http://localhost:8080/chaos/wsapi/fileManager/uploadFileSFTP",
+			"preRequestScript": null,
+			"tests": null,
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [],
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"enabled": true
+				}
+			],
+			"pathVariableData": [],
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7"
+		},
+		{
+			"id": "86732270-3793-7988-1f79-860352403338",
+			"folder": "ec53f976-7834-4c10-a589-9141574b1fcb",
+			"name": "processBatch",
+			"dataMode": "urlencoded",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1e86a200144c70b56976dd",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"rawModeData": "",
+			"descriptionFormat": "html",
+			"description": "Populates a given batch.",
+			"variables": null,
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"method": "POST",
+			"pathVariables": {},
+			"url": "http://localhost:8080/chaos/wsapi/populationManager/processBatch",
+			"preRequestScript": null,
+			"tests": null,
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [],
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"enabled": true,
+					"description": ""
+				}
+			],
+			"pathVariableData": [],
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7"
+		},
+		{
+			"id": "988d140c-6c66-d385-3bf6-3786f057ddec",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/chaos/wsapi/batchManager/getAllBatches",
+			"folder": "8a6dfade-d524-2b05-23d1-1f454c1f88c1",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528500999040,
+			"name": "getAllBatches",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "acf5096d-9341-7116-fedc-f5b7407374bf",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getDataPropertiesForClass",
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "ontologyId",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "owlClass",
+					"value": "http://chaospop.sysresearch.org/ontologies/family.owl#Person",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1529065765226,
+			"name": "getObjectPropertiesForClass",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "b6e33df9-7e94-715c-e233-155968526b0f",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getDataProperties",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "ontologyId",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "getDataProperties",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1529065088014,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943"
+		},
+		{
+			"id": "be22b98f-0380-bbd7-b037-75e22568c3e8",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getObjectProperties",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "ontologyId",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "getObjectProperties",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1529064930794,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943"
+		},
+		{
+			"folder": "793ce125-4a52-544f-45fa-ea6a0c132b4b",
+			"id": "c5b6a989-df45-7378-2c8c-0f8855269063",
+			"name": "addFile",
+			"dataMode": "params",
+			"data": [
+				{
+					"key": "file",
+					"value": "",
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": null,
+			"variables": null,
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"method": "POST",
+			"pathVariables": {},
+			"url": "http://localhost:8080/chaos/wsapi/fileManager/addFile",
+			"preRequestScript": null,
+			"tests": null,
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [],
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"enabled": true
+				}
+			],
+			"pathVariableData": [],
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7"
+		},
+		{
+			"id": "cf221e9d-188b-9263-a14c-91e5bbe99907",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/nodeManager/getNode",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1268c214b49bd38a84e457",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "getNode",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1528990435496,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "9c42d4e2-6a98-6681-624d-ecea3e645622"
+		},
+		{
+			"id": "d366c5b0-fd64-57f8-89b3-4d3728558c8a",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/mappingManager/createMapping",
+			"folder": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528819864870,
+			"name": "createMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": [],
+			"rawModeData": "{\r\n    \"outputOntologyFileName\" : \"family\",\r\n    \"outputOntologyNamespace\" : \"http://chaospop.sysresearch.org/ontologies/family.owl#\",\r\n    \"fileNames\" : [\"5b1268c214b49bd38a84e455\"],\r\n    \"directOntologyImports\" : [\"5b0d68d914b4e72380fa1502\"],\r\n    \"individualMappings\" : [\"5b1268c214b49bd38a84e453\"]\r\n}"
+		},
+		{
+			"id": "d76d8898-51bb-c7cb-a554-cde5d93c40c5",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/getDataPropertiesForClass",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "ontologyId",
+					"value": "5b0d68d914b4e72380fa1502",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "owlClass",
+					"value": "http://chaospop.sysresearch.org/ontologies/family.owl#Person",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "getDataPropertiesForClass",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1529065631434,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943"
+		},
+		{
+			"id": "e0d1540e-d002-93c4-f877-a20d71e49585",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/batchManager/getAllMappingsFromBatch",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "batchId",
+					"value": "5b1b02e5b94edfd6fd93a62e",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "getAllMappingsFromBatch",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1528752427611,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "8a6dfade-d524-2b05-23d1-1f454c1f88c1"
+		},
+		{
+			"id": "f12e5e8c-3b16-fedf-92d3-32aea90d9804",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/mappingManager/getMapping",
+			"folder": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "5b1268c214b49bd38a84e49e",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1528968588113,
+			"name": "getMapping",
+			"description": "",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"responses": []
+		},
+		{
+			"id": "f1dfb5b8-5212-28ef-eded-97495e7ee118",
+			"name": "listOntologyFiles",
+			"url": "http://localhost:8080/chaos/wsapi/ontologyManager/listOntologyFiles",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "93b747a8-9dc9-fe12-2472-2688c5515943",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"headers": "",
+			"pathVariables": {},
+			"collection_id": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"preRequestScript": null,
+			"tests": null,
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"variables": null
+		},
+		{
+			"id": "f4051979-6064-5366-eddd-023e7ec3735a",
+			"name": "listDataFiles",
+			"url": "http://chaospop.sysresearch.org/chaos/wsapi/fileManager/listDataFiles",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "793ce125-4a52-544f-45fa-ea6a0c132b4b",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"headers": "",
+			"pathVariables": {},
+			"collection_id": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"preRequestScript": null,
+			"tests": null,
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"variables": null
+		},
+		{
+			"id": "fcd261f9-557c-2118-ff20-05da0b6e76fc",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/chaos/wsapi/mappingManager/removeDataFileFromMapping",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "cab8472c-a341-cbc4-dfaf-ee9b59ec2cd7",
+			"data": [
+				{
+					"key": "mappingId",
+					"value": "5b1ff02eb94e897928b7bb2a",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "dataFileId",
+					"value": "5b1a960f32fa86e9698b1065",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "removeDataFileFromMapping",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1528976447564,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7b5f0260-a505-7ae9-79bf-cfe25e2e6aff"
+		}
+	]
+}
