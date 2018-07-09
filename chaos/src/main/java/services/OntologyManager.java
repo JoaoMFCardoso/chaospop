@@ -1,9 +1,11 @@
 package services;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -191,8 +193,9 @@ public class OntologyManager {
 	 */
 	@POST
 	@Path("/removeOntologyFiles")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response removeOntologyFiles(@FormParam("ontologyIds") String ontologyIds){
+	public Response removeOntologyFiles(String ontologyIds){
 		Response response;
 		
 		try{
@@ -207,11 +210,19 @@ public class OntologyManager {
 				/* Gets the OntologyFile */
 				OntologyFile ontologyFile = this.ontologyFileImpl.get(ontologyId);
 
-				/* If the DataFile is in the SFTP Server, it removes it from the server */
+				/* If the Ontology is in the SFTP Server, it removes it from the server */
 				String namespace = ontologyFile.getNamespace().toString();
-				if(FileOperationsUtils.isSFTPServerCompliant(namespace)){
-					SFTPServerConnectionManager sftpCManager = new SFTPServerConnectionManager();
+				String ontologyFileName = FileOperationsUtils.getOntologyFileName(namespace); //NEEDS TO BE CHANGED FOR A DATABASE FIELD FETCH. THIS IS STUPID AS HELL...
+				SFTPServerConnectionManager sftpCManager = new SFTPServerConnectionManager();
+				
+				if(sftpCManager.isFileInSFTPServer(ontologyFileName, namespace)){
 					sftpCManager.removeSFTPFile(namespace);
+				}
+				
+				/* If the OntologyFile is locally stored, it removes it from the local directory */
+				if(ontologyFile.getPath() != null) {
+					File localOntologyFile = new File(ontologyFile.getPath());
+					localOntologyFile.delete();
 				}
 
 				/* Removes the OntologyFile */

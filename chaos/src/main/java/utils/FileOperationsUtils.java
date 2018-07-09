@@ -176,6 +176,26 @@ public class FileOperationsUtils {
 	}
 
 	/**
+	 * Gets the name of an ontology file given its namespace.
+	 * @param namespace The ontology file namespace
+	 * @return The ontology File name
+	 */
+	public static String getOntologyFileName(String namespace) {
+		String ontologyFileName = "";
+		
+		String[] terms = namespace.split("/");
+		
+		for(String term : terms) {
+			if(term.endsWith("#")) {
+				ontologyFileName = term.replace("#", "");
+				return ontologyFileName;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Checks if directory creation is needed by analising a given namespace
 	 * @param sftpNamespace The SFTP server base namespace
 	 * @param namespace A SFTP Server compliant namespace
