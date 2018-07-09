@@ -1,9 +1,11 @@
 package services;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,8 +16,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -324,9 +328,7 @@ public class FileManager {
 	@Path("/downloadFile")
 	@Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
 	public Response downloadFile(@FormParam("fileName") String fileName) {
-		File file = null;
 		Response response;
-		Boolean downloaded = false;
 		try{
 			/* Connects to the SFTP Server */
 			SFTPServerConnectionManager sftpManager = new SFTPServerConnectionManager();
@@ -350,14 +352,29 @@ public class FileManager {
 			
 			/* Gets the file from the SFTP server */
 			String localPath = sftpManager.downloadSFTPFile(fileName);
-			downloaded = true;
-			file = new File(localPath);
+			final File file = new File(localPath);
 			
 			/* Closes the connection */
 			sftpManager.disconnect();
 
+			final InputStream responseStream = new FileInputStream(file);
+			
+			StreamingOutput output = new StreamingOutput() {
+	            @Override
+	            public void write(OutputStream out) throws IOException, WebApplicationException {  
+	                int length;
+	                byte[] buffer = new byte[1024];
+	                while((length = responseStream.read(buffer)) != -1) {
+	                    out.write(buffer, 0, length);
+	                }
+	                out.flush();
+	                responseStream.close();
+	                file.delete();             
+	            }   
+	        };
+			
 			/* Gets the Response */
-			response = Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
+			response = Response.ok(output, MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
@@ -367,12 +384,6 @@ public class FileManager {
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, genericError);
 
 			exception.printStackTrace();
-		}finally{
-			/* Deletes the temporarily created file */
-			if(downloaded) {
-				/* Deletes the problem file and its structure */
-				FileOperationsUtils.deleteErrorFile(file);
-			}
 		}
 
 		return response;
