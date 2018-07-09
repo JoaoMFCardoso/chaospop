@@ -191,6 +191,7 @@ public class OntologyManager {
 	 */
 	@POST
 	@Path("/removeOntologyFiles")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeOntologyFiles(@FormParam("ontologyIds") String ontologyIds){
 		Response response;
 		
