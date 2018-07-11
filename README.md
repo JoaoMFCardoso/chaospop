@@ -13,10 +13,33 @@ Software that you need to install:
 * [Java 8 or later](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - The software development kit that is used to develop the application.
 * [MongoDB 3.6 or later](https://www.mongodb.com/download-center/enterprise/releases) - The database used
 * [Tomcat 9 or later](https://tomcat.apache.org/download-90.cgi) - The web application server used
+* [Eclipse IDE for Java EE Developers](http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/photon/R/eclipse-jee-photon-R-win32-x86_64.zip) - To run and debug ChaosPop locally.
 
 ### Installing
 
-//TODO
+To install and run ChaosPop you need to take the following steps:
+
+* Configure MongoDB
+
+1. Create the database
+````
+use ontorepo
+```
+
+2. Create the user
+```
+db.createUser(
+   {
+     user: "chaospop",
+     pwd: "ChaosPop2018",
+     roles: [ "readWrite", "dbAdmin" ]
+   }
+)
+```
+
+* Configure a Tomcat server in Eclipse 
+
+Please refer to the following [tutorial](https://crunchify.com/step-by-step-guide-to-setup-and-install-apache-tomcat-server-in-eclipse-development-environment-ide/).
 
 ## Deployment
 
