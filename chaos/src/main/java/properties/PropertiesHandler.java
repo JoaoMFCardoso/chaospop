@@ -14,6 +14,8 @@ public class PropertiesHandler {
 
 	/** The config properties. */
 	public static Properties configProperties;
+	
+	private static String propertiesFile = "config.properties";
 
 	/**
 	 * Gets the correct messages from the ResourceBundle.
@@ -23,8 +25,9 @@ public class PropertiesHandler {
 	 * @return The correct messages
 	 */
 	public static ResourceBundle getMessages(String baseName, String language){
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		Locale currentLocale = new Locale(language);
-		return ResourceBundle.getBundle(baseName, currentLocale);
+		return ResourceBundle.getBundle(baseName, currentLocale, classLoader);
 	}
 
 	/* ### Properties Methods ### */
@@ -36,7 +39,7 @@ public class PropertiesHandler {
 
 		try {
 			//load a properties file
-			configProperties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
+			configProperties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFile));
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -50,7 +53,7 @@ public class PropertiesHandler {
 	public static void propertiesSaver(){
 			FileOutputStream fos;
 			try {
-				fos = new FileOutputStream("./config.properties");
+				fos = new FileOutputStream("./" + propertiesFile);
 				configProperties.store(fos, "Ontology Genesis Properties");
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();

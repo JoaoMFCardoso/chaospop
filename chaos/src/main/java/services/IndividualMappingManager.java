@@ -61,14 +61,14 @@ public class IndividualMappingManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/individualmappingmanager"); 
+			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, requiredFieldNull);
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/individualmappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -100,7 +100,7 @@ public class IndividualMappingManager {
 		/* Checks if the Individual Mapping was found based on the given ID */
 		if(individualMapping == null) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage individualMappingNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "9", "messages/individualmappingmanager"); 
+			ErrorMessage individualMappingNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "9", "messages.individualmappingmanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, individualMappingNotFound);
@@ -118,21 +118,21 @@ public class IndividualMappingManager {
 		/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/individualmappingmanager"); 
+			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, requiredFieldNull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/individualmappingmanager"); 
+			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgument);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/individualmappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -167,7 +167,7 @@ public class IndividualMappingManager {
 			/* Creates the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/individualmappingmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.individualmappingmanager", language);
 			
 			String message = resourceBundle.getString("7") + " " + individualMappingTO.get_id() + " " + resourceBundle.getString("10");
 			
@@ -180,21 +180,21 @@ public class IndividualMappingManager {
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage individualMappingToNull = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/individualmappingmanager"); 
+			ErrorMessage individualMappingToNull = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, individualMappingToNull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/individualmappingmanager"); 
+			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgument);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/individualmappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -212,8 +212,9 @@ public class IndividualMappingManager {
 	 */
 	@POST
 	@Path("/removeIndividualMapping")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response removeIndividualMapping(@FormParam("ids") String individualMappingIds){
+	public Response removeIndividualMapping(String individualMappingIds){
 		Response response;
 		try{
 			/* Gets the Individual Mapping id's from the individualMappingIds string
@@ -230,7 +231,7 @@ public class IndividualMappingManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/individualmappingmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.individualmappingmanager", language);
 			
 			String message = resourceBundle.getString("7") + " " + individualMappingIds + " " + resourceBundle.getString("8");
 			
@@ -243,20 +244,20 @@ public class IndividualMappingManager {
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/individualmappingmanager"); 
+			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, requiredFieldNull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/individualmappingmanager"); 
+			ErrorMessage illegalArgument = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgument);
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/individualmappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -297,7 +298,7 @@ public class IndividualMappingManager {
 			
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/individualmappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -339,14 +340,14 @@ public class IndividualMappingManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/individualmappingmanager"); 
+			ErrorMessage requiredFieldNull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, requiredFieldNull);
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/individualmappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.individualmappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
