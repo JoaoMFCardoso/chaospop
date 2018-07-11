@@ -70,14 +70,14 @@ public class MappingManager {
 
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullfield = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/mappingmanager"); 
+			ErrorMessage nullfield = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullfield);
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -113,21 +113,21 @@ public class MappingManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/mappingmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/mappingmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -165,7 +165,7 @@ public class MappingManager {
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -202,7 +202,7 @@ public class MappingManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/mappingmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.mappingmanager", language);
 			
 			String message = resourceBundle.getString("8") + " " + mappingsIds + " " + resourceBundle.getString("10");
 			
@@ -215,21 +215,21 @@ public class MappingManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/mappingmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/mappingmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -261,7 +261,7 @@ public class MappingManager {
 
 			if(fileList.contains(newFileId)){
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage alreadyAdded = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/mappingmanager"); 
+				ErrorMessage alreadyAdded = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.mappingmanager"); 
 				
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, alreadyAdded);
@@ -280,7 +280,7 @@ public class MappingManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/mappingmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.mappingmanager", language);
 			
 			String message = resourceBundle.getString("11") + " " + dataFileId + " " + resourceBundle.getString("12");
 			
@@ -293,21 +293,21 @@ public class MappingManager {
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/mappingmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/mappingmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.mappingmanager"); 
 		
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -347,21 +347,21 @@ public class MappingManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/mappingmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/mappingmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -400,7 +400,7 @@ public class MappingManager {
 				this.mappingImpl.replace(mappingId, mapping);
 			}else{
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage doesNotExist = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/mappingmanager"); 
+				ErrorMessage doesNotExist = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.mappingmanager"); 
 				
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, doesNotExist);
@@ -411,7 +411,7 @@ public class MappingManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/mappingmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.mappingmanager", language);
 			
 			String message = resourceBundle.getString("11") + " " + dataFileId + " " + resourceBundle.getString("10");
 			
@@ -424,21 +424,21 @@ public class MappingManager {
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/mappingmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/mappingmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.mappingmanager"); 
 		
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);

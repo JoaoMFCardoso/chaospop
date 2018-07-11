@@ -76,7 +76,7 @@ public class FileManager {
 		/* If the file is null */
 		if(fileDetail == null) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullFile = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/filemanager"); 
+			ErrorMessage nullFile = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, nullFile);
@@ -89,7 +89,7 @@ public class FileManager {
 		if(fileDetail.getSize() > maxUploadSize) {
 
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage maxSize = new ErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE, "2", "messages/filemanager"); 
+			ErrorMessage maxSize = new ErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE, "2", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.REQUEST_ENTITY_TOO_LARGE, maxSize);
@@ -103,7 +103,7 @@ public class FileManager {
 		if(!Arrays.asList(supportedExtensions).contains(extension)) {
 
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage extensionNotSupported = new ErrorMessage(Response.Status.UNSUPPORTED_MEDIA_TYPE, "3", "messages/filemanager"); 
+			ErrorMessage extensionNotSupported = new ErrorMessage(Response.Status.UNSUPPORTED_MEDIA_TYPE, "3", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.UNSUPPORTED_MEDIA_TYPE, extensionNotSupported);
@@ -159,7 +159,7 @@ public class FileManager {
 		}catch(Exception exception){
 
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "4", "messages/filemanager"); 
+			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "4", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, genericError);
@@ -202,7 +202,7 @@ public class FileManager {
 			/* Checks if the Ontology File was found based on the given ID */
 			if(ontologyFile == null) {
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage ontologyFileNotFoundInDB = new ErrorMessage(Response.Status.NOT_FOUND, "5", "messages/filemanager"); 
+				ErrorMessage ontologyFileNotFoundInDB = new ErrorMessage(Response.Status.NOT_FOUND, "5", "messages.filemanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, ontologyFileNotFoundInDB);
@@ -214,7 +214,7 @@ public class FileManager {
 			if(ontologyFile.getPath() == null) {
 				
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage ontologyPathError = new ErrorMessage(Response.Status.NOT_FOUND, "10", "messages/filemanager"); 
+				ErrorMessage ontologyPathError = new ErrorMessage(Response.Status.NOT_FOUND, "10", "messages.filemanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, ontologyPathError);
@@ -228,7 +228,7 @@ public class FileManager {
 			if(!FileOperationsUtils.isSFTPServerCompliant(ontologyNamespace)){
 
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage namespaceNotCompliant = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/filemanager"); 
+				ErrorMessage namespaceNotCompliant = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.filemanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, namespaceNotCompliant);
@@ -252,7 +252,7 @@ public class FileManager {
 				FileOperationsUtils.deleteErrorFile(file);
 				
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage fileExists = new ErrorMessage(Response.Status.BAD_REQUEST, "11", "messages/filemanager"); 
+				ErrorMessage fileExists = new ErrorMessage(Response.Status.BAD_REQUEST, "11", "messages.filemanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, fileExists);
@@ -294,14 +294,14 @@ public class FileManager {
 		}catch(IllegalArgumentException illegalArgumentException) {
 
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage fileExists = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/filemanager"); 
+			ErrorMessage fileExists = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, fileExists);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/filemanager"); 
+			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, genericError);
@@ -342,7 +342,7 @@ public class FileManager {
 				sftpManager.disconnect();
 				
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage notFound = new ErrorMessage(Response.Status.NOT_FOUND, "12", "messages/filemanager"); 
+				ErrorMessage notFound = new ErrorMessage(Response.Status.NOT_FOUND, "12", "messages.filemanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, notFound);
@@ -378,7 +378,7 @@ public class FileManager {
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/filemanager"); 
+			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, genericError);
@@ -415,7 +415,7 @@ public class FileManager {
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage fileExists = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/filemanager"); 
+			ErrorMessage fileExists = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, fileExists);
@@ -446,7 +446,7 @@ public class FileManager {
 			/* Checks if the Ontology File was found based on the given ID */
 			if(dataFile == null) {
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage dataFileNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "15", "messages/filemanager"); 
+				ErrorMessage dataFileNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "15", "messages.filemanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, dataFileNotFound);
@@ -462,7 +462,7 @@ public class FileManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage noIdGiven = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages/filemanager"); 
+			ErrorMessage noIdGiven = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, noIdGiven);
@@ -470,14 +470,14 @@ public class FileManager {
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage sintaxError = new ErrorMessage(Response.Status.BAD_REQUEST, "16", "messages/filemanager"); 
+			ErrorMessage sintaxError = new ErrorMessage(Response.Status.BAD_REQUEST, "16", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, sintaxError);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage fileExists = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/filemanager"); 
+			ErrorMessage fileExists = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, fileExists);
@@ -515,7 +515,7 @@ public class FileManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/filemanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.filemanager", language);
 			
 			String message = resourceBundle.getString("13") + " " + dataFileIds + " " + resourceBundle.getString("14");
 			
@@ -528,21 +528,21 @@ public class FileManager {
 
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage noIDProvided = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages/filemanager"); 
+			ErrorMessage noIDProvided = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, noIDProvided);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentError = new ErrorMessage(Response.Status.BAD_REQUEST, "16", "messages/filemanager"); 
+			ErrorMessage illegalArgumentError = new ErrorMessage(Response.Status.BAD_REQUEST, "16", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentError);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/filemanager"); 
+			ErrorMessage genericError = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.filemanager"); 
 
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, genericError);

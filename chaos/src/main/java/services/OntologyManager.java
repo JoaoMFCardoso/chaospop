@@ -72,21 +72,21 @@ public class OntologyManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullNamespace = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/ontologymanager"); 
+			ErrorMessage nullNamespace = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullNamespace);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentNamespace = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentNamespace = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentNamespace);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -124,7 +124,7 @@ public class OntologyManager {
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -161,21 +161,21 @@ public class OntologyManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -232,7 +232,7 @@ public class OntologyManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/ontologymanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.ontologymanager", language);
 			
 			String message = resourceBundle.getString("8") + " " + ontologyIds + " " + resourceBundle.getString("9");
 			
@@ -245,14 +245,14 @@ public class OntologyManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
@@ -260,7 +260,7 @@ public class OntologyManager {
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -294,7 +294,7 @@ public class OntologyManager {
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -333,21 +333,21 @@ public class OntologyManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -386,21 +386,21 @@ public class OntologyManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -441,21 +441,21 @@ public class OntologyManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -494,21 +494,21 @@ public class OntologyManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -549,21 +549,21 @@ public class OntologyManager {
 			
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/ontologymanager"); 
+			ErrorMessage nullOntologyID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullOntologyID);
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/ontologymanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 			
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/ontologymanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.ontologymanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);

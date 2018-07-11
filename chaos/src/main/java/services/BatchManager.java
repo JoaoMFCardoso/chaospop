@@ -70,21 +70,21 @@ public class BatchManager {
 
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage noBatchInputed = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages/batchmanager"); 
+			ErrorMessage noBatchInputed = new ErrorMessage(Response.Status.BAD_REQUEST, "8", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, noBatchInputed);
 			
 		}catch(IllegalArgumentException illegalArgumentException){
 		/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-		ErrorMessage badBatchJson = new ErrorMessage(Response.Status.BAD_REQUEST, "9", "messages/batchmanager"); 
+		ErrorMessage badBatchJson = new ErrorMessage(Response.Status.BAD_REQUEST, "9", "messages.batchmanager"); 
 		
 		/* Builds a Response object */
 		response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, badBatchJson);
 		
 	}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -116,7 +116,7 @@ public class BatchManager {
 			/* Checks if the Batch was found based on the given ID */
 			if(batch == null) {
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage batchNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "10", "messages/batchmanager"); 
+				ErrorMessage batchNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "10", "messages.batchmanager"); 
 
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, batchNotFound);
@@ -132,21 +132,21 @@ public class BatchManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage noBatchId = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/batchmanager"); 
+			ErrorMessage noBatchId = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, noBatchId);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/batchmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -184,7 +184,7 @@ public class BatchManager {
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -221,7 +221,7 @@ public class BatchManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/batchmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.batchmanager", language);
 			
 			String message = resourceBundle.getString("11") + " " + batchIds + " " + resourceBundle.getString("12");
 			
@@ -234,21 +234,21 @@ public class BatchManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/batchmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/batchmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -280,7 +280,7 @@ public class BatchManager {
 
 			if(mappingList.contains(newMappingId)){
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage alreadyAdded = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/batchmanager"); 
+				ErrorMessage alreadyAdded = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.batchmanager"); 
 				
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, alreadyAdded);
@@ -299,7 +299,7 @@ public class BatchManager {
 			
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/batchmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.batchmanager", language);
 			
 			String message = resourceBundle.getString("13") + " " + mappingId + " " + resourceBundle.getString("14");
 			
@@ -313,21 +313,21 @@ public class BatchManager {
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.NOT_FOUND, "7", "messages/batchmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.NOT_FOUND, "7", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/batchmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.batchmanager"); 
 		
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -367,21 +367,21 @@ public class BatchManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/batchmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/batchmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/batchmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
@@ -419,7 +419,7 @@ public class BatchManager {
 				this.batchImpl.replace(batchId, batch);
 			}else{
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage doesNotExist = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/batchmanager"); 
+				ErrorMessage doesNotExist = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.batchmanager"); 
 				
 				/* Builds a Response object */
 				response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, doesNotExist);
@@ -430,7 +430,7 @@ public class BatchManager {
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
 			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages/batchmanager", language);
+			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.batchmanager", language);
 			
 			String message = resourceBundle.getString("15") + " " + mappingId + " " + resourceBundle.getString("12");
 			
@@ -443,21 +443,21 @@ public class BatchManager {
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages/batchmanager"); 
+			ErrorMessage mappingIDnull = new ErrorMessage(Response.Status.BAD_REQUEST, "7", "messages.batchmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, mappingIDnull);
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/batchmanager"); 
+			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.batchmanager"); 
 		
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/mappingmanager"); 
+			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.mappingmanager"); 
 			
 			/* Builds a Response object */
 			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
