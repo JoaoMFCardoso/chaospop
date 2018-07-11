@@ -22,7 +22,7 @@ To install and run ChaosPop you need to take the following steps:
 * Configure MongoDB
 
 1. Create the database
-````
+```
 use ontorepo
 ```
 
