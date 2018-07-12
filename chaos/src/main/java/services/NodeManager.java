@@ -21,8 +21,6 @@ import domain.to.IndividualMappingTO;
 import domain.to.NodeTO;
 import domain.to.wrappers.IndividualMappingTOWrapper;
 import domain.to.wrappers.NodeTOWrapper;
-import exceptions.ErrorMessage;
-import exceptions.ErrorMessageHandler;
 import utils.TransferObjectUtils;
 
 /**
@@ -65,11 +63,13 @@ public class NodeManager {
 			/* Checks if the Node was found based on the given ID */
 			if(node == null) {
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage nodeNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "4", "messages.nodemanager"); 
+//				ErrorMessage nodeNotFound = new ErrorMessage(Response.Status.NOT_FOUND, "4", "messages.nodemanager"); 
 
 				/* Builds a Response object */
-				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, nodeNotFound);
+//				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, nodeNotFound);
 
+				response = Response.status(Response.Status.NOT_FOUND).build();
+				
 				return response;
 			}
 			
@@ -81,23 +81,30 @@ public class NodeManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.nodemanager"); 
+//			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
 
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentError = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.nodemanager"); 
+//			ErrorMessage illegalArgumentError = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentError);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentError);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
+			
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.nodemanager"); 
+//			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+//			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			
 			exception.printStackTrace();
 		}
@@ -133,24 +140,30 @@ public class NodeManager {
 
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.nodemanager"); 
+//			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.nodemanager"); 
+//			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 
 		}catch(Exception exception){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.nodemanager"); 
+//			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+//			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			
 			exception.printStackTrace();
 		}
@@ -185,10 +198,12 @@ public class NodeManager {
 			/* Checks if the Batch was found based on the given ID */
 			if(matchingIndividualMappings.isEmpty()) {
 				/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-				ErrorMessage noMatches = new ErrorMessage(Response.Status.NOT_FOUND, "7", "messages.nodemanager"); 
+//				ErrorMessage noMatches = new ErrorMessage(Response.Status.NOT_FOUND, "7", "messages.nodemanager"); 
 
 				/* Builds a Response object */
-				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, noMatches);
+//				response = ErrorMessageHandler.toResponse(Response.Status.NOT_FOUND, noMatches);
+				
+				response = Response.status(Response.Status.NOT_FOUND).build();
 
 				return response;
 			}
@@ -209,24 +224,30 @@ public class NodeManager {
 			/* Any exception leads to an error */
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.nodemanager"); 
+//			ErrorMessage nullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, nullID);
+//			response = ErrorMessageHandler.toResponse(Response.Staus.BAD_REQUEST, nullID);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 			
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.nodemanager"); 
+//			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.nodemanager"); 
+//			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages.nodemanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+//			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			
 			exception.printStackTrace();
 		}

@@ -18,8 +18,6 @@ import com.google.gson.Gson;
 import database.implementations.BatchImpl;
 import domain.bo.population.Batch;
 import exceptions.ChaosPopException;
-import exceptions.ErrorMessage;
-import exceptions.ErrorMessageHandler;
 import ontologies.populator.PopulationOperations;
 
 /**
@@ -62,49 +60,63 @@ public class PopulationManager {
 		}catch(ChaosPopException chaosPopException) {
 
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, chaosPopException.getErrormessage());
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, chaosPopException.getErrormessage());
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 			
 		}catch(FileNotFoundException fileNotFoundException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage ontologyLocalFileNotFound = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/populationmanager"); 
+//			ErrorMessage ontologyLocalFileNotFound = new ErrorMessage(Response.Status.BAD_REQUEST, "6", "messages/populationmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, ontologyLocalFileNotFound);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, ontologyLocalFileNotFound);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 			
 		}catch(OWLOntologyStorageException owlOntologyStorageException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage ontologyStorageException = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/populationmanager"); 
+//			ErrorMessage ontologyStorageException = new ErrorMessage(Response.Status.BAD_REQUEST, "5", "messages/populationmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, ontologyStorageException);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, ontologyStorageException);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 			
 		}catch(OWLOntologyCreationException owlOntologyCreationException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage ontologyCreationExeption = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/populationmanager"); 
+//			ErrorMessage ontologyCreationExeption = new ErrorMessage(Response.Status.BAD_REQUEST, "4", "messages/populationmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, ontologyCreationExeption);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, ontologyCreationExeption);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 			
 		}catch(NullPointerException nullPointerException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage batchNullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/populationmanager"); 
+//			ErrorMessage batchNullID = new ErrorMessage(Response.Status.BAD_REQUEST, "2", "messages/populationmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, batchNullID);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, batchNullID);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 
 		}catch(IllegalArgumentException illegalArgumentException) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/populationmanager"); 
+//			ErrorMessage illegalArgumentID = new ErrorMessage(Response.Status.BAD_REQUEST, "3", "messages/populationmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+//			response = ErrorMessageHandler.toResponse(Response.Status.BAD_REQUEST, illegalArgumentID);
+			
+			response = Response.status(Response.Status.BAD_REQUEST).build();
 
 		}catch(Exception exception) {
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/populationmanager"); 
+//			ErrorMessage error = new ErrorMessage(Response.Status.INTERNAL_SERVER_ERROR, "1", "messages/populationmanager"); 
 			
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+//			response = ErrorMessageHandler.toResponse(Response.Status.INTERNAL_SERVER_ERROR, error);
+			
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			
 			exception.printStackTrace();
 		}
