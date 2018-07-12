@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -36,8 +35,6 @@ import domain.bo.parsers.DataFile;
 import domain.to.DataFileTO;
 import domain.to.wrappers.DataFileTOWrapper;
 import exceptions.ChaosPopException;
-import exceptions.ErrorMessage;
-import exceptions.ErrorMessageHandler;
 import file.operations.FileOperations;
 import file.sftp.SFTPServerConnectionManager;
 import properties.PropertiesHandler;
@@ -555,17 +552,19 @@ public class FileManager {
 
 			/* Gets the Response */
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
-			String language = PropertiesHandler.configProperties.getProperty("language");
-			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.filemanager", language);
-			
-			String message = resourceBundle.getString("13") + " " + dataFileIds + " " + resourceBundle.getString("14");
-			
-			ErrorMessage corectlyRemoved = new ErrorMessage(); 
-			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
-			corectlyRemoved.setMessage(message);
+//			String language = PropertiesHandler.configProperties.getProperty("language");
+//			ResourceBundle resourceBundle = PropertiesHandler.getMessages("messages.filemanager", language);
+//			
+//			String message = resourceBundle.getString("13") + " " + dataFileIds + " " + resourceBundle.getString("14");
+//			
+//			ErrorMessage corectlyRemoved = new ErrorMessage(); 
+//			corectlyRemoved.setStatus(Response.Status.OK.getStatusCode());
+//			corectlyRemoved.setMessage(message);
 
 			/* Builds a Response object */
-			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
+//			response = ErrorMessageHandler.toResponse(Response.Status.OK, corectlyRemoved);
+			
+			response = Response.status(Response.Status.OK).build();
 
 		}catch(NullPointerException nullPointerException){
 			/* Builds an ErrorMessage object that fetches the correct message from the ResourceBundles */
