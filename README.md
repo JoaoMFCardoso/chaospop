@@ -6,7 +6,11 @@ ChaosPop is a framework that allows structured raw data concepts to be mapped in
 
 This ER Diagram details the ChaosPop domain.
 
-![ChaosPop domain ERD ](https://raw.githubusercontent.com/JoaoMFCardoso/chaospop/blob/master/documentation/ChaosPop%20ERD.png)
+<p align="center">
+  <img width="460" height="300" src="https://raw.githubusercontent.com/JoaoMFCardoso/chaospop/blob/master/documentation/ChaosPopERD.png">
+</p>
+
+![ChaosPop domain ERD ](https://raw.githubusercontent.com/JoaoMFCardoso/chaospop/blob/master/documentation/ChaosPopERD.png)
 
 ## Getting Started
 
