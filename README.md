@@ -2,6 +2,12 @@
 
 ChaosPop is a framework that allows structured raw data concepts to be mapped into concepts of provided domain ontologies. It then allows users to create populated ontologies, by creating individuals from the structured raw data.
 
+## Domain
+
+This ER Diagram details the ChaosPop domain.
+
+![ChaosPop domain ERD ](https://raw.githubusercontent.com/JoaoMFCardoso/chaospop/blob/master/documentation/ChaosPop%20ERD.png)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
